@@ -73,11 +73,10 @@
 
                                     {{-- EDIT --}}
                                     <a href="{{ route('barang.edit', $barang->id) }}"
-                                       class="btn btn-sm btn-light-primary rounded-pill px-3"
+                                       class="btn btn-sm btn-light-primary rounded-pill px-0"
                                        title="Edit Barang">
                                         <i class="bx bx-edit"></i>
                                     </a>
-
                                     {{-- DELETE --}}
                                     <form action="{{ route('barang.destroy', $barang->id) }}"
                                           method="POST"
@@ -113,7 +112,37 @@
             </div>
 
             <div>
-                {{ $barangs->links('pagination::bootstrap-5') }}
+                {{-- Custom pagination ±1 angka --}}
+                @if ($barangs->hasPages())
+                <nav>
+                    <ul class="pagination mb-0">
+
+                        {{-- Previous --}}
+                        @if ($barangs->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                            <li class="page-item"><a class="page-link" href="{{ $barangs->previousPageUrl() }}">&laquo;</a></li>
+                        @endif
+
+                        {{-- Halaman sekitar current ±1 --}}
+                        @foreach ($barangs->getUrlRange(max($barangs->currentPage()-1,1), min($barangs->currentPage()+1, $barangs->lastPage())) as $page => $url)
+                            @if ($page == $barangs->currentPage())
+                                <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                            @else
+                                <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                            @endif
+                        @endforeach
+
+                        {{-- Next --}}
+                        @if ($barangs->hasMorePages())
+                            <li class="page-item"><a class="page-link" href="{{ $barangs->nextPageUrl() }}">&raquo;</a></li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+
+                    </ul>
+                </nav>
+                @endif
             </div>
         </div>
 

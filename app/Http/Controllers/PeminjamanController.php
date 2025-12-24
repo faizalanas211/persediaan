@@ -18,17 +18,27 @@ class PeminjamanController extends Controller
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
-        // data peminjaman
+        // data peminjaman dengan pagination 5 per halaman
         $peminjamans = Peminjaman::with('barang')
             ->whereMonth('tanggal_pinjam', $bulan)
             ->whereYear('tanggal_pinjam', $tahun)
             ->latest()
-            ->get();
+            ->paginate(5); // <-- PAGINATE
 
-        // summary
-        $total = $peminjamans->count();
-        $dipinjam = $peminjamans->where('status', 'dipinjam')->count();
-        $dikembalikan = $peminjamans->where('status', 'dikembalikan')->count();
+        // summary menggunakan query terpisah agar akurat (tidak terbatas halaman)
+        $total = Peminjaman::whereMonth('tanggal_pinjam', $bulan)
+            ->whereYear('tanggal_pinjam', $tahun)
+            ->count();
+
+        $dipinjam = Peminjaman::whereMonth('tanggal_pinjam', $bulan)
+            ->whereYear('tanggal_pinjam', $tahun)
+            ->where('status', 'dipinjam')
+            ->count();
+
+        $dikembalikan = Peminjaman::whereMonth('tanggal_pinjam', $bulan)
+            ->whereYear('tanggal_pinjam', $tahun)
+            ->where('status', 'dikembalikan')
+            ->count();
 
         return view('dashboard.peminjaman.index', compact(
             'peminjamans',

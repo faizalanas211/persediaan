@@ -9,12 +9,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class BarangController extends Controller
 {
     /**
-     * Tampilkan data barang
+     * Tampilkan data barang dengan pagination 5 per halaman
      */
     public function index()
     {
-        // URUTKAN SESUAI KEBUTUHAN TAMPILAN
-        $barangs = Barang::orderBy('nama_barang', 'asc')->paginate(5);
+        $barangs = Barang::orderBy('nama_barang', 'asc')
+            ->paginate(5); // paginate 5 data per halaman
         return view('dashboard.barang.index', compact('barangs'));
     }
 
@@ -53,7 +53,7 @@ class BarangController extends Controller
 
     /**
      * IMPORT BARANG DARI EXCEL
-     * URUTAN EXCEL:
+     * Urutan Excel:
      * A = nama_barang
      * B = type
      * C = kode_barang
@@ -74,24 +74,17 @@ class BarangController extends Controller
         foreach ($data[0] as $index => $row) {
 
             // skip header
-            if ($index === 0) {
-                continue;
-            }
+            if ($index === 0) continue;
 
-            // validasi minimal
-            if (
-                empty($row[0]) || // nama_barang
-                empty($row[2])    // kode_barang
-            ) {
-                continue;
-            }
+            // minimal valid
+            if (empty($row[0]) || empty($row[2])) continue;
 
             Barang::updateOrCreate(
-                ['kode_barang' => trim($row[2])], // C
+                ['kode_barang' => trim($row[2])],
                 [
-                    'nama_barang' => trim($row[0]), // A
-                    'type'        => trim($row[1]) ?? null, // B
-                    'kondisi'     => trim($row[3]) ?? 'Baik', // D
+                    'nama_barang' => trim($row[0]),
+                    'type'        => trim($row[1]) ?? null,
+                    'kondisi'     => trim($row[3]) ?? 'Baik',
                     'status'      => 'tersedia',
                 ]
             );
@@ -120,7 +113,6 @@ class BarangController extends Controller
             'type'        => 'required',
             'kode_barang' => 'required|unique:barangs,kode_barang,' . $barang->id,
             'kondisi'     => 'required',
-            
         ]);
 
         $barang->update([
@@ -128,7 +120,6 @@ class BarangController extends Controller
             'type'        => $request->type,
             'kode_barang' => $request->kode_barang,
             'kondisi'     => $request->kondisi,
-
         ]);
 
         return redirect()

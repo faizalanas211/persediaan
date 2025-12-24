@@ -31,9 +31,9 @@
             </div>
         @endif
 
-        {{-- FILTER SEDERHANA --}}
-        <form method="GET" action="{{ route('peminjaman.index') }}" class="mb-3 d-flex gap-2">
-            <select name="bulan" class="form-select w-auto">
+        {{-- FILTER --}}
+        <form method="GET" action="{{ route('peminjaman.index') }}" class="mb-3 d-flex gap-2 align-items-center">
+            <select name="bulan" class="form-select form-select-sm w-auto">
                 @for($i=1;$i<=12;$i++)
                     <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>
                         {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
@@ -41,7 +41,7 @@
                 @endfor
             </select>
 
-            <select name="tahun" class="form-select w-auto">
+            <select name="tahun" class="form-select form-select-sm w-auto">
                 @for($y=date('Y');$y>=2020;$y--)
                     <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>
                         {{ $y }}
@@ -49,79 +49,99 @@
                 @endfor
             </select>
 
-            <button class="btn btn-outline-primary">
+            <button class="btn btn-outline-primary btn-sm">
                 <i class="bx bx-filter-alt me-1"></i> Tampilkan
             </button>
         </form>
 
-        {{-- SUMMARY RINGKAS --}}
-        <div class="d-flex gap-3 mb-4">
-            <div class="summary-card flex-fill text-center">
-                <span>Total Peminjaman</span>
-                <h3>{{ $total }}</h3>
+        {{-- SUMMARY MINI --}}
+        <div class="row g-2 mb-4">
+            <div class="col-md-4">
+                <div class="summary-mini bg-primary-subtle shadow-sm">
+                    <i class="bx bx-list-ul text-primary"></i>
+                    <div>
+                        <small>Total Peminjaman</small>
+                        <h5>{{ $total }}</h5>
+                    </div>
+                </div>
             </div>
-            <div class="summary-card flex-fill text-center">
-                <span>Sedang Dipinjam</span>
-                <h3>{{ $dipinjam }}</h3>
+
+            <div class="col-md-4">
+                <div class="summary-mini bg-warning-subtle shadow-sm">
+                    <i class="bx bx-time-five text-warning"></i>
+                    <div>
+                        <small>Sedang Dipinjam</small>
+                        <h5>{{ $dipinjam }}</h5>
+                    </div>
+                </div>
             </div>
-            <div class="summary-card flex-fill text-center">
-                <span>Sudah Dikembalikan</span>
-                <h3>{{ $dikembalikan }}</h3>
+
+            <div class="col-md-4">
+                <div class="summary-mini bg-success-subtle shadow-sm">
+                    <i class="bx bx-check-circle text-success"></i>
+                    <div>
+                        <small>Sudah Dikembalikan</small>
+                        <h5>{{ $dikembalikan }}</h5>
+                    </div>
+                </div>
             </div>
         </div>
 
         {{-- TABEL --}}
         <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle">
+            <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
                         <th width="5%">No</th>
                         <th>Nama Peminjam</th>
                         <th>Barang</th>
                         <th>Tanggal Pinjam</th>
-                        <th>Tanggal Kembali</th>
                         <th>Status</th>
                         <th width="15%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                @forelse($peminjamans as $i => $p)
+                @forelse($peminjamans as $p)
                     <tr>
-                        <td>{{ $i + 1 }}</td>
+                        {{-- Nomor urut sesuai halaman --}}
+                        <td>{{ ($peminjamans->currentPage() - 1) * $peminjamans->perPage() + $loop->iteration }}</td>
                         <td>
                             {{ $p->nama_peminjam }} <br>
                             <small class="text-muted">{{ $p->kelas }}</small>
                         </td>
                         <td>{{ $p->barang->nama_barang }}</td>
                         <td>{{ \Carbon\Carbon::parse($p->tanggal_pinjam)->translatedFormat('d M Y') }}</td>
-                        <td>{{ $p->tanggal_kembali ? \Carbon\Carbon::parse($p->tanggal_kembali)->translatedFormat('d M Y') : '-' }}</td>
                         <td>
                             <span class="badge {{ $p->status === 'dipinjam' ? 'bg-warning text-dark' : 'bg-success' }}">
                                 {{ ucfirst($p->status) }}
                             </span>
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('peminjaman.show', $p->id) }}" class="btn btn-sm btn-outline-primary mb-1">Detail</a>
-                            @if($p->status === 'dipinjam')
-                                <form action="{{ route('peminjaman.kembalikan', $p->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button class="btn btn-sm btn-success" onclick="return confirm('Yakin barang sudah dikembalikan?')">
-                                        Kembalikan
-                                    </button>
-                                </form>
-                            @else
-                                <span class="badge bg-secondary">Selesai</span>
-                            @endif
+                            <a href="{{ route('peminjaman.show', $p->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                Detail
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">Tidak ada data peminjaman</td>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Tidak ada data peminjaman
+                        </td>
                     </tr>
                 @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- PAGINATION --}}
+        <div class="d-flex justify-content-end mt-2">
+            {{ $peminjamans->links('pagination::bootstrap-5') }}
+        </div>
+
+        <div class="text-end mt-3">
+            <a href="{{ route('peminjaman.index') }}" class="text-primary fw-semibold">
+                Lihat semua data →
+            </a>
         </div>
 
     </div>
@@ -129,21 +149,28 @@
 
 {{-- STYLE --}}
 <style>
-.summary-card{
-    background:#fff;
-    border-radius:18px;
-    padding:15px 10px;
-    box-shadow:0 4px 12px rgba(0,0,0,.05);
+.summary-mini{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 14px;
+    border-radius:12px;
+    transition: transform 0.2s;
 }
-.summary-card span{
-    font-size:13px;
-    color:#8a94a6;
+.summary-mini:hover{
+    transform: translateY(-2px);
 }
-.summary-card h3{
+.summary-mini i{
     font-size:24px;
+}
+.summary-mini small{
+    font-size:12px;
+    color:#6b7280;
+}
+.summary-mini h5{
+    margin:0;
     font-weight:700;
-    margin-top:4px;
-    color:#1f2937;
+    color:#111827;
 }
 </style>
 
