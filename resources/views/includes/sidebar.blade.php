@@ -24,44 +24,22 @@
             <span class="menu-header-text">Pages</span>
         </li>
         @if (Auth::user()->role == 'admin' || Auth::user()->role == 'Admin')
-            <!--
-            <li class="menu-item {{ Request::is('dashboard/kehadiran*') ? 'active' : '' }}">
-                <a href="{{ route('kehadiran.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
-                    <div data-i18n="Analytics">Data Kehadiran</div>
-                </a>
-            </li>
-            <li class="menu-item {{ Request::is('dashboard/pegawai*') ? 'active' : '' }}">
-                <a href="{{ route('pegawai.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-data"></i>
-                    <div data-i18n="Analytics">Data Pegawai</div>
-                </a>
-            </li>
-            <li class="menu-item {{ Request::is('dashboard/pengajuan*') ? 'active' : '' }}">
-                <a href="{{ route('pengajuan.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
-                    <div data-i18n="Analytics">Pengajuan Cuti</div>
-                </a>
-            </li>
-            <li class="menu-item {{ Request::is('dashboard/penilaian*') ? 'active' : '' }}">
-                <a href="{{ route('penilaian.index') }}" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
-                    <div data-i18n="Analytics">Penilaian Kinerja</div>
-                </a>
-            </li>
-            -->
-
             <li class="menu-item {{ Request::is('dashboard/barang*') ? 'active' : '' }}">
                 <a href="{{ route('barang.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
                     <div data-i18n="Analytics">Daftar Barang</div>
                 </a>
             </li>
-
-            <li class="menu-item {{ Request::is('dashboard/peminjaman*') ? 'active' : '' }}">
-                <a href="{{ route('peminjaman.index') }}" class="menu-link">
+            <li class="menu-item {{ Request::is('dashboard/mutasi*') ? 'active' : '' }}">
+                <a href="{{ route('mutasi.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
-                    <div data-i18n="Analytics">Riwayat Penggunaan</div>
+                    <div data-i18n="Analytics">Mutasi Stok</div>
+                </a>
+            </li>
+            <li class="menu-item {{ Request::is('dashboard/permintaan*') ? 'active' : '' }}">
+                <a href="{{ route('permintaan.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
+                    <div data-i18n="Analytics">Permintaan ATK</div>
                 </a>
             </li>
 

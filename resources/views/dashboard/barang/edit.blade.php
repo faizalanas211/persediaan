@@ -7,7 +7,7 @@
     </a>
 </li>
 <li class="breadcrumb-item active text-primary fw-semibold">
-    Edit Barang
+    Edit Barang ATK
 </li>
 @endsection
 
@@ -17,8 +17,8 @@
 
     {{-- HEADER --}}
     <div class="card-header border-0 pt-6 pb-4">
-        <h3 class="fw-bold mb-1">Edit Data Barang</h3>
-        <p class="text-muted mb-0 fs-7">Perbarui informasi barang inventaris</p>
+        <h3 class="fw-bold mb-1">Edit Data Barang ATK</h3>
+        <p class="text-muted mb-0 fs-7">Perbarui informasi master barang</p>
     </div>
 
     <div class="card-body pt-0">
@@ -34,107 +34,50 @@
                 <input type="text"
                        name="nama_barang"
                        value="{{ old('nama_barang', $barang->nama_barang) }}"
-                       class="form-control @error('nama_barang') is-invalid @enderror">
+                       class="form-control @error('nama_barang') is-invalid @enderror"
+                       placeholder="Contoh: Kertas HVS A4 80 gsm">
 
                 @error('nama_barang')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            {{-- TYPE BARANG --}}
+            {{-- SATUAN --}}
             <div class="mb-4">
-                <label class="form-label fw-semibold">Type Barang</label>
-                <select name="type"
-                        class="form-select @error('type') is-invalid @enderror"
-                        required>
-                    <option value="">-- Pilih Type --</option>
-
-                    <option value="Laptop"
-                        {{ old('type', $barang->type) == 'Laptop' ? 'selected' : '' }}>
-                        Laptop
-                    </option>
-
-                    <option value="Komputer"
-                        {{ old('type', $barang->type) == 'Komputer' ? 'selected' : '' }}>
-                        Komputer
-                    </option>
-
-                    <option value="Printer"
-                        {{ old('type', $barang->type) == 'Printer' ? 'selected' : '' }}>
-                        Printer
-                    </option>
-
-                    <option value="Scanner"
-                        {{ old('type', $barang->type) == 'Scanner' ? 'selected' : '' }}>
-                        Scanner
+                <label class="form-label fw-semibold">Satuan Terkecil</label>
+                <select name="satuan"
+                        id="satuan"
+                        class="form-select @error('satuan') is-invalid @enderror">
+                    <option value="">-- Pilih Satuan --</option>
+                    <option value="pcs" {{ old('satuan', $barang->satuan) == 'pcs' ? 'selected' : '' }}>Pcs</option>
+                    <option value="lembar" {{ old('satuan', $barang->satuan) == 'lembar' ? 'selected' : '' }}>Lembar</option>
+                    <option value="lainnya" {{ old('satuan', $barang->satuan) == 'lainnya' ? 'selected' : '' }}>
+                        Lainnya
                     </option>
                 </select>
 
-                @error('type')
+                @error('satuan')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-
-            {{-- KODE BARANG --}}
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Kode Barang</label>
+            {{-- SATUAN LAINNYA --}}
+            <div class="mb-4 {{ old('satuan', $barang->satuan) == 'lainnya' ? '' : 'd-none' }}"
+                id="satuanLainnyaWrapper">
+                <label class="form-label fw-semibold">Satuan Lainnya</label>
                 <input type="text"
-                       name="kode_barang"
-                       value="{{ old('kode_barang', $barang->kode_barang) }}"
-                       class="form-control @error('kode_barang') is-invalid @enderror">
-
-                @error('kode_barang')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                    name="satuan_lainnya"
+                    value="{{ old('satuan_lainnya', $barang->satuan_lainnya ?? '') }}"
+                    class="form-control"
+                    placeholder="Contoh: roll, ml, gram">
             </div>
-
-            {{-- KONDISI --}}
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Kondisi</label>
-                <select name="kondisi"
-                        class="form-select @error('kondisi') is-invalid @enderror">
-                    <option value="Baik" {{ old('kondisi', $barang->kondisi) == 'Baik' ? 'selected' : '' }}>
-                        Baik
-                    </option>
-                    <option value="Perlu Servis" {{ old('kondisi', $barang->kondisi) == 'Perlu Servis' ? 'selected' : '' }}>
-                        Perlu Servis
-                    </option>
-                </select>
-
-                @error('kondisi')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- STATUS (TIDAK BISA DIEDIT) --}}
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Status</label>
-
-                {{-- TAMPILAN --}}
-                <div>
-                    @if ($barang->status === 'tersedia')
-                        <span class="badge bg-success px-3 py-2">Tersedia</span>
-                    @elseif ($barang->status === 'dipinjam')
-                        <span class="badge bg-warning text-dark px-3 py-2">Dipinjam</span>
-                    @else
-                        <span class="badge bg-danger px-3 py-2">Rusak</span>
-                    @endif
-                </div>
-
-                {{-- KIRIM VALUE KE SERVER (TAPI TIDAK BISA DIUBAH USER) --}}
-                <input type="hidden" name="status" value="{{ $barang->status }}">
-            </div>
-
 
             {{-- BUTTON --}}
             <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('barang.index') }}"
-                   class="btn btn-light px-4">
+                <a href="{{ route('barang.index') }}" class="btn btn-light px-4">
                     Batal
                 </a>
-                <button type="submit"
-                        class="btn btn-primary px-4">
+                <button type="submit" class="btn btn-primary px-4">
                     Simpan Perubahan
                 </button>
             </div>
@@ -143,6 +86,24 @@
 
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const satuanSelect = document.getElementById('satuan');
+    const lainnyaWrap  = document.getElementById('satuanLainnyaWrapper');
 
+    function toggleSatuanLainnya() {
+        if (satuanSelect.value === 'lainnya') {
+            lainnyaWrap.classList.remove('d-none');
+        } else {
+            lainnyaWrap.classList.add('d-none');
+        }
+    }
+
+    // saat halaman load (edit)
+    toggleSatuanLainnya();
+
+    // saat ganti select
+    satuanSelect.addEventListener('change', toggleSatuanLainnya);
+});
+</script>
 @endsection
-

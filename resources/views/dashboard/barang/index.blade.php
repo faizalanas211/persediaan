@@ -13,7 +13,7 @@
     {{-- ================= HEADER ================= --}}
     <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="fw-bold mb-1">Data Barang</h3>
+            <h3 class="fw-bold mb-1">Data Barang ATK</h3>
             <p class="text-muted mb-0 fs-7">Daftar seluruh barang inventaris</p>
         </div>
         <a href="{{ route('barang.create') }}"
@@ -24,14 +24,6 @@
 
     <div class="card-body pt-0">
 
-        {{-- ================= ALERT ================= --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-3">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
         {{-- ================= TABLE ================= --}}
         <div class="table-responsive">
             <table class="table table-borderless align-middle table-hover">
@@ -39,55 +31,151 @@
                     <tr class="text-uppercase text-muted fs-7">
                         <th width="5%">#</th>
                         <th>Nama Barang</th>
-                        <th>Type</th>
-                        <th>Kode Barang</th>
-                        <th>Kondisi</th>
-                        <th width="12%" class="text-center">Aksi</th>
+                        <th>Satuan</th>
+                        <th class="text-center">Stok</th>
+                        <th class="text-center">Status</th>
+                        <th width="15%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody class="border-top">
                     @forelse ($barangs as $barang)
-                        <tr>
+                        <tr class="
+                            {{ $barang->stok == 0 ? 'table-danger' : '' }}
+                            {{ $barang->stok > 0 && $barang->stok <= 5 ? 'table-warning' : '' }}
+                        ">
                             <td>{{ $barangs->firstItem() + $loop->index }}</td>
 
                             <td class="fw-semibold">{{ $barang->nama_barang }}</td>
-                            <td>{{ $barang->type ?? '-' }}</td>
-                            <td>{{ $barang->kode_barang }}</td>
-                            <td>{{ $barang->kondisi }}</td>
+                            <td>{{ $barang->satuan }}</td>
+
+                            <td class="text-center fw-bold">
+                                {{ $barang->stok }}
+                            </td>
+
+                            <td class="text-center">
+                                @if ($barang->stok == 0)
+                                    <span class="badge bg-danger rounded-pill">Habis</span>
+                                @elseif ($barang->stok <= 5)
+                                    <span class="badge bg-warning text-dark rounded-pill">Menipis</span>
+                                @else
+                                    <span class="badge bg-success rounded-pill">Aman</span>
+                                @endif
+                            </td>
 
                             {{-- ===== AKSI ===== --}}
                             <td class="text-center">
                                 <div class="d-inline-flex align-items-center gap-1">
 
-                                    {{-- EDIT --}}
+                                    {{-- RIWAYAT STOK --}}
+                                    <a href="{{ route('barang.riwayat', $barang->id) }}"
+                                    class="btn btn-sm btn-light-info rounded-pill px-2"
+                                    title="Riwayat Stok">
+                                        <i class="bx bx-history"></i>
+                                    </a>
+
+                                    {{-- EDIT MASTER BARANG --}}
                                     <a href="{{ route('barang.edit', $barang->id) }}"
-                                       class="btn btn-sm btn-light-primary rounded-pill px-0"
-                                       title="Edit Barang">
+                                    class="btn btn-sm btn-light-primary rounded-pill px-2"
+                                    title="Edit Barang">
                                         <i class="bx bx-edit"></i>
                                     </a>
 
                                     {{-- DELETE --}}
-                                    <form action="{{ route('barang.destroy', $barang->id) }}"
-                                          method="POST"
-                                          class="m-0 p-0"
-                                          onsubmit="return confirm('Yakin ingin menghapus barang ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-sm btn-light-danger rounded-pill px-3"
-                                                title="Hapus Barang">
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                            class="btn btn-sm btn-light-danger rounded-pill px-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalHapus{{ $barang->id }}"
+                                            title="Hapus Barang">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
 
                                 </div>
                             </td>
                         </tr>
+
+                        <div class="modal fade" id="modalHapus{{ $barang->id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-sm">
+                                <div class="modal-content border-0 rounded-4 shadow">
+
+                                    {{-- HEADER --}}
+                                    <div class="modal-header border-0 justify-content-center pb-0">
+                                        <div class="text-center">
+                                            <i class="bi bi-exclamation-triangle-fill text-danger fs-1 mb-2"></i>
+                                            <h5 class="fw-bold text-danger mb-0">Hapus Barang</h5>
+                                        </div>
+                                    </div>
+
+                                    {{-- BODY --}}
+                                    <div class="modal-body text-center pt-2">
+                                        <p class="mb-3">
+                                            Yakin ingin menghapus barang berikut?
+                                        </p>
+
+                                        <div class="card border border-danger bg-light mb-3">
+                                            <div class="card-body py-2">
+                                                <div class="fw-bold text-dark">
+                                                    {{ $barang->nama_barang }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="alert alert-warning small p-2 mb-3">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Tindakan ini tidak dapat dibatalkan
+                                        </div>
+
+                                        {{-- CHECKBOX KONFIRMASI --}}
+                                        <div class="form-check d-flex justify-content-center gap-2">
+                                            <input class="form-check-input"
+                                                type="checkbox"
+                                                id="confirmDelete{{ $barang->id }}">
+                                            <label class="form-check-label small text-muted"
+                                                for="confirmDelete{{ $barang->id }}">
+                                                Saya yakin ingin menghapus data ini
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {{-- FOOTER --}}
+                                    <div class="modal-footer border-0 justify-content-center gap-2 pt-0 pb-4">
+                                        <button type="button"
+                                                class="btn btn-outline-secondary px-4 rounded-pill"
+                                                data-bs-dismiss="modal">
+                                            Batal
+                                        </button>
+
+                                        <form action="{{ route('barang.destroy', $barang->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="btn btn-danger px-4 rounded-pill"
+                                                    id="submitDelete{{ $barang->id }}"
+                                                    disabled>
+                                                <i class="bi bi-trash me-1"></i>Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const checkbox = document.getElementById('confirmDelete{{ $barang->id }}');
+                            const button   = document.getElementById('submitDelete{{ $barang->id }}');
+
+                            checkbox.addEventListener('change', function () {
+                                button.disabled = !this.checked;
+                            });
+                        });
+                        </script>
+
                     @empty
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">
-                                Belum ada data barang
+                                Belum ada data barang ATK
                             </td>
                         </tr>
                     @endforelse
@@ -144,5 +232,19 @@
 
     </div>
 </div>
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+document.addEventListener('keydown', function(e) {
+    if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && e.key === 'p') ||
+        (e.ctrlKey && e.key === 's')
+    ) {
+        e.preventDefault();
+        alert('Aksi ini tidak diizinkan');
+    }
+});
+</script>
 
 @endsection

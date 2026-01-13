@@ -7,7 +7,7 @@
     </a>
 </li>
 <li class="breadcrumb-item active text-primary fw-semibold">
-    Tambah Barang
+    Tambah Barang ATK
 </li>
 @endsection
 
@@ -43,52 +43,44 @@
                                name="nama_barang"
                                class="form-control @error('nama_barang') is-invalid @enderror"
                                value="{{ old('nama_barang') }}"
-                               placeholder="Contoh: Laptop Acer Aspire 5">
+                               placeholder="Contoh: Kertas HVS A4">
                         @error('nama_barang')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    {{-- TYPE BARANG --}}
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Type Barang</label>
-                        <select name="type"
-                                class="form-select @error('type') is-invalid @enderror">
-                            <option value="">-- Pilih Type --</option>
-                            <option value="Laptop" {{ old('type') == 'Laptop' ? 'selected' : '' }}>Laptop</option>
-                            <option value="Komputer" {{ old('type') == 'Komputer' ? 'selected' : '' }}>Komputer</option>
-                            <option value="Printer" {{ old('type') == 'Printer' ? 'selected' : '' }}>Printer</option>
-                            <option value="Scanner" {{ old('type') == 'Scanner' ? 'selected' : '' }}>Scanner</option>
+                        <label class="form-label fw-semibold">Satuan</label>
+                        <select name="satuan"
+                                id="satuan"
+                                class="form-select @error('satuan') is-invalid @enderror"
+                                onchange="toggleSatuanLainnya(this.value)">
+                            <option value="">-- Pilih Satuan Terkecil --</option>
+                            <option value="pcs">Pcs</option>
+                            <option value="lembar">Lembar</option>
+                            <option value="lainnya">Lainnya</option>
                         </select>
-                        @error('type')
+                        @error('satuan')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    {{-- KODE BARANG --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Kode Barang</label>
+                    <div class="mb-3 d-none" id="satuan_lainnya">
+                        <label class="form-label fw-semibold">Satuan Lainnya</label>
                         <input type="text"
-                               name="kode_barang"
-                               class="form-control @error('kode_barang') is-invalid @enderror"
-                               value="{{ old('kode_barang') }}"
-                               placeholder="Contoh: BRG-001">
-                        @error('kode_barang')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            name="satuan_lainnya"
+                            class="form-control"
+                            placeholder="Contoh: roll, ml, gram">
                     </div>
 
-                    {{-- KONDISI --}}
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Kondisi</label>
-                        <select name="kondisi"
-                                class="form-select @error('kondisi') is-invalid @enderror">
-                            <option value="Baik" {{ old('kondisi') == 'Baik' ? 'selected' : '' }}>Baik</option>
-                            <option value="Perlu Servis" {{ old('kondisi') == 'Perlu Servis' ? 'selected' : '' }}>
-                                Perlu Servis
-                            </option>
-                        </select>
-                        @error('kondisi')
+                        <label class="form-label fw-semibold">Stok Awal</label>
+                        <input type="number"
+                            name="stok"
+                            class="form-control @error('stok') is-invalid @enderror"
+                            value="{{ old('stok', 0) }}"
+                            min="0">
+                        @error('stok')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -157,4 +149,10 @@
     </div>
 </div>
 
+<script>
+function toggleSatuanLainnya(value) {
+    const field = document.getElementById('satuan_lainnya');
+    field.classList.toggle('d-none', value !== 'lainnya');
+}
+</script>
 @endsection

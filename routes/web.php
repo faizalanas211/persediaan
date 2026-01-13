@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 // Auth Controller
 // =======================
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\BarangAtkController;
 // =======================
 // App Controllers
 // =======================
@@ -18,6 +18,8 @@ use App\Http\Controllers\FingerprintController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\MutasiStokController;
+use App\Http\Controllers\PermintaanAtkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +43,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | 🔥 DASHBOARD UTAMA
+    | DASHBOARD UTAMA
     |--------------------------------------------------------------------------
     */
     Route::get('/', [DashboardController::class, 'index'])
@@ -83,55 +85,26 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     | Barang
     |--------------------------------------------------------------------------
     */
-    Route::resource('barang', BarangController::class);
+    Route::resource('barang', BarangAtkController::class);
     Route::post('barang/import', [BarangController::class, 'import'])
         ->name('barang.import');
+    Route::get('/barang-atk/{barang}/riwayat', [BarangAtkController::class, 'riwayat'])
+        ->name('barang.riwayat');
 
     /*
     |--------------------------------------------------------------------------
-    | Penilaian
+    | Mutasi Stok
     |--------------------------------------------------------------------------
     */
-    Route::get('penilaian', [PenilaianController::class, 'index'])
-        ->name('penilaian.index');
-
-    Route::get('penilaian/create', [PenilaianController::class, 'create'])
-        ->name('penilaian.create');
-
-    Route::get('penilaian/create/{id}', [PenilaianController::class, 'createByPegawai'])
-        ->name('penilaian.createByPegawai');
-
-    Route::post('penilaian', [PenilaianController::class, 'store'])
-        ->name('penilaian.store');
-
-    Route::post('penilaian/import', [PenilaianController::class, 'import'])
-        ->name('penilaian.import');
-
-    Route::get('penilaian/{id}/edit', [PenilaianController::class, 'edit'])
-        ->name('penilaian.edit');
-
-    Route::put('penilaian/{id}', [PenilaianController::class, 'update'])
-        ->name('penilaian.update');
-
-    Route::delete('penilaian/{id}', [PenilaianController::class, 'destroy'])
-        ->name('penilaian.destroy');
+    Route::resource('mutasi', MutasiStokController::class);
 
     /*
     |--------------------------------------------------------------------------
-    | Fingerprint
+    | Permintaan ATK
     |--------------------------------------------------------------------------
     */
-    Route::get('debug-fingerprint', [FingerprintController::class, 'debug'])
-        ->name('debug-fingerprint');
+    Route::resource('permintaan', PermintaanAtkController::class);
 
-    Route::get('test-fingerprint', [FingerprintController::class, 'testSimple'])
-        ->name('test-fingerprint');
-
-    Route::get('test-buffer', [FingerprintController::class, 'testBuffer'])
-        ->name('test-buffer');
-
-    Route::get('sync-kehadiran', [FingerprintController::class, 'sync'])
-        ->name('sync-kehadiran');
 
     /*
     |--------------------------------------------------------------------------
