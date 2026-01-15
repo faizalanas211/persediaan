@@ -2,31 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use App\Models\Barang;
-use App\Models\Peminjaman;
+use App\Models\BarangAtk;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        $types = Barang::select('type')->distinct()->pluck('type');
+        // Ambil data barang dari database
+        $barang = BarangAtk::orderBy('nama_barang')->get();
 
+        // Bentuk data untuk chart
         $dataBarang = [];
 
-        foreach ($types as $type) {
-            $total = Barang::where('type', $type)->count();
-
-            $dipinjam = Peminjaman::whereHas('barang', function ($q) use ($type) {
-                $q->where('type', $type);
-            })
-            ->whereNull('tanggal_kembali')
-            ->count();
-
-            $dataBarang[$type] = [
-                'total'    => $total,
-                'dipinjam' => $dipinjam,
-                'ready'    => $total - $dipinjam,
+        foreach ($barang as $item) {
+            $dataBarang[$item->nama_barang] = [
+                'ready' => $item->stok
             ];
         }
 

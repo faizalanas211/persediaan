@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangAtk;
 use Illuminate\Http\Request;
+use App\Imports\BarangAtkImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class BarangAtkController extends Controller
 {
     public function index()
     {
-        $barangs = BarangAtk::withExists('detailPermintaan')->orderBy('nama_barang', 'asc')
-                    ->paginate(20); 
+        $barangs = BarangAtk::orderBy('nama_barang', 'asc')
+            ->withExists('detailPermintaan')
+            ->paginate(20);
+
         return view('dashboard.barang.index', compact('barangs'));
     }
 
@@ -22,12 +27,12 @@ class BarangAtkController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'satuan'      => 'required|string|max:50',
-            'stok'        => 'nullable|integer|min:0',
+            'nama_barang'      => 'required|string|max:255',
+            'satuan'           => 'required|string|max:50',
+            'satuan_lainnya'   => 'required_if:satuan,lainnya|max:50',
+            'stok'             => 'nullable|integer|min:0',
         ]);
 
-        // Handle satuan "lainnya"
         $satuan = $request->satuan === 'lainnya'
             ? $request->satuan_lainnya
             : $request->satuan;
@@ -51,8 +56,9 @@ class BarangAtkController extends Controller
     public function update(Request $request, BarangAtk $barang)
     {
         $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'satuan'      => 'required|string|max:50',
+            'nama_barang'      => 'required|string|max:255',
+            'satuan'           => 'required|string|max:50',
+            'satuan_lainnya'   => 'required_if:satuan,lainnya|max:50',
         ]);
 
         $satuan = $request->satuan === 'lainnya'
@@ -87,10 +93,35 @@ class BarangAtkController extends Controller
     public function riwayat(BarangAtk $barang)
     {
         $mutasi = $barang->mutasiStok()
-                        ->orderBy('tanggal')
-                        ->orderBy('id')
-                        ->get();
+            ->orderBy('tanggal')
+            ->orderBy('id')
+            ->get();
 
         return view('dashboard.barang.riwayat', compact('barang', 'mutasi'));
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            Excel::import(new BarangAtkImport, $request->file('file'));
+
+            DB::commit();
+
+            return redirect()
+                ->route('barang.index')
+                ->with('success', 'Data barang berhasil diimport dari Excel!');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return back()->withErrors([
+                'file' => 'Gagal import: ' . $e->getMessage()
+            ]);
+        }
     }
 }
