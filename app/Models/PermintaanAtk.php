@@ -12,21 +12,19 @@ class PermintaanAtk extends Model
     protected $table = 'permintaan_atk';
 
     protected $fillable = [
-        'pegawai_id',
+        'nama_pemohon',
+        'nip_pemohon',
+        'bagian_pemohon',
         'tanggal_permintaan',
         'keperluan',
         'keterangan',
+        'status',
         'dicatat_oleh'
     ];
 
     public function detail()
     {
         return $this->hasMany(DetailPermintaanAtk::class, 'permintaan_id');
-    }
-
-    public function pegawai()
-    {
-        return $this->belongsTo(Pegawai::class, 'pegawai_id');
     }
 
     public function pencatat()

@@ -104,7 +104,8 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('permintaan', PermintaanAtkController::class);
-
+    Route::post('/{permintaan}/proses', [PermintaanAtkController::class, 'proses'])
+        ->name('permintaan.proses');
 
     /*
     |--------------------------------------------------------------------------

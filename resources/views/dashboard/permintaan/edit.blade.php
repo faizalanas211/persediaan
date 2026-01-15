@@ -1,31 +1,33 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active fw-semibold">Permintaan ATK</li>
+<li class="breadcrumb-item">
+    <a href="{{ route('permintaan.index') }}">Permintaan ATK</a>
+</li>
+<li class="breadcrumb-item active fw-semibold">Edit Permintaan</li>
 @endsection
 
 @section('content')
 
 <div class="card shadow-sm rounded-4">
     <div class="card-header border-0">
-        <h4 class="fw-bold mb-0">Formulir Permintaan ATK</h4>
-        <small class="text-muted">Dicatat langsung oleh admin</small>
+        <h4 class="fw-bold mb-0">Edit Permintaan ATK</h4>
+        <small class="text-muted">Status: Draft</small>
     </div>
 
     <div class="card-body">
 
-        <form action="{{ route('permintaan.store') }}" method="POST">
+        <form action="{{ route('permintaan.update', $permintaan->id) }}" method="POST">
             @csrf
+            @method('PUT')
 
-            {{-- PEMOHON --}}
-            <div class="row g-3 mb-3">
-
+            <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Nama Pemohon</label>
                     <input type="text"
                         name="nama_pemohon"
                         class="form-control"
-                        placeholder="Nama lengkap"
+                        value="{{ $permintaan->nama_pemohon }}"
                         required>
                 </div>
 
@@ -34,40 +36,38 @@
                     <input type="text"
                         name="nip_pemohon"
                         class="form-control"
-                        placeholder="Opsional">
+                        value="{{ $permintaan->nip_pemohon }}"
+                        required>
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Bagian / Unit</label>
+                    <label class="form-label fw-semibold">Bagian</label>
                     <input type="text"
                         name="bagian_pemohon"
                         class="form-control"
-                        placeholder="Contoh: Umum, Keuangan">
+                        value="{{ $permintaan->bagian_pemohon }}"
+                        required>
                 </div>
-
             </div>
 
-            <div class="row g-3 mb-3">
-                {{-- TANGGAL --}}
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Tanggal Permintaan</label>
-                    <input type="date"
-                        name="tanggal_permintaan"
-                        class="form-control"
-                        value="{{ date('Y-m-d') }}"
-                        required>
-                </div>
+            {{-- TANGGAL --}}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Tanggal Permintaan</label>
+                <input type="date"
+                       name="tanggal_permintaan"
+                       class="form-control"
+                       value="{{ $permintaan->tanggal_permintaan }}"
+                       required>
+            </div>
 
-                {{-- KEPERLUAN --}}
-                <div class="col-md-8">
-                    <label class="form-label fw-semibold">Keperluan</label>
-                    <input type="text"
-                        name="keperluan"
-                        class="form-control"
-                        placeholder="Contoh: Kegiatan rapat"
-                        required>
-                </div>
-
+            {{-- KEPERLUAN --}}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Keperluan</label>
+                <input type="text"
+                       name="keperluan"
+                       class="form-control"
+                       value="{{ $permintaan->keperluan }}"
+                       required>
             </div>
 
             {{-- BARANG --}}
@@ -83,21 +83,27 @@
                         </tr>
                     </thead>
                     <tbody id="barang-wrapper">
+
+                        @foreach ($permintaan->detail as $detail)
                         <tr>
                             <td>
                                 <select name="barang_id[]" class="form-select" required>
                                     <option value="">-- Pilih Barang --</option>
                                     @foreach ($barangs as $barang)
-                                        <option value="{{ $barang->id }}">
+                                        <option value="{{ $barang->id }}"
+                                            {{ $barang->id == $detail->barang_id ? 'selected' : '' }}>
                                             {{ $barang->nama_barang }} (stok: {{ $barang->stok }})
                                         </option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                <input type="number" name="jumlah[]"
+                                <input type="number"
+                                       name="jumlah[]"
                                        class="form-control"
-                                       min="1" required>
+                                       min="1"
+                                       value="{{ $detail->jumlah }}"
+                                       required>
                             </td>
                             <td class="text-center">
                                 <button type="button"
@@ -107,6 +113,8 @@
                                 </button>
                             </td>
                         </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
 
@@ -120,18 +128,19 @@
             {{-- KETERANGAN --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Keterangan</label>
-                <textarea name="keterangan" rows="2"
-                          class="form-control"
-                          placeholder="Opsional"></textarea>
+                <textarea name="keterangan"
+                          rows="2"
+                          class="form-control">{{ $permintaan->keterangan }}</textarea>
             </div>
 
             {{-- BUTTON --}}
             <div class="text-end">
-                <a href="{{ route('permintaan.index') }}" class="btn btn-light">
+                <a href="{{ route('permintaan.show', $permintaan->id) }}"
+                   class="btn btn-light">
                     Batal
                 </a>
-                <button type="submit" class="btn btn-primary px-4">
-                    Simpan Permintaan
+                <button type="submit" class="btn btn-warning px-4">
+                    Update Permintaan
                 </button>
             </div>
 
@@ -158,7 +167,8 @@ function tambahBarang() {
                 <input type="number" name="jumlah[]" class="form-control" min="1" required>
             </td>
             <td class="text-center">
-                <button type="button" class="btn btn-sm btn-light-danger"
+                <button type="button"
+                        class="btn btn-sm btn-light-danger"
                         onclick="this.closest('tr').remove()">
                     <i class="bi bi-x"></i>
                 </button>

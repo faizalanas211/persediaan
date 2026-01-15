@@ -22,4 +22,9 @@ class BarangAtk extends Model
         return $this->hasMany(MutasiStok::class, 'barang_id');
     }
 
+    public function detailPermintaan()
+    {
+        return $this->hasMany(DetailPermintaanAtk::class, 'barang_id');
+    }
+
 }

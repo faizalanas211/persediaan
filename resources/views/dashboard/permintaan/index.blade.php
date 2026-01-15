@@ -30,9 +30,10 @@
                     <tr>
                         <th width="5%">No</th>
                         <th>Tanggal</th>
-                        <th>Pegawai</th>
+                        <th>Pemohon</th>
                         <th>Keperluan</th>
                         <th>Jumlah Item</th>
+                        <th>Status</th>
                         <th>Dicatat Oleh</th>
                         <th width="15%">Aksi</th>
                     </tr>
@@ -42,10 +43,19 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal_permintaan)->format('d M Y') }}</td>
-                        <td>{{ $item->pegawai->nama ?? '-' }}</td>
+                        <td>{{ $item->nama_pemohon ?? '-' }}</td>
                         <td>{{ $item->keperluan }}</td>
                         <td class="text-center">
                             {{ $item->detail->sum('jumlah') }}
+                        </td>
+                        <td>
+                            @if($item->status === 'draft')
+                                <span class="badge bg-warning">Draft</span>
+                            @elseif($item->status === 'diproses')
+                                <span class="badge bg-success">Diproses</span>
+                            @else
+                                <span class="badge bg-secondary">Dibatalkan</span>
+                            @endif
                         </td>
                         <td>{{ $item->pencatat->name ?? '-' }}</td>
                         <td>

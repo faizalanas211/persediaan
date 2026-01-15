@@ -9,7 +9,7 @@ class BarangAtkController extends Controller
 {
     public function index()
     {
-        $barangs = BarangAtk::orderBy('nama_barang', 'asc')
+        $barangs = BarangAtk::withExists('detailPermintaan')->orderBy('nama_barang', 'asc')
                     ->paginate(20); 
         return view('dashboard.barang.index', compact('barangs'));
     }
@@ -71,6 +71,12 @@ class BarangAtkController extends Controller
 
     public function destroy(BarangAtk $barang)
     {
+        if ($barang->detailPermintaan()->exists()) {
+            return back()->withErrors([
+                'error' => 'Barang tidak dapat dihapus karena sudah memiliki riwayat permintaan'
+            ]);
+        }
+
         $barang->delete();
 
         return redirect()
