@@ -6,18 +6,16 @@ use Illuminate\Support\Facades\Route;
 // Auth Controller
 // =======================
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BarangAtkController;
+
 // =======================
 // App Controllers
 // =======================
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\PengajuanController;
-use App\Http\Controllers\FingerprintController;
-use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangAtkController;
 use App\Http\Controllers\MutasiStokController;
 use App\Http\Controllers\PermintaanAtkController;
 use App\Http\Controllers\StokOpnameController;
@@ -44,11 +42,31 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | DASHBOARD UTAMA
+    | Dashboard Utama
     |--------------------------------------------------------------------------
     */
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pegawai & Kehadiran
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('pegawai', PegawaiController::class);
+    Route::post('pegawai/import', [PegawaiController::class, 'import'])
+        ->name('pegawai.import');
+
+    Route::resource('kehadiran', KehadiranController::class);
+    Route::post('kehadiran/import', [KehadiranController::class, 'import'])
+        ->name('kehadiran.import');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pengajuan
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('pengajuan', PengajuanController::class);
 
     /*
     |--------------------------------------------------------------------------
@@ -63,14 +81,20 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Barang
+    | Barang ATK
     |--------------------------------------------------------------------------
     */
     Route::resource('barang', BarangAtkController::class);
-    Route::post('barang/import', [BarangController::class, 'import'])
+
+    // ✅ IMPORT EXCEL BARANG (FIX)
+    Route::post('barang/import', [BarangAtkController::class, 'import'])
         ->name('barang.import');
-    Route::get('/barang-atk/{barang}/riwayat', [BarangAtkController::class, 'riwayat'])
-        ->name('barang.riwayat');
+
+    // ✅ RIWAYAT BARANG
+    Route::get(
+        'barang/{barang}/riwayat',
+        [BarangAtkController::class, 'riwayat']
+    )->name('barang.riwayat');
 
     /*
     |--------------------------------------------------------------------------
@@ -85,8 +109,10 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('permintaan', PermintaanAtkController::class);
-    Route::post('/{permintaan}/proses', [PermintaanAtkController::class, 'proses'])
-        ->name('permintaan.proses');
+    Route::post(
+        'permintaan/{permintaan}/proses',
+        [PermintaanAtkController::class, 'proses']
+    )->name('permintaan.proses');
 
     /*
     |--------------------------------------------------------------------------

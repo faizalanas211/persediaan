@@ -127,7 +127,7 @@
                         </small>
                     </div>
 
-                    <a href="{{ asset('template/template_import_barang.xlsx') }}"
+                    <a href="{{ asset('template/persediaan.xlsx') }}"
                        class="text-primary fw-semibold text-decoration-none">
                         <i class="bx bx-download me-1"></i> Download Template Excel
                     </a>
