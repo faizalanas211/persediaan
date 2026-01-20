@@ -20,6 +20,7 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\MutasiStokController;
 use App\Http\Controllers\PermintaanAtkController;
+use App\Http\Controllers\StokOpnameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,34 +52,14 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Pegawai & Kehadiran
-    |--------------------------------------------------------------------------
-    */
-    Route::resource('pegawai', PegawaiController::class);
-    Route::resource('kehadiran', KehadiranController::class);
-
-    Route::post('pegawai/import', [PegawaiController::class, 'import'])
-        ->name('pegawai.import');
-    Route::post('kehadiran/import', [KehadiranController::class, 'import'])
-        ->name('kehadiran.import');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Pengajuan
-    |--------------------------------------------------------------------------
-    */
-    Route::resource('pengajuan', PengajuanController::class);
-
-    /*
-    |--------------------------------------------------------------------------
     | Peminjaman
     |--------------------------------------------------------------------------
     */
-    Route::resource('peminjaman', PeminjamanController::class);
-    Route::put(
-        'peminjaman/{peminjaman}/kembalikan',
-        [PeminjamanController::class, 'kembalikan']
-    )->name('peminjaman.kembalikan');
+    // Route::resource('peminjaman', PeminjamanController::class);
+    // Route::put(
+    //     'peminjaman/{peminjaman}/kembalikan',
+    //     [PeminjamanController::class, 'kembalikan']
+    // )->name('peminjaman.kembalikan');
 
     /*
     |--------------------------------------------------------------------------
@@ -107,6 +88,14 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('/{permintaan}/proses', [PermintaanAtkController::class, 'proses'])
         ->name('permintaan.proses');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Stok Opname
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('stok-opname', StokOpnameController::class);
+    Route::post('stok-opname/{id}/final', [StokOpnameController::class, 'final'])->name('stok-opname.final');
+    
     /*
     |--------------------------------------------------------------------------
     | Logout

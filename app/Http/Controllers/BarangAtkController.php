@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\BarangAtk;
+use App\Models\MutasiStok;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BarangAtkController extends Controller
 {
@@ -27,20 +30,42 @@ class BarangAtkController extends Controller
             'stok'        => 'nullable|integer|min:0',
         ]);
 
-        // Handle satuan "lainnya"
         $satuan = $request->satuan === 'lainnya'
             ? $request->satuan_lainnya
             : $request->satuan;
 
-        BarangAtk::create([
-            'nama_barang' => $request->nama_barang,
-            'satuan'      => $satuan,
-            'stok'        => $request->stok ?? 0,
-        ]);
+        DB::transaction(function () use ($request, $satuan) {
+
+            $stokAwal = 0;
+            $jumlah   = $request->stok ?? 0;
+            $stokAkhir = $stokAwal + $jumlah;
+
+            // Simpan barang
+            $barang = BarangAtk::create([
+                'nama_barang' => $request->nama_barang,
+                'satuan'      => $satuan,
+                'stok'        => $stokAkhir,
+            ]);
+
+            // Simpan mutasi stok awal (jika ada stok)
+            if ($jumlah > 0) {
+                MutasiStok::create([
+                    'barang_id'    => $barang->id,
+                    'jenis_mutasi' => 'masuk',
+                    'jumlah'       => $jumlah,
+                    'stok_awal'    => $stokAwal,
+                    'stok_akhir'   => $stokAkhir,
+                    'tanggal'      => now(),
+                    'keterangan'   => 'Stok awal barang',
+                    'user_id'      => Auth::id(),
+                ]);
+            }
+
+        });
 
         return redirect()
             ->route('barang.index')
-            ->with('success', 'Data barang berhasil ditambahkan!');
+            ->with('success', 'Barang berhasil ditambahkan dan stok awal tercatat di mutasi.');
     }
 
     public function edit(BarangAtk $barang)

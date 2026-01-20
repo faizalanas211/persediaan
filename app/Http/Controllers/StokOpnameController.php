@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\BarangAtk;
+use App\Models\MutasiStok;
+use App\Models\StokOpname;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class StokOpnameController extends Controller
+{
+    public function index()
+    {
+        $stokOpnames = StokOpname::with([
+                'pencatat',
+                'detail' // untuk hitung jumlah barang
+            ])
+            ->orderBy('periode_bulan', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('dashboard.stok_opname.index', compact('stokOpnames'));
+    }
+
+    public function create()
+    {
+        $barangs = BarangAtk::orderBy('nama_barang')->get();
+
+        return view('dashboard.stok_opname.create', [
+            'barangs' => $barangs,
+            'periode' => now()->startOfMonth()->toDateString(),
+            'tanggal' => now()->toDateString(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'periode_bulan'   => 'required|date',
+            'tanggal_opname'  => 'required|date',
+            'barang_id'       => 'required|array',
+            'stok_fisik'      => 'required|array',
+        ]);
+
+        DB::transaction(function () use ($request) {
+
+            // HEADER
+            $stokOpname = StokOpname::create([
+                'periode_bulan'  => $request->periode_bulan,
+                'tanggal_opname' => $request->tanggal_opname,
+                'keterangan'     => $request->keterangan,
+                'user_id'        => Auth::id(),
+                'status'         => 'draft',
+            ]);
+
+            // DETAIL
+            foreach ($request->barang_id as $i => $barangId) {
+
+                $stokSistem = BarangAtk::find($barangId)->stok;
+                $stokFisik  = $request->stok_fisik[$i];
+                $selisih    = $stokFisik - $stokSistem;
+
+                $stokOpname->detail()->create([
+                    'barang_id'   => $barangId,
+                    'stok_sistem' => $stokSistem,
+                    'stok_fisik'  => $stokFisik,
+                    'selisih'     => $selisih,
+                    'keterangan'  => $request->keterangan_detail[$i] ?? null,
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('stok-opname.index')
+            ->with('success', 'Stok opname berhasil dibuat!');
+    }
+
+    public function show($id)
+    {
+        $stokOpname = StokOpname::with([
+                'pencatat',
+                'detail.barang'
+            ])->findOrFail($id);
+
+        return view('dashboard.stok_opname.show', compact('stokOpname'));
+    }
+
+    public function final($id)
+    {
+        $stokOpname = StokOpname::with('detail.barang')->findOrFail($id);
+
+        // Cegah final ulang
+        if ($stokOpname->status === 'final') {
+            return back()->with('error', 'Stok opname ini sudah difinalkan.');
+        }
+
+        DB::transaction(function () use ($stokOpname) {
+
+            foreach ($stokOpname->detail as $detail) {
+
+                $barang = $detail->barang;
+
+                // Lewati jika tidak ada selisih
+                if ($detail->selisih == 0) {
+                    continue;
+                }
+
+                $stokAwal  = $barang->stok;
+                $stokAkhir = $detail->stok_fisik;
+
+                // 🔄 Update stok barang ke stok fisik
+                $barang->update([
+                    'stok' => $stokAkhir
+                ]);
+
+                // 📝 Catat mutasi stok (opname)
+                MutasiStok::create([
+                    'barang_id'   => $barang->id,
+                    'jenis_mutasi'=> 'penyesuaian',
+                    'jumlah'      => abs($detail->selisih),
+                    'stok_awal'   => $stokAwal,
+                    'stok_akhir'  => $stokAkhir,
+                    'tanggal'     => Carbon::now(),
+                    'keterangan'  => 'Stok opname periode ' .
+                                    Carbon::parse($stokOpname->periode_bulan)->format('F Y') .
+                                    ($detail->keterangan ? ' - '.$detail->keterangan : ''),
+                    'user_id'     => Auth::id(),
+                ]);
+            }
+
+            // Update status opname
+            $stokOpname->update([
+                'status' => 'final'
+            ]);
+        });
+
+        return redirect()
+            ->route('stok-opname.show', $stokOpname->id)
+            ->with('success', 'Stok opname berhasil difinalkan dan stok diperbarui!');
+    }
+}

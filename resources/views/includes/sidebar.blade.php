@@ -42,6 +42,12 @@
                     <div data-i18n="Analytics">Permintaan ATK</div>
                 </a>
             </li>
+            <li class="menu-item {{ Request::is('dashboard/stok-opname*') ? 'active' : '' }}">
+                <a href="{{ route('stok-opname.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
+                    <div data-i18n="Analytics">Stok Opname</div>
+                </a>
+            </li>
 
 
         @endif
