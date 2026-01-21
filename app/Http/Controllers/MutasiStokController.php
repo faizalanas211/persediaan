@@ -11,11 +11,24 @@ use Illuminate\Validation\ValidationException;
 
 class MutasiStokController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $mutasi = MutasiStok::with(['barang', 'user'])
-            ->orderBy('tanggal', 'desc')
-            ->paginate(20);
+        $query = MutasiStok::with(['barang', 'user']);
+
+        if ($request->filled('jenis') && $request->jenis !== 'all') {
+            $query->where('jenis_mutasi', $request->jenis);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->whereMonth('tanggal', substr($request->bulan, 5, 2))
+                ->whereYear('tanggal', substr($request->bulan, 0, 4));
+        }
+
+        $mutasi = $query
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('dashboard.mutasi.index', compact('mutasi'));
     }

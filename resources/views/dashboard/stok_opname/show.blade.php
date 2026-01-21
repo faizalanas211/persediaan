@@ -20,12 +20,16 @@
             </small>
         </div>
 
-        {{-- STATUS --}}
+        {{-- STATUS DENGAN BADGE SOFT --}}
         <div>
             @if($stokOpname->status === 'draft')
-                <span class="badge bg-warning rounded-pill px-3">Draft</span>
+                <span class="badge border-warning-soft" style="background-color: rgba(255, 193, 7, 0.25); color: #b58900; border-color: #ffc107; font-size: 0.85rem; padding: 0.3em 1em; border-width: 1px; border-style: solid;">
+                    Draft
+                </span>
             @else
-                <span class="badge bg-success rounded-pill px-3">Final</span>
+                <span class="badge border-success-soft" style="background-color: rgba(40, 167, 69, 0.25); color: #1e7e34; border-color: #28a745; font-size: 0.85rem; padding: 0.3em 1em; border-width: 1px; border-style: solid;">
+                    Final
+                </span>
             @endif
         </div>
     </div>
@@ -138,4 +142,32 @@
 
 </div>
 
+<style>
+    /* Style untuk badge dengan warna soft yang lebih mencolok */
+    .badge.border-warning-soft {
+        background-color: rgba(255, 193, 7, 0.25) !important;
+        color: #b58900 !important;
+        border-color: #ffc107 !important;
+        border-width: 1px;
+        border-style: solid;
+        padding: 0.3em 1em;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(255, 193, 7, 0.15);
+        border-radius: 0.375rem !important;
+    }
+    
+    .badge.border-success-soft {
+        background-color: rgba(40, 167, 69, 0.25) !important;
+        color: #1e7e34 !important;
+        border-color: #28a745 !important;
+        border-width: 1px;
+        border-style: solid;
+        padding: 0.3em 1em;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 1px 3px rgba(40, 167, 69, 0.15);
+        border-radius: 0.375rem !important;
+    }
+</style>
 @endsection

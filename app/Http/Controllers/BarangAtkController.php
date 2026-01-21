@@ -6,21 +6,60 @@ use App\Models\BarangAtk;
 use App\Models\MutasiStok;
 use Illuminate\Http\Request;
 use App\Imports\BarangAtkImport;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class BarangAtkController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $barangs = BarangAtk::orderBy('nama_barang', 'asc')
+    //         ->withExists('detailPermintaan')
+    //         ->paginate(10);
+
+    //     return view('dashboard.barang.index', compact('barangs'));
+    // }
+
+    public function index(Request $request)
     {
-        $barangs = BarangAtk::orderBy('nama_barang', 'asc')
+        $search = $request->search;
+
+        $barangs = BarangAtk::when($search, function ($query, $search) {
+                $query->where('nama_barang', 'like', '%' . $search . '%')
+                    ->orWhere('satuan', 'like', '%' . $search . '%');
+            })
             ->withExists('detailPermintaan')
-            ->paginate(20);
+            ->orderBy('nama_barang')
+            ->paginate(10)
+            ->withQueryString(); 
 
         return view('dashboard.barang.index', compact('barangs'));
     }
+
+    public function search(Request $request)
+{
+    $q = $request->q;
+    $sort = $request->get('sort', 'nama_barang');
+    $direction = $request->get('direction', 'asc');
+
+    // whitelist kolom yang boleh di-sort
+    if (!in_array($sort, ['nama_barang', 'stok'])) {
+        $sort = 'nama_barang';
+    }
+
+    if (!in_array($direction, ['asc', 'desc'])) {
+        $direction = 'asc';
+    }
+
+    $barangs = BarangAtk::where('nama_barang', 'like', "%$q%")
+        ->orderBy($sort, $direction)
+        ->get(['id', 'nama_barang', 'satuan', 'stok']);
+
+    return response()->json($barangs);
+}
+
 
     public function create()
     {
@@ -116,12 +155,31 @@ class BarangAtkController extends Controller
             ->with('success', 'Data barang berhasil dihapus!');
     }
 
-    public function riwayat(BarangAtk $barang)
+    
+    public function riwayat(Request $request, $id)
     {
-        $mutasi = $barang->mutasiStok()
-            ->orderBy('tanggal')
-            ->orderBy('id')
-            ->get();
+        $barang = BarangAtk::findOrFail($id);
+
+        $query = MutasiStok::with('user')
+            ->where('barang_id', $id)
+            ->orderBy('tanggal', 'desc');
+
+        // filter jenis mutasi
+        if ($request->filled('jenis') && $request->jenis !== 'all') {
+            $query->where('jenis_mutasi', $request->jenis);
+        }
+
+        // filter bulan (format: YYYY-MM)
+        if ($request->filled('bulan')) {
+            $query->whereMonth('tanggal', Carbon::parse($request->bulan)->month)
+                ->whereYear('tanggal', Carbon::parse($request->bulan)->year);
+        }
+
+        $mutasi = $query
+        ->orderByDesc('updated_at')
+        ->orderByDesc('created_at')
+        ->paginate(10)
+        ->withQueryString();
 
         return view('dashboard.barang.riwayat', compact('barang', 'mutasi'));
     }

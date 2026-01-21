@@ -57,17 +57,6 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('pegawai/import', [PegawaiController::class, 'import'])
         ->name('pegawai.import');
 
-    Route::resource('kehadiran', KehadiranController::class);
-    Route::post('kehadiran/import', [KehadiranController::class, 'import'])
-        ->name('kehadiran.import');
-
-    /*
-    |--------------------------------------------------------------------------
-    | Pengajuan
-    |--------------------------------------------------------------------------
-    */
-    Route::resource('pengajuan', PengajuanController::class);
-
     /*
     |--------------------------------------------------------------------------
     | Peminjaman
@@ -84,6 +73,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     | Barang ATK
     |--------------------------------------------------------------------------
     */
+    Route::get('/barang/search', [BarangAtkController::class, 'search'])->name('barang.search');
     Route::resource('barang', BarangAtkController::class);
 
     // ✅ IMPORT EXCEL BARANG (FIX)
@@ -95,6 +85,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
         'barang/{barang}/riwayat',
         [BarangAtkController::class, 'riwayat']
     )->name('barang.riwayat');
+
 
     /*
     |--------------------------------------------------------------------------

@@ -11,15 +11,33 @@
 <div class="card card-flush shadow-sm rounded-4">
 
     {{-- ================= HEADER ================= --}}
-    <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
-        <div>
-            <h3 class="fw-bold mb-1">Data Barang ATK</h3>
-            <p class="text-muted mb-0 fs-7">Daftar seluruh barang inventaris</p>
+    <div class="card-header border-0 pt-6 pb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
+            {{-- JUDUL --}}
+            <div>
+                <h3 class="fw-bold mb-1">Data Barang ATK</h3>
+                <p class="text-muted mb-0 fs-7">Daftar seluruh barang inventaris</p>
+            </div>
+
+            {{-- SEARCH + RESET BUTTON --}}
+            <div class="d-flex align-items-center gap-2" style="min-width: 300px;">
+                <div class="position-relative flex-grow-1">
+                    <i class="bx bx-search position-absolute top-50 start-0 translate-middle-y ms-3 text-primary fs-5"></i>
+                    <input type="text"
+                           id="searchBarang"
+                           class="form-control rounded-pill ps-5 shadow-sm"
+                           placeholder="Cari nama barang ..."
+                           autocomplete="off"
+                           value="{{ request('search') }}">
+                </div>
+                <button type="button" 
+                        id="resetSearch" 
+                        class="btn btn-outline-secondary rounded-pill px-3 py-2 d-none">
+                    <i class="bx bx-x fs-5"></i>
+                </button>
+            </div>
         </div>
-        <a href="{{ route('barang.create') }}"
-           class="btn btn-primary px-4 rounded-pill">
-            <i class="bx bx-plus me-1"></i> Tambah Data
-        </a>
     </div>
 
     <div class="card-body pt-0">
@@ -30,20 +48,23 @@
                 <thead class="border-bottom">
                     <tr class="text-uppercase text-muted fs-7">
                         <th width="5%">#</th>
-                        <th>Nama Barang</th>
+                        <th class="sortable" data-sort="nama_barang">
+                            Nama Barang
+                            <i class="bx bx-sort-alt-2 ms-1 text-muted"></i>
+                        </th>
                         <th>Satuan</th>
-                        <th class="text-center">Stok</th>
+                        <th class="sortable text-center" data-sort="stok">
+                            Stok
+                            <i class="bx bx-sort-alt-2 ms-1 text-muted"></i>
+                        </th>
                         <th class="text-center">Status</th>
                         <th width="15%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
-                <tbody class="border-top">
+                <tbody class="border-top" id="barangTable">
                     @forelse ($barangs as $barang)
-                        <tr class="
-                            {{ $barang->stok == 0 ? 'table-danger' : '' }}
-                            {{ $barang->stok > 0 && $barang->stok <= 5 ? 'table-warning' : '' }}
-                        ">
+                        <tr>
                             <td>{{ $barangs->firstItem() + $loop->index }}</td>
 
                             <td class="fw-semibold">{{ $barang->nama_barang }}</td>
@@ -53,13 +74,20 @@
                                 {{ $barang->stok }}
                             </td>
 
+                            {{-- BADGE STATUS DENGAN WARNA SOFT --}}
                             <td class="text-center">
                                 @if ($barang->stok == 0)
-                                    <span class="badge bg-danger rounded-pill">Habis</span>
+                                    <span class="badge border border-danger bg-danger-soft text-danger">
+                                        Habis
+                                    </span>
                                 @elseif ($barang->stok <= 5)
-                                    <span class="badge bg-warning text-dark rounded-pill">Menipis</span>
+                                    <span class="badge border border-warning bg-warning-soft text-warning">
+                                        Menipis
+                                    </span>
                                 @else
-                                    <span class="badge bg-success rounded-pill">Aman</span>
+                                    <span class="badge border border-success bg-success-soft text-success">
+                                        Aman
+                                    </span>
                                 @endif
                             </td>
 
@@ -193,67 +221,270 @@
         </div>
 
         {{-- ================= FOOTER + PAGINATION ================= --}}
-        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-2">
-            <div class="text-muted fs-7">
-                Menampilkan {{ $barangs->count() }} dari {{ $barangs->total() }} data barang
+        <!-- Pagination Improved -->
+        @if($barangs->hasPages())
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-3 border-top">
+            <div class="mb-3 mb-md-0 text-muted">
+                <span class="fw-medium">Menampilkan</span>
+                <span class="fw-medium">{{ $barangs->firstItem() ?? 0 }}</span>
+                <span class="fw-medium">sampai</span>
+                <span class="fw-medium">{{ $barangs->lastItem() ?? 0 }}</span>
+                <span class="fw-medium">dari</span>
+                <span class="fw-medium">{{ $barangs->total() }}</span>
+                <span class="fw-medium">data barang ATK</span>
             </div>
+            
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0">
+                    <!-- First Page Link -->
+                    @if(!$barangs->onFirstPage())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $barangs->url(1) }}" aria-label="First">
+                            <i class="bx bx-chevrons-left"></i>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="bx bx-chevrons-left"></i></span>
+                    </li>
+                    @endif
 
-            <div>
-                @if ($barangs->hasPages())
-                <nav>
-                    <ul class="pagination mb-0">
+                    <!-- Previous Page Link -->
+                    @if($barangs->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="bx bx-chevron-left"></i></span>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $barangs->previousPageUrl() }}" aria-label="Previous">
+                            <i class="bx bx-chevron-left"></i>
+                        </a>
+                    </li>
+                    @endif
 
-                        {{-- Previous --}}
-                        @if ($barangs->onFirstPage())
-                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                    <!-- Page Numbers -->
+                    @foreach($barangs->getUrlRange(max(1, $barangs->currentPage() - 2), min($barangs->lastPage(), $barangs->currentPage() + 2)) as $page => $url)
+                    <li class="page-item {{ $page == $barangs->currentPage() ? 'active' : '' }}">
+                        @if($page == $barangs->currentPage())
+                        <span class="page-link">{{ $page }}</span>
                         @else
-                            <li class="page-item">
-                                <a class="page-link" href="{{ $barangs->previousPageUrl() }}">&laquo;</a>
-                            </li>
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
                         @endif
+                    </li>
+                    @endforeach
 
-                        {{-- Page ±1 --}}
-                        @foreach ($barangs->getUrlRange(
-                            max($barangs->currentPage()-1,1),
-                            min($barangs->currentPage()+1, $barangs->lastPage())
-                        ) as $page => $url)
-                            @if ($page == $barangs->currentPage())
-                                <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
-                            @else
-                                <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
-                            @endif
-                        @endforeach
+                    <!-- Next Page Link -->
+                    @if($barangs->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $barangs->nextPageUrl() }}" aria-label="Next">
+                            <i class="bx bx-chevron-right"></i>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="bx bx-chevron-right"></i></span>
+                    </li>
+                    @endif
 
-                        {{-- Next --}}
-                        @if ($barangs->hasMorePages())
-                            <li class="page-item">
-                                <a class="page-link" href="{{ $barangs->nextPageUrl() }}">&raquo;</a>
-                            </li>
-                        @else
-                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                        @endif
-
-                    </ul>
-                </nav>
-                @endif
+                    <!-- Last Page Link -->
+                    @if($barangs->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $barangs->url($barangs->lastPage()) }}" aria-label="Last">
+                            <i class="bx bx-chevrons-right"></i>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <span class="page-link"><i class="bx bx-chevrons-right"></i></span>
+                    </li>
+                    @endif
+                </ul>
+            </nav>
+        </div>
+        @elseif($barangs->total() > 0)
+        <div class="mt-4 pt-3 border-top">
+            <div class="text-center text-muted">
+                Menampilkan semua {{ $barangs->total() }} data barang ATK
             </div>
         </div>
-
+        @endif
     </div>
 </div>
-<script>
-document.addEventListener('contextmenu', e => e.preventDefault());
 
-document.addEventListener('keydown', function(e) {
-    if (
-        e.key === 'PrintScreen' ||
-        (e.ctrlKey && e.key === 'p') ||
-        (e.ctrlKey && e.key === 's')
-    ) {
-        e.preventDefault();
-        alert('Aksi ini tidak diizinkan');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('searchBarang');
+    const resetButton = document.getElementById('resetSearch');
+    const tableBody   = document.getElementById('barangTable');
+    const sortableHeaders = document.querySelectorAll('.sortable');
+
+    let delayTimer;
+    let currentSort = 'nama_barang';
+    let currentDirection = 'asc';
+
+    // Tampilkan/menyembunyikan tombol reset berdasarkan input
+    function toggleResetButton() {
+        if (searchInput.value.trim() !== '') {
+            resetButton.classList.remove('d-none');
+        } else {
+            resetButton.classList.add('d-none');
+        }
     }
+
+    // Load data dengan parameter search
+    function loadData() {
+        const keyword = searchInput.value.trim();
+
+        fetch(`{{ route('barang.search') }}?q=${encodeURIComponent(keyword)}&sort=${currentSort}&direction=${currentDirection}`)
+            .then(res => res.json())
+            .then(data => {
+                tableBody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                Data tidak ditemukan
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                data.forEach((item, index) => {
+                    let statusBadge = '';
+                    if (item.stok == 0) {
+                        statusBadge = '<span class="badge border border-danger bg-danger-soft text-danger">Habis</span>';
+                    } else if (item.stok <= 5) {
+                        statusBadge = '<span class="badge border border-warning bg-warning-soft text-warning">Menipis</span>';
+                    } else {
+                        statusBadge = '<span class="badge border border-success bg-success-soft text-success">Aman</span>';
+                    }
+
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td class="fw-semibold">${item.nama_barang}</td>
+                            <td>${item.satuan}</td>
+                            <td class="text-center fw-bold">${item.stok}</td>
+                            <td class="text-center">${statusBadge}</td>
+                            <td class="text-center">
+                                <a href="/dashboard/barang/${item.id}/edit"
+                                   class="btn btn-sm btn-light-primary rounded-pill px-2">
+                                    <i class="bx bx-edit"></i>
+                                </a>
+                                <a href="/dashboard/barang/${item.id}/riwayat"
+                                   class="btn btn-sm btn-light-info rounded-pill px-2">
+                                    <i class="bx bx-history"></i>
+                                </a>
+                            </td>
+                        </tr>`;
+                });
+            });
+    }
+
+    // 🔍 SEARCH dengan debounce
+    searchInput.addEventListener('keyup', function () {
+        clearTimeout(delayTimer);
+        toggleResetButton();
+        delayTimer = setTimeout(loadData, 300);
+    });
+
+    // 🔄 RESET SEARCH
+    resetButton.addEventListener('click', function () {
+        window.location.href = "{{ route('barang.index') }}";
+    });
+
+    // 🔃 SORT
+    sortableHeaders.forEach(header => {
+        header.addEventListener('click', function () {
+            const sortField = this.dataset.sort;
+
+            if (currentSort === sortField) {
+                currentDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort = sortField;
+                currentDirection = 'asc';
+            }
+
+            sortableHeaders.forEach(h =>
+                h.querySelector('i').className = 'bx bx-sort-alt-2 ms-1 text-muted'
+            );
+
+            this.querySelector('i').className =
+                currentDirection === 'asc'
+                ? 'bx bx-sort-up ms-1'
+                : 'bx bx-sort-down ms-1';
+
+            loadData();
+        });
+    });
+
+    // Inisialisasi tampilan tombol reset
+    toggleResetButton();
+
 });
 </script>
+
+<style>
+.sortable {
+    cursor: pointer;
+}
+.sortable:hover {
+    color: #0d6efd;
+}
+
+/* Style untuk badge dengan warna soft */
+.badge.bg-danger-soft {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    padding: 0.35em 0.65em;
+    font-weight: 500;
+}
+
+.badge.bg-warning-soft {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    padding: 0.35em 0.65em;
+    font-weight: 500;
+}
+
+.badge.bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+    color: #198754 !important;
+    border-color: #198754 !important;
+    padding: 0.35em 0.65em;
+    font-weight: 500;
+}
+
+/* Responsif untuk search area */
+@media (max-width: 768px) {
+    .d-flex.align-items-center.gap-2 {
+        width: 100%;
+    }
+    
+    .position-relative.flex-grow-1 {
+        width: calc(100% - 44px);
+    }
+}
+
+/* Tombol reset styling */
+#resetSearch {
+    min-width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    padding: 0;
+}
+
+#resetSearch:hover {
+    background-color: #f8f9fa;
+    border-color: #6c757d;
+}
+</style>
 
 @endsection

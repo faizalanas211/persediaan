@@ -52,10 +52,15 @@
                             </td>
 
                             <td>
+                                {{-- BADGE STATUS DENGAN WARNA SOFT TAPI LEBIH MENCOLOK --}}
                                 @if ($item->status === 'draft')
-                                    <span class="badge bg-warning rounded-pill px-3">Draft</span>
+                                    <span class="badge border-warning-soft" style="background-color: rgba(255, 193, 7, 0.25); color: #b58900; border-color: #ffc107; font-size: 0.8rem; padding: 0.25em 0.8em; border-width: 1px; border-style: solid;">
+                                        Draft
+                                    </span>
                                 @else
-                                    <span class="badge bg-success rounded-pill px-3">Final</span>
+                                    <span class="badge border-success-soft" style="background-color: rgba(40, 167, 69, 0.25); color: #1e7e34; border-color: #28a745; font-size: 0.8rem; padding: 0.25em 0.8em; border-width: 1px; border-style: solid;">
+                                        Final
+                                    </span>
                                 @endif
                             </td>
 
@@ -82,19 +87,129 @@
             </table>
         </div>
 
-        {{-- PAGINATION --}}
-        <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-2">
-            <div class="text-muted fs-7">
-                Menampilkan {{ $stokOpnames->count() }} dari {{ $stokOpnames->total() }} data
-            </div>
-
-            @if ($stokOpnames->hasPages())
-                {{ $stokOpnames->links() }}
-            @endif
+    {{-- ================= FOOTER + PAGINATION ================= --}}
+    <!-- Pagination Improved -->
+    @if($stokOpnames->hasPages())
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-3 border-top">
+        <div class="mb-3 mb-md-0 text-muted">
+            <span class="fw-medium">Menampilkan</span>
+            <span class="fw-medium">{{ $stokOpnames->firstItem() ?? 0 }}</span>
+            <span class="fw-medium">sampai</span>
+            <span class="fw-medium">{{ $stokOpnames->lastItem() ?? 0 }}</span>
+            <span class="fw-medium">dari</span>
+            <span class="fw-medium">{{ $stokOpnames->total() }}</span>
+            <span class="fw-medium">data stok opname</span>
         </div>
+        
+        <nav aria-label="Page navigation">
+            <ul class="pagination mb-0">
+                <!-- First Page Link -->
+                @if(!$stokOpnames->onFirstPage())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $stokOpnames->url(1) }}" aria-label="First">
+                        <i class="bx bx-chevrons-left"></i>
+                    </a>
+                </li>
+                @else
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="bx bx-chevrons-left"></i></span>
+                </li>
+                @endif
+
+                <!-- Previous Page Link -->
+                @if($stokOpnames->onFirstPage())
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="bx bx-chevron-left"></i></span>
+                </li>
+                @else
+                <li class="page-item">
+                    <a class="page-link" href="{{ $stokOpnames->previousPageUrl() }}" aria-label="Previous">
+                        <i class="bx bx-chevron-left"></i>
+                    </a>
+                </li>
+                @endif
+
+                <!-- Page Numbers -->
+                @foreach($stokOpnames->getUrlRange(max(1, $stokOpnames->currentPage() - 2), min($stokOpnames->lastPage(), $stokOpnames->currentPage() + 2)) as $page => $url)
+                <li class="page-item {{ $page == $stokOpnames->currentPage() ? 'active' : '' }}">
+                    @if($page == $stokOpnames->currentPage())
+                    <span class="page-link">{{ $page }}</span>
+                    @else
+                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    @endif
+                </li>
+                @endforeach
+
+                <!-- Next Page Link -->
+                @if($stokOpnames->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $stokOpnames->nextPageUrl() }}" aria-label="Next">
+                        <i class="bx bx-chevron-right"></i>
+                    </a>
+                </li>
+                @else
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="bx bx-chevron-right"></i></span>
+                </li>
+                @endif
+
+                <!-- Last Page Link -->
+                @if($stokOpnames->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="{{ $stokOpnames->url($stokOpnames->lastPage()) }}" aria-label="Last">
+                        <i class="bx bx-chevrons-right"></i>
+                    </a>
+                </li>
+                @else
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="bx bx-chevrons-right"></i></span>
+                </li>
+                @endif
+            </ul>
+        </nav>
+    </div>
+    @elseif($stokOpnames->total() > 0)
+    <div class="mt-4 pt-3 border-top">
+        <div class="text-center text-muted">
+            Menampilkan semua {{ $stokOpnames->total() }} data stok opname
+        </div>
+    </div>
+    @endif
 
     </div>
 
 </div>
 
+<style>
+    /* Style untuk badge dengan warna soft yang lebih mencolok */
+    .badge.border-warning-soft {
+        background-color: rgba(255, 193, 7, 0.25) !important;
+        color: #b58900 !important;
+        border-color: #ffc107 !important;
+        border-width: 1px;
+        border-style: solid;
+        padding: 0.25em 0.8em;
+        font-size: 0.8rem;
+        font-weight: 600;
+        box-shadow: 0 1px 2px rgba(255, 193, 7, 0.1);
+    }
+    
+    .badge.border-success-soft {
+        background-color: rgba(40, 167, 69, 0.25) !important;
+        color: #1e7e34 !important;
+        border-color: #28a745 !important;
+        border-width: 1px;
+        border-style: solid;
+        padding: 0.25em 0.8em;
+        font-size: 0.8rem;
+        font-weight: 600;
+        box-shadow: 0 1px 2px rgba(40, 167, 69, 0.1);
+    }
+    
+    /* Menghapus rounded-pill default */
+    .badge.border-warning-soft,
+    .badge.border-success-soft {
+        border-radius: 0.375rem !important;
+    }
+</style>
 @endsection
