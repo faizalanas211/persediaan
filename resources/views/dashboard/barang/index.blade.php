@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
 <li class="breadcrumb-item active text-primary fw-semibold">
-    Data Barang
+    Data Barang ATK
 </li>
 @endsection
 
@@ -16,12 +16,12 @@
 
             {{-- JUDUL --}}
             <div>
-                <h3 class="fw-bold mb-1">Data Barang ATK</h3>
-                <p class="text-muted mb-0 fs-7">Daftar seluruh barang inventaris</p>
+                <h4 class="fw-bold mb-1">Data Barang ATK</h4>
+                <p class="text-muted mb-0">Daftar seluruh barang inventaris</p>
             </div>
 
-            {{-- SEARCH + RESET BUTTON --}}
-            <div class="d-flex align-items-center gap-2" style="min-width: 300px;">
+            {{-- SEARCH + TOMBOL TAMBAH --}}
+            <div class="d-flex align-items-center gap-2 flex-wrap" style="min-width: 300px;">
                 <div class="position-relative flex-grow-1">
                     <i class="bx bx-search position-absolute top-50 start-0 translate-middle-y ms-3 text-primary fs-5"></i>
                     <input type="text"
@@ -36,6 +36,9 @@
                         class="btn btn-outline-secondary rounded-pill px-3 py-2 d-none">
                     <i class="bx bx-x fs-5"></i>
                 </button>
+                <a href="{{ route('barang.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Data
+                </a>
             </div>
         </div>
     </div>
@@ -77,15 +80,15 @@
                             {{-- BADGE STATUS DENGAN WARNA SOFT --}}
                             <td class="text-center">
                                 @if ($barang->stok == 0)
-                                    <span class="badge border border-danger bg-danger-soft text-danger">
+                                    <span class="badge border-danger-soft">
                                         Habis
                                     </span>
                                 @elseif ($barang->stok <= 5)
-                                    <span class="badge border border-warning bg-warning-soft text-warning">
+                                    <span class="badge border-warning-soft">
                                         Menipis
                                     </span>
                                 @else
-                                    <span class="badge border border-success bg-success-soft text-success">
+                                    <span class="badge border-success-soft">
                                         Aman
                                     </span>
                                 @endif
@@ -221,7 +224,6 @@
         </div>
 
         {{-- ================= FOOTER + PAGINATION ================= --}}
-        <!-- Pagination Improved -->
         @if($barangs->hasPages())
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-3 border-top">
             <div class="mb-3 mb-md-0 text-muted">
@@ -354,11 +356,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.forEach((item, index) => {
                     let statusBadge = '';
                     if (item.stok == 0) {
-                        statusBadge = '<span class="badge border border-danger bg-danger-soft text-danger">Habis</span>';
+                        statusBadge = '<span class="badge border-danger-soft">Habis</span>';
                     } else if (item.stok <= 5) {
-                        statusBadge = '<span class="badge border border-warning bg-warning-soft text-warning">Menipis</span>';
+                        statusBadge = '<span class="badge border-warning-soft">Menipis</span>';
                     } else {
-                        statusBadge = '<span class="badge border border-success bg-success-soft text-success">Aman</span>';
+                        statusBadge = '<span class="badge border-success-soft">Aman</span>';
                     }
 
                     tableBody.innerHTML += `
@@ -435,38 +437,65 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 /* Style untuk badge dengan warna soft */
-.badge.bg-danger-soft {
-    background-color: rgba(220, 53, 69, 0.1) !important;
-    color: #dc3545 !important;
+.badge.border-danger-soft {
+    background-color: rgba(220, 53, 69, 0.25) !important;
+    color: #bd2130 !important;
     border-color: #dc3545 !important;
-    padding: 0.35em 0.65em;
-    font-weight: 500;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0.25em 0.6em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(220, 53, 69, 0.1);
+    border-radius: 0.375rem !important;
 }
 
-.badge.bg-warning-soft {
-    background-color: rgba(255, 193, 7, 0.1) !important;
-    color: #ffc107 !important;
+.badge.border-warning-soft {
+    background-color: rgba(255, 193, 7, 0.25) !important;
+    color: #b58900 !important;
     border-color: #ffc107 !important;
-    padding: 0.35em 0.65em;
-    font-weight: 500;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0.25em 0.6em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(255, 193, 7, 0.1);
+    border-radius: 0.375rem !important;
 }
 
-.badge.bg-success-soft {
-    background-color: rgba(25, 135, 84, 0.1) !important;
-    color: #198754 !important;
-    border-color: #198754 !important;
-    padding: 0.35em 0.65em;
-    font-weight: 500;
+.badge.border-success-soft {
+    background-color: rgba(40, 167, 69, 0.25) !important;
+    color: #1e7e34 !important;
+    border-color: #28a745 !important;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0.25em 0.6em;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(40, 167, 69, 0.1);
+    border-radius: 0.375rem !important;
 }
 
 /* Responsif untuk search area */
 @media (max-width: 768px) {
-    .d-flex.align-items-center.gap-2 {
+    .d-flex.align-items-center.gap-2.flex-wrap {
         width: 100%;
+        flex-direction: column;
+        gap: 1rem !important;
     }
     
     .position-relative.flex-grow-1 {
-        width: calc(100% - 44px);
+        width: 100%;
+    }
+    
+    #resetSearch {
+        align-self: flex-end;
+        margin-left: auto;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -486,5 +515,4 @@ document.addEventListener('DOMContentLoaded', function () {
     border-color: #6c757d;
 }
 </style>
-
 @endsection

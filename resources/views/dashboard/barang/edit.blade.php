@@ -17,9 +17,10 @@
 
     {{-- HEADER --}}
     <div class="card-header border-0 pt-6 pb-4">
-        <h3 class="fw-bold mb-1">Edit Data Barang ATK</h3>
+        <h4 class="fw-bold mb-1">Edit Data Barang ATK</h4>
         <p class="text-muted mb-0 fs-7">Perbarui informasi master barang</p>
     </div>
+    
 
     <div class="card-body pt-0">
 

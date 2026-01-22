@@ -4,7 +4,7 @@
 <li class="breadcrumb-item">
     <a href="{{ route('stok-opname.index') }}">Stok Opname</a>
 </li>
-<li class="breadcrumb-item active fw-semibold">Detail Stok Opname</li>
+<li class="breadcrumb-item active text-primary fw-semibold">Detail Stok Opname</li>
 @endsection
 
 @section('content')

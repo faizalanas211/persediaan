@@ -1,8 +1,13 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active fw-semibold">
-    Mutasi Stok
+<li class="breadcrumb-item">
+    <a href="{{ route('mutasi.index') }}" class="text-muted text-decoration-none">
+        Mutasi Stok
+    </a>
+</li>
+<li class="breadcrumb-item active text-primary fw-semibold">
+    Tambah Mutasi Stok
 </li>
 @endsection
 
@@ -12,7 +17,7 @@
 
     {{-- HEADER --}}
     <div class="card-header border-0 pt-6 pb-4">
-        <h3 class="fw-bold mb-1">Input Mutasi Stok</h3>
+        <h4 class="fw-bold mb-1">Input Mutasi Stok</h4>
         <p class="text-muted mb-0 fs-7">
             Catat barang masuk, keluar, atau penyesuaian stok
         </p>

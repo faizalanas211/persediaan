@@ -1,7 +1,14 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active fw-semibold">Permintaan ATK</li>
+<li class="breadcrumb-item">
+    <a href="{{ route('permintaan.index') }}" class="text-muted text-decoration-none">
+        Permintaan ATK
+    </a>
+</li>
+<li class="breadcrumb-item active text-primary fw-semibold">
+    Formulir Permintaan ATK
+</li>
 @endsection
 
 @section('content')

@@ -13,15 +13,33 @@ use Illuminate\Validation\ValidationException;
 
 class PermintaanAtkController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $permintaan = PermintaanAtk::with([
-                'pencatat',
-                'detail'
-            ])
+        $query = PermintaanAtk::with(['pencatat', 'detail']);
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter periode (YYYY-MM)
+        if ($request->filled('periode')) {
+            $query->whereMonth('tanggal_permintaan', substr($request->periode, 5, 2))
+                ->whereYear('tanggal_permintaan', substr($request->periode, 0, 4));
+        }
+
+        // Search pemohon / keperluan
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_pemohon', 'like', '%' . $request->search . '%')
+                ->orWhere('keperluan', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $permintaan = $query
             ->orderBy('tanggal_permintaan', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(15)
+            ->withQueryString(); // 
 
         return view('dashboard.permintaan.index', compact('permintaan'));
     }

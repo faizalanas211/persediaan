@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BarangAtk;
+use App\Models\DetailStokOpname;
 use App\Models\MutasiStok;
 use App\Models\StokOpname;
 use Illuminate\Http\Request;
@@ -12,15 +13,24 @@ use Illuminate\Support\Facades\DB;
 
 class StokOpnameController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stokOpnames = StokOpname::with([
-                'pencatat',
-                'detail' // untuk hitung jumlah barang
-            ])
+        $query = StokOpname::with([
+            'pencatat',
+            'detail' // untuk hitung jumlah barang
+        ]);
+
+        // FILTER PERIODE (format: YYYY-MM)
+        if ($request->filled('periode')) {
+            $query->whereMonth('periode_bulan', substr($request->periode, 5, 2))
+                ->whereYear('periode_bulan', substr($request->periode, 0, 4));
+        }
+
+        $stokOpnames = $query
             ->orderBy('periode_bulan', 'desc')
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(20)
+            ->withQueryString(); 
 
         return view('dashboard.stok_opname.index', compact('stokOpnames'));
     }
@@ -76,6 +86,47 @@ class StokOpnameController extends Controller
         return redirect()
             ->route('stok-opname.index')
             ->with('success', 'Stok opname berhasil dibuat!');
+    }
+
+    public function edit($id)
+    {
+        $stokOpname = StokOpname::findOrFail($id);
+        $details    = $stokOpname->detail()->with('barang')->get();
+
+        return view('dashboard.stok_opname.edit', compact('stokOpname', 'details'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        DB::transaction(function () use ($request, $id) {
+
+            // HEADER
+            $stokOpname = StokOpname::findOrFail($id);
+            $stokOpname->update([
+                'periode_bulan'  => $request->periode_bulan,
+                'tanggal_opname' => $request->tanggal_opname,
+                'keterangan'     => $request->keterangan,
+            ]);
+
+            // DETAIL
+            foreach ($request->detail_id as $i => $detailId) {
+
+                $detail = DetailStokOpname::findOrFail($detailId);
+
+                $stokFisik = $request->stok_fisik[$i];
+                $selisih   = $stokFisik - $detail->stok_sistem;
+
+                $detail->update([
+                    'stok_fisik' => $stokFisik,
+                    'selisih'    => $selisih,
+                    'keterangan' => $request->keterangan_detail[$i] ?? null,
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('stok-opname.index')
+            ->with('success', 'Stok opname berhasil diperbarui');
     }
 
     public function show($id)

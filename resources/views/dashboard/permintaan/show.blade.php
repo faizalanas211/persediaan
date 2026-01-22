@@ -4,8 +4,8 @@
 <li class="breadcrumb-item">
     <a href="{{ route('permintaan.index') }}">Permintaan ATK</a>
 </li>
-<li class="breadcrumb-item active fw-semibold">
-    Detail Permintaan
+<li class="breadcrumb-item active text-primary fw-semibold">
+    Detail Permintaan ATK
 </li>
 @endsection
 

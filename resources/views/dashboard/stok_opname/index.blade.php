@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active fw-semibold">
+<li class="breadcrumb-item active text-primary fw-semibold">
     Stok Opname
 </li>
 @endsection
@@ -24,6 +24,29 @@
 
     {{-- BODY --}}
     <div class="card-body">
+        {{-- FILTER PERIODE --}}
+<form method="GET" class="row g-2 align-items-end mb-4">
+
+    <div class="col-md-4">
+        <label class="form-label fw-semibold">Periode</label>
+        <input type="month"
+               name="periode"
+               class="form-control"
+               value="{{ request('periode') }}">
+    </div>
+
+    <div class="col-md-4 d-flex gap-2">
+        <button class="btn btn-primary px-4">
+            <i class="bi bi-funnel me-1"></i> Filter
+        </button>
+
+        <a href="{{ route('stok-opname.index') }}"
+           class="btn btn-light">
+            Reset
+        </a>
+    </div>
+
+</form>
 
         <div class="table-responsive">
             <table class="table align-middle table-hover">

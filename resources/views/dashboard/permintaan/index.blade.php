@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active fw-semibold">
+<li class="breadcrumb-item active text-primary fw-semibold">
     Permintaan ATK
 </li>
 @endsection
@@ -21,6 +21,60 @@
 
     {{-- BODY --}}
     <div class="card-body">
+        {{-- FILTER --}}
+        <form method="GET" class="mb-4">
+            <div class="row g-3 align-items-end">
+                {{-- Filter Status --}}
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-semibold mb-2">Status</label>
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="">Semua Status</option>
+                        <option value="draft" {{ request('status')=='draft' ? 'selected' : '' }}>Draft</option>
+                        <option value="diproses" {{ request('status')=='diproses' ? 'selected' : '' }}>Diproses</option>
+                        <option value="dibatalkan" {{ request('status')=='dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                    </select>
+                </div>
+
+                {{-- Filter Periode --}}
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-semibold mb-2">Periode</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-calendar"></i>
+                        </span>
+                        <input type="month"
+                               name="periode"
+                               class="form-control"
+                               value="{{ request('periode') }}">
+                    </div>
+                </div>
+
+                {{-- Search --}}
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label small fw-semibold mb-2">Cari</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text"
+                               name="search"
+                               class="form-control"
+                               placeholder="Pemohon / Keperluan"
+                               value="{{ request('search') }}">
+                    </div>
+                </div>
+
+                {{-- Buttons --}}
+                <div class="col-lg-2 col-md-6">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm w-100 py-2">
+                            <i class="bi bi-filter me-1"></i> Filter
+                        </button>
+                        <a href="{{ route('permintaan.index') }}" class="btn btn-outline-secondary btn-sm py-2">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
         <div class="table-responsive">
             <table class="table align-middle table-hover">
                 <thead class="table-light">
@@ -44,17 +98,17 @@
                         <td>{{ $item->keperluan }}</td>
                         <td class="text-center">{{ $item->detail->sum('jumlah') }}</td>
                         <td>
-                            {{-- BADGE STATUS DENGAN WARNA SOFT TAPI LEBIH MENCOLOK --}}
+                            {{-- BADGE STATUS DENGAN WARNA SOFT --}}
                             @if($item->status === 'draft')
-                                <span class="badge border-warning-soft" style="background-color: rgba(255, 193, 7, 0.2); color: #d39e00; border-color: #ffc107; font-size: 0.8rem; padding: 0.25em 0.6em;">
+                                <span class="badge border-warning-soft">
                                     Draft
                                 </span>
                             @elseif($item->status === 'diproses')
-                                <span class="badge border-success-soft" style="background-color: rgba(40, 167, 69, 0.2); color: #218838; border-color: #28a745; font-size: 0.8rem; padding: 0.25em 0.6em;">
+                                <span class="badge border-success-soft">
                                     Diproses
                                 </span>
                             @else
-                                <span class="badge border-secondary-soft" style="background-color: rgba(108, 117, 125, 0.2); color: #495057; border-color: #6c757d; font-size: 0.8rem; padding: 0.25em 0.6em;">
+                                <span class="badge border-secondary-soft">
                                     Dibatalkan
                                 </span>
                             @endif
@@ -180,6 +234,7 @@
         font-size: 0.8rem;
         font-weight: 600;
         box-shadow: 0 1px 2px rgba(255, 193, 7, 0.1);
+        border-radius: 0.375rem !important;
     }
     
     .badge.border-success-soft {
@@ -192,6 +247,7 @@
         font-size: 0.8rem;
         font-weight: 600;
         box-shadow: 0 1px 2px rgba(40, 167, 69, 0.1);
+        border-radius: 0.375rem !important;
     }
     
     .badge.border-secondary-soft {
@@ -204,6 +260,24 @@
         font-size: 0.8rem;
         font-weight: 600;
         box-shadow: 0 1px 2px rgba(108, 117, 125, 0.1);
+        border-radius: 0.375rem !important;
+    }
+    
+    /* Responsif untuk filter */
+    @media (max-width: 768px) {
+        .col-lg-3, .col-lg-4, .col-lg-2 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .d-flex.gap-2 {
+            justify-content: stretch;
+        }
+        
+        .btn-sm.w-100 {
+            width: 100%;
+        }
     }
 </style>
 @endsection

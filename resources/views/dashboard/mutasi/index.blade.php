@@ -12,14 +12,14 @@
     {{-- ================= HEADER ================= --}}
     <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="fw-bold mb-1">Riwayat Mutasi Stok</h3>
+            <h4 class="fw-bold mb-1">Riwayat Mutasi Stok</h4>
             <p class="text-muted mb-0 fs-7">
                 Catatan seluruh pergerakan stok barang ATK
             </p>
         </div>
 
-        <a href="{{ route('mutasi.create') }}" class="btn btn-primary px-4 rounded-pill">
-            <i class="bx bx-plus me-1"></i> Input Mutasi
+        <a href="{{ route('mutasi.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Tambah Data Mutasi
         </a>
     </div>
 

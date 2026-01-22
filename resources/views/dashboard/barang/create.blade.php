@@ -3,7 +3,7 @@
 @section('breadcrumb')
 <li class="breadcrumb-item">
     <a href="{{ route('barang.index') }}" class="text-muted text-decoration-none">
-        Data Barang
+        Data Barang ATK
     </a>
 </li>
 <li class="breadcrumb-item active text-primary fw-semibold">

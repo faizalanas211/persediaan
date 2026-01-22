@@ -4,7 +4,7 @@
 <li class="breadcrumb-item">
     <a href="{{ route('barang.index') }}">Barang ATK</a>
 </li>
-<li class="breadcrumb-item active fw-semibold">
+<li class="breadcrumb-item active text-primary fw-semibold">
     Riwayat Stok
 </li>
 @endsection
