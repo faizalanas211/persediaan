@@ -112,7 +112,9 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     */
     Route::resource('stok-opname', StokOpnameController::class);
     Route::post('stok-opname/{id}/final', [StokOpnameController::class, 'final'])->name('stok-opname.final');
-    
+
+    Route::get('stok-opname/{id}/export-pdf',[StokOpnameController::class, 'exportPdf'])->name('stok-opname.export-pdf');
+
     /*
     |--------------------------------------------------------------------------
     | Logout

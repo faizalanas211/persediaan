@@ -4,43 +4,43 @@
 <li class="breadcrumb-item">
     <a href="{{ route('stok-opname.index') }}">Stok Opname</a>
 </li>
-<li class="breadcrumb-item active text-primary fw-semibold">Detail Stok Opname</li>
+<li class="breadcrumb-item active text-primary fw-semibold">
+    Detail Stok Opname
+</li>
 @endsection
 
 @section('content')
 
 <div class="card shadow-sm rounded-4">
 
-    {{-- HEADER --}}
+    {{-- ================= HEADER ================= --}}
     <div class="card-header border-0 d-flex justify-content-between align-items-start flex-wrap gap-2">
         <div>
             <h4 class="fw-bold mb-1">Detail Stok Opname</h4>
             <small class="text-muted">
-                Periode: {{ \Carbon\Carbon::parse($stokOpname->periode_bulan)->translatedFormat('F Y') }}
+                Periode:
+                {{ \Carbon\Carbon::parse($stokOpname->periode_bulan)->translatedFormat('F Y') }}
             </small>
         </div>
 
-        {{-- STATUS DENGAN BADGE SOFT --}}
+        {{-- STATUS --}}
         <div>
             @if($stokOpname->status === 'draft')
-                <span class="badge border-warning-soft" style="background-color: rgba(255, 193, 7, 0.25); color: #b58900; border-color: #ffc107; font-size: 0.85rem; padding: 0.3em 1em; border-width: 1px; border-style: solid;">
-                    Draft
-                </span>
+                <span class="badge border-warning-soft">Draft</span>
             @else
-                <span class="badge border-success-soft" style="background-color: rgba(40, 167, 69, 0.25); color: #1e7e34; border-color: #28a745; font-size: 0.85rem; padding: 0.3em 1em; border-width: 1px; border-style: solid;">
-                    Final
-                </span>
+                <span class="badge border-success-soft">Final</span>
             @endif
         </div>
     </div>
 
-    {{-- INFO --}}
+    {{-- ================= INFO ================= --}}
     <div class="card-body border-bottom">
         <div class="row g-3">
+
             <div class="col-md-4">
                 <div class="small text-muted">Tanggal Opname</div>
                 <div class="fw-semibold">
-                    {{ \Carbon\Carbon::parse($stokOpname->tanggal_opname)->format('d M Y') }}
+                    {{ \Carbon\Carbon::parse($stokOpname->tanggal_opname)->translatedFormat('d F Y') }}
                 </div>
             </div>
 
@@ -59,10 +59,11 @@
                 </div>
             </div>
             @endif
+
         </div>
     </div>
 
-    {{-- DETAIL BARANG --}}
+    {{-- ================= DETAIL BARANG ================= --}}
     <div class="card-body">
 
         <h6 class="fw-bold mb-3">Detail Stok Barang</h6>
@@ -108,7 +109,7 @@
 
     </div>
 
-    {{-- FOOTER / AKSI --}}
+    {{-- ================= FOOTER / AKSI ================= --}}
     <div class="card-footer border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
 
         <a href="{{ route('stok-opname.index') }}" class="btn btn-light">
@@ -117,18 +118,25 @@
 
         <div class="d-flex gap-2">
 
+            {{-- EXPORT PDF (HANYA FINAL) --}}
+            @if($stokOpname->status === 'final')
+                <a href="{{ route('stok-opname.export-pdf', $stokOpname->id) }}"
+                   class="btn btn-danger">
+                    <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
+                </a>
+            @endif
+
+            {{-- AKSI DRAFT --}}
             @if($stokOpname->status === 'draft')
 
-                {{-- EDIT --}}
                 <a href="{{ route('stok-opname.edit', $stokOpname->id) }}"
                    class="btn btn-warning">
                     <i class="bi bi-pencil-square me-1"></i> Edit
                 </a>
 
-                {{-- PROSES / FINAL --}}
                 <form action="{{ route('stok-opname.final', $stokOpname->id) }}"
                       method="POST"
-                      onsubmit="return confirm('Finalisasi stok opname? Stok akan disesuaikan dan tidak bisa diubah.')">
+                      onsubmit="return confirm('Finalisasi stok opname? Data tidak dapat diubah.')">
                     @csrf
                     <button class="btn btn-success">
                         <i class="bi bi-check-circle me-1"></i> Finalisasi
@@ -142,32 +150,27 @@
 
 </div>
 
+{{-- ================= STYLE ================= --}}
 <style>
-    /* Style untuk badge dengan warna soft yang lebih mencolok */
-    .badge.border-warning-soft {
-        background-color: rgba(255, 193, 7, 0.25) !important;
-        color: #b58900 !important;
-        border-color: #ffc107 !important;
-        border-width: 1px;
-        border-style: solid;
-        padding: 0.3em 1em;
-        font-size: 0.85rem;
-        font-weight: 600;
-        box-shadow: 0 1px 3px rgba(255, 193, 7, 0.15);
-        border-radius: 0.375rem !important;
-    }
-    
-    .badge.border-success-soft {
-        background-color: rgba(40, 167, 69, 0.25) !important;
-        color: #1e7e34 !important;
-        border-color: #28a745 !important;
-        border-width: 1px;
-        border-style: solid;
-        padding: 0.3em 1em;
-        font-size: 0.85rem;
-        font-weight: 600;
-        box-shadow: 0 1px 3px rgba(40, 167, 69, 0.15);
-        border-radius: 0.375rem !important;
-    }
+.badge.border-warning-soft{
+    background-color: rgba(255, 193, 7, 0.25);
+    color: #b58900;
+    border:1px solid #ffc107;
+    padding:0.3em 1em;
+    font-size:0.85rem;
+    font-weight:600;
+    border-radius:0.375rem;
+}
+
+.badge.border-success-soft{
+    background-color: rgba(40, 167, 69, 0.25);
+    color:#1e7e34;
+    border:1px solid #28a745;
+    padding:0.3em 1em;
+    font-size:0.85rem;
+    font-weight:600;
+    border-radius:0.375rem;
+}
 </style>
+
 @endsection

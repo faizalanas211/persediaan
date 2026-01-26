@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class StokOpnameController extends Controller
 {
@@ -30,7 +32,7 @@ class StokOpnameController extends Controller
             ->orderBy('periode_bulan', 'desc')
             ->orderBy('created_at', 'desc')
             ->paginate(20)
-            ->withQueryString(); 
+            ->withQueryString();
 
         return view('dashboard.stok_opname.index', compact('stokOpnames'));
     }
@@ -192,4 +194,27 @@ class StokOpnameController extends Controller
             ->route('stok-opname.show', $stokOpname->id)
             ->with('success', 'Stok opname berhasil difinalkan dan stok diperbarui!');
     }
+    public function exportPdf($id)
+{
+    $stokOpname = StokOpname::with([
+        'detail.barang',
+        'pencatat'
+    ])->findOrFail($id);
+
+    // ⛔ proteksi
+    if ($stokOpname->status !== 'final') {
+        abort(403, 'Stok opname belum difinalisasi');
+    }
+
+    $pdf = Pdf::loadView(
+        'dashboard.stok_opname.export-pdf',
+        compact('stokOpname')
+    )->setPaper('A4', 'portrait');
+
+    return $pdf->download(
+        'stok-opname-' .
+        \Carbon\Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
+        '.pdf'
+    );
+}
 }
