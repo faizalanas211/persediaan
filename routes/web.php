@@ -93,6 +93,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('mutasi', MutasiStokController::class);
+    Route::post('/mutasi/import', [MutasiStokController::class, 'import'])->name('mutasi.import');
 
     /*
     |--------------------------------------------------------------------------
