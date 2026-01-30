@@ -129,32 +129,45 @@ class StokOpnameController extends Controller
             ->with('success', 'Stok opname berhasil diperbarui');
     }
 
-    public function show($id)
-    {
-        $stokOpname = StokOpname::with([
-                'pencatat',
-                'detail.barang'
-            ])->findOrFail($id);
-
-        return view('dashboard.stok_opname.show', compact('stokOpname'));
+    public function show($id) { 
+        $stokOpname = StokOpname::with([ 'pencatat', 'detail.barang' ])->findOrFail($id); 
+        
+        return view('dashboard.stok_opname.show', compact('stokOpname')); 
     }
 
     public function final($id)
     {
         $stokOpname = StokOpname::with('detail.barang')->findOrFail($id);
 
-        // Cegah final ulang
         if ($stokOpname->status === 'final') {
             return back()->with('error', 'Stok opname ini sudah difinalkan.');
         }
 
         DB::transaction(function () use ($stokOpname) {
 
+            $periode = Carbon::parse($stokOpname->periode_bulan);
+
             foreach ($stokOpname->detail as $detail) {
 
                 $barang = $detail->barang;
 
-                // Lewati jika tidak ada selisih
+                // Hitung total mutasi periode opname
+                $mutasi = MutasiStok::where('barang_id', $barang->id)
+                    ->whereMonth('tanggal', $periode->month)
+                    ->whereYear('tanggal', $periode->year)
+                    ->selectRaw("
+                        SUM(CASE WHEN jenis_mutasi = 'masuk' THEN jumlah ELSE 0 END) as total_masuk,
+                        SUM(CASE WHEN jenis_mutasi = 'keluar' THEN jumlah ELSE 0 END) as total_keluar
+                    ")
+                    ->first();
+
+                // Simpan ke detail opname (snapshot)
+                $detail->update([
+                    'total_masuk'  => $mutasi->total_masuk ?? 0,
+                    'total_keluar' => $mutasi->total_keluar ?? 0,
+                ]);
+
+                // Lewati kalau tidak ada selisih
                 if ($detail->selisih == 0) {
                     continue;
                 }
@@ -162,27 +175,26 @@ class StokOpnameController extends Controller
                 $stokAwal  = $barang->stok;
                 $stokAkhir = $detail->stok_fisik;
 
-                // 🔄 Update stok barang ke stok fisik
+                // Update stok barang
                 $barang->update([
                     'stok' => $stokAkhir
                 ]);
 
-                // 📝 Catat mutasi stok (opname)
+                // Mutasi penyesuaian
                 MutasiStok::create([
-                    'barang_id'   => $barang->id,
-                    'jenis_mutasi'=> 'penyesuaian',
-                    'jumlah'      => abs($detail->selisih),
-                    'stok_awal'   => $stokAwal,
-                    'stok_akhir'  => $stokAkhir,
-                    'tanggal'     => Carbon::now(),
-                    'keterangan'  => 'Stok opname periode ' .
-                                    Carbon::parse($stokOpname->periode_bulan)->format('F Y') .
-                                    ($detail->keterangan ? ' - '.$detail->keterangan : ''),
-                    'user_id'     => Auth::id(),
+                    'barang_id'    => $barang->id,
+                    'jenis_mutasi' => 'penyesuaian',
+                    'jumlah'       => abs($detail->selisih),
+                    'stok_awal'    => $stokAwal,
+                    'stok_akhir'   => $stokAkhir,
+                    'tanggal'      => Carbon::now(),
+                    'keterangan'   => 'Stok opname periode ' .
+                        $periode->format('F Y') .
+                        ($detail->keterangan ? ' - '.$detail->keterangan : ''),
+                    'user_id'      => Auth::id(),
                 ]);
             }
 
-            // Update status opname
             $stokOpname->update([
                 'status' => 'final'
             ]);

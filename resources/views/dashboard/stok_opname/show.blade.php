@@ -74,6 +74,8 @@
                         <th>#</th>
                         <th>Nama Barang</th>
                         <th>Satuan</th>
+                        <th class="text-center">Masuk</th>
+                        <th class="text-center">Keluar</th>
                         <th class="text-center">Stok Sistem</th>
                         <th class="text-center">Stok Fisik</th>
                         <th class="text-center">Selisih</th>
@@ -86,6 +88,12 @@
                         <td>{{ $loop->iteration }}</td>
                         <td class="fw-semibold">{{ $detail->barang->nama_barang }}</td>
                         <td>{{ $detail->barang->satuan }}</td>
+                        <td class="text-center text-success fw-semibold">
+                            {{ $detail->total_masuk }}
+                        </td>
+                        <td class="text-center text-danger fw-semibold">
+                            {{ $detail->total_keluar }}
+                        </td>
                         <td class="text-center">{{ $detail->stok_sistem }}</td>
                         <td class="text-center">{{ $detail->stok_fisik }}</td>
                         <td class="text-center fw-bold">
