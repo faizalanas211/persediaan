@@ -16,11 +16,18 @@
 <div class="card shadow-sm rounded-4">
 
     {{-- HEADER --}}
-    <div class="card-header border-0 pt-6 pb-4">
-        <h4 class="fw-bold mb-1">Input Mutasi Stok</h4>
-        <p class="text-muted mb-0 fs-7">
-            Catat barang masuk, keluar, atau penyesuaian stok
-        </p>
+    <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="fw-bold mb-1">Input Mutasi Stok</h4>
+            <p class="text-muted mb-0 fs-7">Catat barang masuk, keluar, atau penyesuaian stok</p>
+        </div>
+
+        {{-- TOMBOL IMPORT KECIL --}}
+        <button class="btn btn-outline-success btn-sm"
+                data-bs-toggle="modal"
+                data-bs-target="#modalImportMutasi">
+            <i class="bx bx-upload me-1"></i> Import Excel
+        </button>
     </div>
 
     <div class="card-body pt-0">
@@ -118,5 +125,52 @@
 
     </div>
 </div>
+{{-- ================= MODAL IMPORT EXCEL ================= --}}
+<div class="modal fade" id="modalImportMutasi" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
 
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Impor Data Mutasi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="{{ route('mutasi.import') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+                @csrf
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">File Excel</label>
+                        <input type="file"
+                               name="file"
+                               class="form-control"
+                               accept=".xls,.xlsx">
+                        <small class="text-muted">
+                            Format .xls / .xlsx • Maks 2 MB
+                        </small>
+                    </div>
+
+                    <a href="{{ asset('template/mutasi.xlsx') }}"
+                       class="text-primary fw-semibold text-decoration-none">
+                        <i class="bx bx-download me-1"></i> Download Template Excel
+                    </a>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button"
+                            class="btn btn-light"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button class="btn btn-success">
+                        Import
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

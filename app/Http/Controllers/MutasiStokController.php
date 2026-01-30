@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\MutasiStokImport;
 use App\Models\BarangAtk;
 use App\Models\MutasiStok;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MutasiStokController extends Controller
 {
@@ -101,5 +103,30 @@ class MutasiStokController extends Controller
         return redirect()
             ->route('mutasi.index')
             ->with('success', 'Mutasi stok berhasil dicatat!');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            Excel::import(new MutasiStokImport, $request->file('file'));
+
+            DB::commit();
+
+            return redirect()
+                ->route('mutasi.index')
+                ->with('success', 'Data mutasi stok berhasil diimport!');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return back()->withErrors([
+                'file' => 'Gagal import: ' . $e->getMessage()
+            ]);
+        }
     }
 }
