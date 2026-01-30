@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\StokOpnameImport;
 use App\Models\BarangAtk;
 use App\Models\DetailStokOpname;
 use App\Models\MutasiStok;
@@ -11,7 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class StokOpnameController extends Controller
 {
@@ -195,26 +196,66 @@ class StokOpnameController extends Controller
             ->with('success', 'Stok opname berhasil difinalkan dan stok diperbarui!');
     }
     public function exportPdf($id)
-{
-    $stokOpname = StokOpname::with([
-        'detail.barang',
-        'pencatat'
-    ])->findOrFail($id);
+    {
+        $stokOpname = StokOpname::with([
+            'detail.barang',
+            'pencatat'
+        ])->findOrFail($id);
 
-    // ⛔ proteksi
-    if ($stokOpname->status !== 'final') {
-        abort(403, 'Stok opname belum difinalisasi');
+        // proteksi
+        if ($stokOpname->status !== 'final') {
+            abort(403, 'Stok opname belum difinalisasi');
+        }
+
+        $pdf = Pdf::loadView(
+            'dashboard.stok_opname.export-pdf',
+            compact('stokOpname')
+        )->setPaper('A4', 'portrait');
+
+        return $pdf->download(
+            'stok-opname-' .
+            \Carbon\Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
+            '.pdf'
+        );
     }
 
-    $pdf = Pdf::loadView(
-        'dashboard.stok_opname.export-pdf',
-        compact('stokOpname')
-    )->setPaper('A4', 'portrait');
+    public function import(Request $request)
+    {
+        $request->validate([
+            'periode_bulan'  => 'required|date',
+            'tanggal_opname' => 'required|date',
+            'file'           => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
 
-    return $pdf->download(
-        'stok-opname-' .
-        \Carbon\Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
-        '.pdf'
-    );
-}
+        DB::beginTransaction();
+
+        try {
+            // HEADER STOK OPNAME
+            $stokOpname = StokOpname::create([
+                'periode_bulan'  => $request->periode_bulan,
+                'tanggal_opname' => $request->tanggal_opname,
+                'keterangan'     => $request->keterangan,
+                'user_id'        => Auth::id(),
+                'status'         => 'draft',
+            ]);
+
+            // IMPORT DETAIL
+            Excel::import(
+                new StokOpnameImport($stokOpname),
+                $request->file('file')
+            );
+
+            DB::commit();
+
+            return redirect()
+                ->route('stok-opname.index')
+                ->with('success', 'Stok opname berhasil diimpor dari Excel!');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return back()->withErrors([
+                'file' => $e->getMessage()
+            ]);
+        }
+    }
 }
