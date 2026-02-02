@@ -118,11 +118,12 @@
 
         <div class="d-flex gap-2">
 
-            {{-- EXPORT PDF (HANYA FINAL) --}}
+            {{-- EXPORT EXCEL (HANYA FINAL) --}}
             @if($stokOpname->status === 'final')
-                <a href="{{ route('stok-opname.export-pdf', $stokOpname->id) }}"
-                   class="btn btn-danger">
-                    <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
+                <a href="{{ route('stok-opname.export-excel', $stokOpname->id) }}"
+                   class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel me-1"></i>
+                    Export Excel
                 </a>
             @endif
 
@@ -131,15 +132,22 @@
 
                 <a href="{{ route('stok-opname.edit', $stokOpname->id) }}"
                    class="btn btn-warning">
-                    <i class="bi bi-pencil-square me-1"></i> Edit
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Edit
                 </a>
 
                 <form action="{{ route('stok-opname.final', $stokOpname->id) }}"
                       method="POST"
-                      onsubmit="return confirm('Finalisasi stok opname? Data tidak dapat diubah.')">
+                      onsubmit="return confirm(
+                        'Finalisasi stok opname?\n\n' +
+                        '• Data tidak dapat diubah\n' +
+                        '• Stok sistem akan disesuaikan\n\n' +
+                        'Lanjutkan?'
+                      )">
                     @csrf
                     <button class="btn btn-success">
-                        <i class="bi bi-check-circle me-1"></i> Finalisasi
+                        <i class="bi bi-check-circle me-1"></i>
+                        Finalisasi
                     </button>
                 </form>
 
