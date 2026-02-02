@@ -93,6 +93,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('mutasi', MutasiStokController::class);
+    Route::post('/mutasi/import', [MutasiStokController::class, 'import'])->name('mutasi.import');
 
     /*
     |--------------------------------------------------------------------------
@@ -112,7 +113,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     */
     Route::resource('stok-opname', StokOpnameController::class);
     Route::post('stok-opname/{id}/final', [StokOpnameController::class, 'final'])->name('stok-opname.final');
-
+    Route::post('/stok-opname/import', [StokOpnameController::class, 'import'])->name('stok-opname.import');
     Route::get('stok-opname/{id}/export-pdf',[StokOpnameController::class, 'exportPdf'])->name('stok-opname.export-pdf');
     Route::get('stok-opname/{id}/export-excel',[StokOpnameController::class, 'exportExcel'])->name('stok-opname.export-excel');
 

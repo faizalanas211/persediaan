@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\StokOpnameImport;
 use App\Models\BarangAtk;
 use App\Models\DetailStokOpname;
 use App\Models\MutasiStok;
@@ -14,9 +15,6 @@ use Illuminate\Support\Facades\DB;
 /* PDF */
 use Barryvdh\DomPDF\Facade\Pdf;
 
-/* EXCEL */
-use App\Exports\StokOpnameExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class StokOpnameController extends Controller
 {
@@ -171,39 +169,26 @@ class StokOpnameController extends Controller
 
     /* ======================= EXPORT PDF ======================= */
     public function exportPdf($id)
-    {
-        $stokOpname = StokOpname::with(['detail.barang', 'pencatat'])->findOrFail($id);
+{
+    $stokOpname = StokOpname::with([
+        'detail.barang',
+        'pencatat'
+    ])->findOrFail($id);
 
-        if ($stokOpname->status !== 'final') {
-            abort(403, 'Stok opname belum difinalisasi');
-        }
+    // ⛔ proteksi
+    if ($stokOpname->status !== 'final') {
+        abort(403, 'Stok opname belum difinalisasi');
+    }
 
         $pdf = Pdf::loadView(
             'dashboard.stok_opname.export-pdf',
             compact('stokOpname')
         )->setPaper('A4', 'portrait');
 
-        return $pdf->download(
-            'stok-opname-' .
-            Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
-            '.pdf'
-        );
-    }
-
-    /* ======================= EXPORT EXCEL ======================= */
-    public function exportExcel($id)
-    {
-        $stokOpname = StokOpname::with(['detail.barang', 'pencatat'])->findOrFail($id);
-
-        if ($stokOpname->status !== 'final') {
-            abort(403, 'Stok opname belum difinalisasi');
-        }
-
-        return Excel::download(
-            new StokOpnameExport($stokOpname),
-            'stok-opname-' .
-            Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
-            '.xlsx'
-        );
-    }
+    return $pdf->download(
+        'stok-opname-' .
+        \Carbon\Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
+        '.pdf'
+    );
+}
 }
