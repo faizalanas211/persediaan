@@ -27,39 +27,44 @@ class BarangAtkController extends Controller
         $search = $request->search;
 
         $barangs = BarangAtk::when($search, function ($query, $search) {
-                $query->where('nama_barang', 'like', '%' . $search . '%')
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_barang', 'like', '%' . $search . '%')
                     ->orWhere('satuan', 'like', '%' . $search . '%');
+                });
             })
             ->withExists('detailPermintaan')
+            ->withCount('mutasiStok') // ⬅️ JUMLAH MUTASI
+            ->with(['mutasiStok' => function ($q) {
+                $q->select('id', 'barang_id', 'jenis_mutasi');
+            }])
             ->orderBy('nama_barang')
             ->paginate(10)
-            ->withQueryString(); 
+            ->withQueryString();
 
         return view('dashboard.barang.index', compact('barangs'));
     }
 
     public function search(Request $request)
-{
-    $q = $request->q;
-    $sort = $request->get('sort', 'nama_barang');
-    $direction = $request->get('direction', 'asc');
+    {
+        $q = $request->q;
+        $sort = $request->get('sort', 'nama_barang');
+        $direction = $request->get('direction', 'asc');
 
-    // whitelist kolom yang boleh di-sort
-    if (!in_array($sort, ['nama_barang', 'stok'])) {
-        $sort = 'nama_barang';
+        // whitelist kolom yang boleh di-sort
+        if (!in_array($sort, ['nama_barang', 'stok'])) {
+            $sort = 'nama_barang';
+        }
+
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'asc';
+        }
+
+        $barangs = BarangAtk::where('nama_barang', 'like', "%$q%")
+            ->orderBy($sort, $direction)
+            ->get(['id', 'nama_barang', 'satuan', 'stok']);
+
+        return response()->json($barangs);
     }
-
-    if (!in_array($direction, ['asc', 'desc'])) {
-        $direction = 'asc';
-    }
-
-    $barangs = BarangAtk::where('nama_barang', 'like', "%$q%")
-        ->orderBy($sort, $direction)
-        ->get(['id', 'nama_barang', 'satuan', 'stok']);
-
-    return response()->json($barangs);
-}
-
 
     public function create()
     {
