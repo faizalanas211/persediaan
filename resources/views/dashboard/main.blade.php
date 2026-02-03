@@ -8,31 +8,35 @@
 
 @section('content')
 
-<div class="tv-board" id="dashboardArea">
+<div class="neo-dashboard" id="dashboardArea">
 
-    {{-- HEADER --}}
-    <div class="tv-header">
+    {{-- ===== HEADER ===== --}}
+    <div class="neo-header">
         <div>
             <h2>Dashboard Persediaan Barang</h2>
             <span>Informasi stok inventaris</span>
         </div>
 
-        <button class="btn-fullscreen" onclick="toggleFullscreen()">⛶</button>
+        <button class="neo-fullscreen" onclick="toggleFullscreen()" title="Fullscreen">
+            <i class="bx bx-fullscreen"></i>
+        </button>
     </div>
 
-    {{-- CONTENT --}}
-    <div class="tv-content">
-        <div class="tv-scroll">
+    {{-- ===== CONTENT ===== --}}
+    <div class="neo-content">
+        <div class="neo-scroll">
 
-            {{-- GRID --}}
-            <div class="tv-grid">
-
+            <div class="neo-grid">
                 @foreach($dataBarang as $jenis => $item)
-                <div class="tv-card">
-                    <div class="tv-card-name">
-                        {{ $jenis }}
+                <div class="neo-card">
+                    <div class="neo-card-left">
+                        <div class="neo-icon">
+                            <i class="bx bx-package"></i>
+                        </div>
+                        <div class="neo-name">{{ $jenis }}</div>
                     </div>
-                    <div class="tv-card-stock">
+
+                    <div class="neo-stock">
                         {{ $item['ready'] }}
                         <small>unit</small>
                     </div>
@@ -41,17 +45,20 @@
 
                 {{-- DUPLIKASI UNTUK LOOP --}}
                 @foreach($dataBarang as $jenis => $item)
-                <div class="tv-card">
-                    <div class="tv-card-name">
-                        {{ $jenis }}
+                <div class="neo-card">
+                    <div class="neo-card-left">
+                        <div class="neo-icon">
+                            <i class="bx bx-package"></i>
+                        </div>
+                        <div class="neo-name">{{ $jenis }}</div>
                     </div>
-                    <div class="tv-card-stock">
+
+                    <div class="neo-stock">
                         {{ $item['ready'] }}
                         <small>unit</small>
                     </div>
                 </div>
                 @endforeach
-
             </div>
 
         </div>
@@ -59,142 +66,176 @@
 
 </div>
 
+{{-- ================= STYLE ================= --}}
 <style>
 :root{
-    --dark-main:#1f2937;
-    --dark-soft:#374151;
-    --accent:#6366f1;
-    --bg-soft:#f8fafc;
+    --neo-bg: linear-gradient(145deg, #e6e9f0, #ffffff);
+    --neo-shadow:
+        8px 8px 16px #d9dbe2,
+        -8px -8px 16px #ffffff;
+    --neo-shadow-inset:
+        inset 3px 3px 6px #d9dbe2,
+        inset -3px -3px 6px #ffffff;
+    --primary:#1a73e8;
+    --text-dark:#1f2937;
+    --text-soft:#5f6368;
 }
 
 /* ROOT */
-.tv-board{
-    background:var(--bg-soft);
-    border-radius:20px;
-    box-shadow:0 16px 40px rgba(0,0,0,.12);
+.neo-dashboard{
+    border-radius:22px;
+    background:var(--neo-bg);
+    box-shadow:var(--neo-shadow);
     overflow:hidden;
 }
 
 /* HEADER */
-.tv-header{
+.neo-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:28px 36px;
-    background:#ffffff;
-    border-bottom:2px solid #e5e7eb;
+    padding:26px 34px;
+    background:var(--neo-bg);
+    box-shadow:var(--neo-shadow-inset);
 }
 
-.tv-header h2{
+.neo-header h2{
     margin:0;
-    font-size:28px;
     font-weight:800;
-    color:var(--dark-main);
+    color:var(--text-dark);
 }
 
-.tv-header span{
+.neo-header span{
     font-size:14px;
-    color:#6b7280;
+    color:var(--text-soft);
 }
 
 /* FULLSCREEN */
-.btn-fullscreen{
+.neo-fullscreen{
     border:none;
-    background:#eef2ff;
-    color:var(--accent);
-    border-radius:12px;
-    padding:10px 16px;
-    font-size:20px;
+    background:var(--neo-bg);
+    box-shadow:var(--neo-shadow);
+    border-radius:14px;
+    width:46px;
+    height:46px;
+    font-size:22px;
+    color:var(--primary);
     cursor:pointer;
+    transition:.25s;
+}
+.neo-fullscreen:hover{
+    transform:scale(1.05);
 }
 
 /* CONTENT */
-.tv-content{
-    height:460px;
+.neo-content{
+    height:480px;
     overflow:hidden;
-    background:var(--bg-soft);
 }
 
 /* SCROLL */
-.tv-scroll{
-    animation: tvScroll 28s linear infinite;
+.neo-scroll{
+    animation: scrollUp 28s linear infinite;
 }
 
 /* GRID */
-.tv-grid{
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap:24px;
+.neo-grid{
     padding:32px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px;
 }
 
 /* CARD */
-.tv-card{
-    background:#ffffff;
-    border-radius:18px;
-    padding:26px 32px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
+.neo-card{
+    background:var(--neo-bg);
+    box-shadow:var(--neo-shadow);
+    border-radius:20px;
+    padding:26px 30px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    position:relative;
-    overflow:hidden;
+    transition:.3s;
 }
 
-/* AKSEN STRIP */
-.tv-card::before{
-    content:'';
-    position:absolute;
-    left:0;
-    top:0;
-    bottom:0;
-    width:6px;
-    background:var(--accent);
-    border-radius:18px 0 0 18px;
+.neo-card:hover{
+    transform:translateY(-4px);
 }
 
-/* NAME */
-.tv-card-name{
+/* LEFT */
+.neo-card-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.neo-icon{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    background:linear-gradient(145deg, #1a73e8, #0d47a1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:26px;
+    box-shadow:
+        4px 4px 8px #d9dbe2,
+        -4px -4px 8px #ffffff;
+}
+
+.neo-name{
     font-size:24px;
-    font-weight:700;
-    color:var(--dark-main);
+    font-weight:800;
+    color:var(--text-dark);
 }
 
 /* STOCK */
-.tv-card-stock{
-    font-size:56px;
+.neo-stock{
+    font-size:64px;
     font-weight:900;
-    color:var(--dark-main);
+    color:var(--text-dark);
     display:flex;
     align-items:flex-end;
     gap:8px;
 }
 
-.tv-card-stock small{
+.neo-stock small{
     font-size:15px;
+    color:var(--text-soft);
     font-weight:600;
-    color:var(--dark-soft);
 }
 
 /* ANIMATION */
-@keyframes tvScroll{
+@keyframes scrollUp{
     0%{ transform:translateY(0); }
     100%{ transform:translateY(-50%); }
 }
 
 /* FULLSCREEN MODE */
-:fullscreen .tv-content{
-    height:calc(100vh - 110px);
+:fullscreen .neo-content{
+    height:calc(100vh - 120px);
 }
 
-:fullscreen .tv-card-name{
+:fullscreen .neo-name{
     font-size:34px;
 }
 
-:fullscreen .tv-card-stock{
-    font-size:80px;
+:fullscreen .neo-stock{
+    font-size:96px;
 }
 </style>
 
+{{-- ================= SCRIPT ================= --}}
+<script>
+function toggleFullscreen() {
+    const el = document.getElementById('dashboardArea');
+    if (!document.fullscreenElement) {
+        el.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+</script>
 
 @endsection
