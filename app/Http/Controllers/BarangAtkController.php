@@ -147,19 +147,26 @@ class BarangAtkController extends Controller
 
     public function destroy(BarangAtk $barang)
     {
+        // Cegah hapus jika sudah ada permintaan
         if ($barang->detailPermintaan()->exists()) {
             return back()->withErrors([
                 'error' => 'Barang tidak dapat dihapus karena sudah memiliki riwayat permintaan'
             ]);
         }
 
-        $barang->delete();
+        DB::transaction(function () use ($barang) {
+
+            // Hapus seluruh mutasi stok terkait barang
+            $barang->mutasiStok()->delete();
+
+            // Hapus barang
+            $barang->delete();
+        });
 
         return redirect()
             ->route('barang.index')
-            ->with('success', 'Data barang berhasil dihapus!');
+            ->with('success', 'Barang dan seluruh riwayat mutasinya berhasil dihapus!');
     }
-
     
     public function riwayat(Request $request, $id)
     {

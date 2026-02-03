@@ -129,7 +129,6 @@
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     @endif
-
                                 </div>
                             </td>
                         </tr>

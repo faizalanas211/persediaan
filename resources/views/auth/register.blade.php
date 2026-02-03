@@ -1,126 +1,1009 @@
-@extends('layouts.auth')
-@section('content')
-    {{-- <div class="app-brand justify-content-center">
-        <a href="index.html" class="app-brand-link gap-2">
-            <span class="app-brand-logo demo">
-                <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <defs>
-                        <path
-                            d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
-                            id="path-1"></path>
-                        <path
-                            d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.5364148,3.11535317 13.9273018,0.573395879 13.7918663,0.358365126 C13.5790555,0.511491653 10.8061687,2.3935607 5.47320593,6.00457225 Z"
-                            id="path-3"></path>
-                        <path
-                            d="M7.50063644,21.2294429 L12.3234468,23.3159332 C14.1688022,24.7579751 14.397098,26.4880487 13.008334,28.506154 C11.6195701,30.5242593 10.3099883,31.790241 9.07958868,32.3040991 C5.78142938,33.4346997 4.13234973,34 4.13234973,34 C4.13234973,34 2.75489982,33.0538207 2.37032616e-14,31.1614621 C-0.55822714,27.8186216 -0.55822714,26.0572515 -4.05231404e-15,25.8773518 C0.83734071,25.6075023 2.77988457,22.8248993 3.3049379,22.52991 C3.65497346,22.3332504 5.05353963,21.8997614 7.50063644,21.2294429 Z"
-                            id="path-4"></path>
-                        <path
-                            d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17 24,17 L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923 12.4,13.8 L17.4,7.13333333 C18.0627417,6.24967773 19.3163444,6.07059163 20.2,6.73333333 C20.3516113,6.84704183 20.4862915,6.981722 20.6,7.13333333 Z"
-                            id="path-5"></path>
-                    </defs>
-                    <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                        <g id="Brand-Logo" transform="translate(-27.000000, -15.000000)">
-                            <g id="Icon" transform="translate(27.000000, 15.000000)">
-                                <g id="Mask" transform="translate(0.000000, 8.000000)">
-                                    <mask id="mask-2" fill="white">
-                                        <use xlink:href="#path-1"></use>
-                                    </mask>
-                                    <use fill="#696cff" xlink:href="#path-1"></use>
-                                    <g id="Path-3" mask="url(#mask-2)">
-                                        <use fill="#696cff" xlink:href="#path-3"></use>
-                                        <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-3"></use>
-                                    </g>
-                                    <g id="Path-4" mask="url(#mask-2)">
-                                        <use fill="#696cff" xlink:href="#path-4"></use>
-                                        <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-4"></use>
-                                    </g>
-                                </g>
-                                <g id="Triangle"
-                                    transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) ">
-                                    <use fill="#696cff" xlink:href="#path-5"></use>
-                                    <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-5"></use>
-                                </g>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>
-            <span class="app-brand-text demo text-body fw-bolder">Sneat</span>
-        </a>
-    </div> --}}
-    <!-- /Logo -->
-    <h4 class="mb-2 text-center">Silakan Masukkan Data Diri Anda</h4>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Sistem Manajemen Persediaan ATK</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <form id="formAuthentication" class="mb-3" action="{{ route('registerAction') }}" method="POST">
-        @csrf
-        <div class="mb-3">
-            <label for="username" class="form-label">Nama Lengkap</label>
-            <input type="text" class="form-control @error('name')
-                is-invalid
-            @enderror"
-                id="name" name="name" value="{{ old('name') }}" autocomplete="off" />
-            @error('name')
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    {{ $message }}
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark-bg: #0f172a;
+            --dark-surface: #1e293b;
+            --dark-surface-light: #334155;
+            --dark-text: #f1f5f9;
+            --dark-text-light: #cbd5e1;
+            --dark-border: #475569;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--dark-text);
+            position: relative;
+        }
+
+        /* Simple Background */
+        .simple-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        /* Main Container */
+        .register-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            background: var(--dark-surface);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+            min-height: 700px;
+            border: 1px solid var(--dark-border);
+        }
+
+        /* Left Side - Minimal Brand */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--dark-surface) 0%, var(--dark-surface-light) 100%);
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Simple Logo */
+        .simple-logo {
+            margin-bottom: 40px;
+        }
+
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            box-shadow: 
+                0 10px 20px rgba(59, 130, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .system-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .system-tagline {
+            color: var(--dark-text-light);
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* System Info */
+        .system-info {
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .system-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .system-description {
+            color: var(--dark-text-light);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: left;
+            opacity: 0.9;
+        }
+
+        /* Simple Features List */
+        .features-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: var(--dark-text-light);
+            font-size: 14px;
+        }
+
+        .features-list i {
+            color: var(--primary);
+            font-size: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 6px;
+        }
+
+        /* Simple Footer */
+        .simple-footer {
+            margin-top: 40px;
+            color: var(--dark-text-light);
+            font-size: 12px;
+            opacity: 0.6;
+            text-align: center;
+        }
+
+        /* Right Side - Register Form */
+        .register-section {
+            flex: 1.2;
+            padding: 50px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--dark-surface);
+            overflow-y: auto;
+        }
+
+        .register-form-container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-header p {
+            color: var(--dark-text-light);
+            font-size: 15px;
+            font-weight: 300;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--dark-text-light);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-text-light);
+            font-size: 18px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: var(--dark-surface-light);
+            border: 2px solid var(--dark-border);
+            border-radius: 12px;
+            font-size: 15px;
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--dark-surface);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--dark-text-light);
+            opacity: 0.5;
+        }
+
+        /* Error States */
+        .form-input.is-invalid {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .form-input.is-invalid:focus {
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+
+        .invalid-feedback {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .invalid-feedback i {
+            font-size: 14px;
+        }
+
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--dark-text-light);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: var(--dark-border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--danger);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            color: var(--dark-text-light);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            color: var(--dark-text-light);
+            font-size: 14px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid var(--dark-border);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 8px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.4s ease;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 380px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.9) 100%);
+        }
+
+        .notification-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            .register-container {
+                flex-direction: column;
+                max-width: 500px;
+                min-height: auto;
+            }
+            
+            .brand-section {
+                padding: 40px 30px;
+            }
+            
+            .register-section {
+                padding: 40px 30px;
+            }
+            
+            .form-header h2 {
+                font-size: 28px;
+            }
+            
+            .system-title {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .register-container {
+                border-radius: 16px;
+            }
+            
+            .brand-section,
+            .register-section {
+                padding: 30px 20px;
+            }
+            
+            .logo-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .system-name {
+                font-size: 20px;
+            }
+            
+            .form-header h2 {
+                font-size: 24px;
+            }
+            
+            .system-info {
+                padding: 20px;
+            }
+        }
+
+        /* Animation for form elements */
+        .form-group {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        .form-group:nth-child(6) { animation-delay: 0.6s; }
+
+        .submit-btn {
+            animation: fadeInUp 0.5s ease forwards;
+            animation-delay: 0.7s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form validation animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .is-invalid {
+            animation: shake 0.3s ease;
+        }
+
+        /* Subtle animation for logo */
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .logo-circle {
+            animation: subtleFloat 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Simple Background -->
+    <div class="simple-bg"></div>
+
+    <!-- Main Register Container -->
+    <div class="register-container">
+        <!-- Left Side - Minimal Brand -->
+        <div class="brand-section">
+            <div class="brand-content">
+                <!-- Simple Logo -->
+                <div class="simple-logo">
+                    <div class="logo-circle">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h2 class="system-name">REGISTRASI</h2>
                 </div>
-            @enderror
-        </div>
-        <div class="mb-3">
-            <label for="nip" class="form-label">NIP</label>
-            <input type="number" class="form-control @error('nip')
-                is-invalid
-            @enderror"
-                id="nip" name="nip" value="{{ old('nip') }}" autocomplete="off" />
-            @error('nip')
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    {{ $message }}
+
+                <!-- System Info -->
+                <div class="system-info">
+                    <h3 class="system-title">Sistem Manajemen Persediaan ATK</h3>
+                    
+                    <ul class="features-list">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span>Pencatatan barang ATK</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span>Mutasi stok barang</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span>Permintaan barang</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span>Stok opname</span>
+                        </li>
+                    </ul>
                 </div>
-            @enderror
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="text" class="form-control @error('email')
-                is-invalid
-            @enderror"
-                id="email" name="email" value="{{ old('email') }}" autocomplete="off" />
-        </div>
-        <div class="mb-3">
-            <label for="jabatan" class="form-label">Jabatan</label>
-            <input type="text" class="form-control @error('jabatan')
-                is-invalid
-            @enderror"
-                id="jabatan" name="jabatan" value="{{ old('jabatan') }}" autocomplete="off" />
-            @error('jabatan')
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    {{ $message }}
+
+                <!-- Simple Footer -->
+                <div class="simple-footer">
+                    © 2024 Sistem ATK. Hak cipta dilindungi.
                 </div>
-            @enderror
-        </div>
-        <div class="mb-3 form-password-toggle">
-            <label class="form-label" for="password">Password</label>
-            <div class="input-group input-group-merge">
-                <input type="password" id="password"
-                    class="form-control @error('password')
-                    is-invalid
-                @enderror"
-                    name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                    aria-describedby="password" autocomplete="off" />
-                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
             </div>
-            @error('password')
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    {{ $message }}
-                </div>
-            @enderror
         </div>
-        <button class="btn btn-primary d-grid w-100" type="submit">Register</button>
-    </form>
 
-    <p class="text-center">
-        <span>Already have an account?</span>
-        <a href="{{ route('login') }}">
-            <span>Sign in instead</span>
-        </a>
-    </p>
-@endsection
+        <!-- Right Side - Register Form -->
+        <div class="register-section">
+            <div class="register-form-container">
+                <!-- Notifications -->
+                @if(session('success'))
+                <div class="notification notification-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="notification notification-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+                @endif
+
+                <!-- Form Header -->
+                <div class="form-header">
+                    <h2>Buat Akun Baru</h2>
+                    <p>Isi data diri Anda dengan lengkap</p>
+                </div>
+
+                <!-- Register Form -->
+                <form id="registerForm" action="{{ route('registerAction') }}" method="POST">
+                    @csrf
+                    
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label class="form-label" for="name">Nama Lengkap</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-input @error('name') is-invalid @enderror" 
+                                value="{{ old('name') }}" 
+                                placeholder="Masukkan nama lengkap"
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                        @error('name')
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- NIP -->
+                    <div class="form-group">
+                        <label class="form-label" for="nip">NIP</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-id-card input-icon"></i>
+                            <input 
+                                type="number" 
+                                id="nip" 
+                                name="nip" 
+                                class="form-input @error('nip') is-invalid @enderror" 
+                                value="{{ old('nip') }}" 
+                                placeholder="Masukkan NIP"
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                        @error('nip')
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input @error('email') is-invalid @enderror" 
+                                value="{{ old('email') }}" 
+                                placeholder="Masukkan email"
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                        @error('email')
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Position -->
+                    <div class="form-group">
+                        <label class="form-label" for="jabatan">Jabatan</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-briefcase input-icon"></i>
+                            <input 
+                                type="text" 
+                                id="jabatan" 
+                                name="jabatan" 
+                                class="form-input @error('jabatan') is-invalid @enderror" 
+                                value="{{ old('jabatan') }}" 
+                                placeholder="Masukkan jabatan"
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                        @error('jabatan')
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input @error('password') is-invalid @enderror" 
+                                placeholder="Buat password"
+                                autocomplete="off"
+                                required
+                            />
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <i class="fas fa-eye" id="passwordIcon"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Kekuatan password</div>
+                        </div>
+                        @error('password')
+                            <div class="invalid-feedback">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Password Confirmation -->
+                    <div class="form-group">
+                        <label class="form-label" for="password_confirmation">Konfirmasi Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password_confirmation" 
+                                name="password_confirmation" 
+                                class="form-input" 
+                                placeholder="Ulangi password"
+                                autocomplete="off"
+                                required
+                            />
+                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
+                                <i class="fas fa-eye" id="confirmPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Daftar Sekarang
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    <span>Sudah memiliki akun?</span>
+                    <a href="{{ route('login') }}">Masuk di sini</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-hide notifications
+        setTimeout(() => {
+            document.querySelectorAll('.notification').forEach(notification => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            });
+        }, 4000);
+
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId === 'password' ? 'passwordIcon' : 'confirmPasswordIcon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Password strength indicator
+        const passwordInput = document.getElementById('password');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Check password strength
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            // Update strength bar
+            const width = strength * 20;
+            strengthFill.style.width = width + '%';
+            
+            // Update color and text
+            let color = '#ef4444'; // red
+            let text = 'Sangat lemah';
+            
+            if (strength >= 2) {
+                color = '#f59e0b'; // yellow
+                text = 'Lemah';
+            }
+            if (strength >= 3) {
+                color = '#3b82f6'; // blue
+                text = 'Cukup';
+            }
+            if (strength >= 4) {
+                color = '#10b981'; // green
+                text = 'Kuat';
+            }
+            if (strength >= 5) {
+                color = '#059669'; // dark green
+                text = 'Sangat kuat';
+            }
+            
+            strengthFill.style.backgroundColor = color;
+            strengthText.textContent = text;
+        });
+
+        // Add input focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            const wrapper = input.closest('.input-wrapper');
+            
+            input.addEventListener('focus', function() {
+                wrapper.style.transform = 'scale(1.02)';
+                wrapper.style.zIndex = '1';
+            });
+            
+            input.addEventListener('blur', function() {
+                wrapper.style.transform = 'scale(1)';
+                wrapper.style.zIndex = '0';
+            });
+        });
+
+        // Form validation
+        const registerForm = document.getElementById('registerForm');
+        const submitBtn = registerForm.querySelector('.submit-btn');
+        
+        registerForm.addEventListener('submit', function(e) {
+            // Validate password match
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password_confirmation').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                
+                // Add error class to confirmation field
+                const confirmInput = document.getElementById('password_confirmation');
+                confirmInput.classList.add('is-invalid');
+                
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'invalid-feedback';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password tidak sama';
+                
+                const existingError = confirmInput.parentElement.nextElementSibling;
+                if (existingError && existingError.classList.contains('invalid-feedback')) {
+                    existingError.remove();
+                }
+                
+                confirmInput.parentElement.parentElement.appendChild(errorDiv);
+                return;
+            }
+            
+            // Show loading state
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+            submitBtn.disabled = true;
+            
+            // Re-enable button after 5 seconds (fallback)
+            setTimeout(() => {
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            }, 5000);
+        });
+
+        // Show error function
+        function showError(message) {
+            // Remove existing error notifications
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            
+            // Create new error notification
+            const notification = document.createElement('div');
+            notification.className = 'notification notification-error';
+            notification.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate form elements
+            setTimeout(() => {
+                document.querySelectorAll('.form-group, .submit-btn').forEach(el => {
+                    el.style.animationPlayState = 'running';
+                });
+            }, 100);
+
+            // Real-time validation for NIP
+            const nipInput = document.getElementById('nip');
+            nipInput.addEventListener('input', function() {
+                if (this.value.length > 18) {
+                    this.value = this.value.slice(0, 18);
+                }
+            });
+
+            // Real-time validation for email
+            const emailInput = document.getElementById('email');
+            emailInput.addEventListener('blur', function() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(this.value)) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+
+        // Simple typing effect for system description
+        const descriptionText = "Daftarkan akun Anda untuk mengakses sistem manajemen persediaan alat tulis kantor yang terintegrasi.";
+        const descriptionElement = document.querySelector('.system-description');
+        
+        if (descriptionElement) {
+            let charIndex = 0;
+            descriptionElement.textContent = '';
+            
+            function typeWriter() {
+                if (charIndex < descriptionText.length) {
+                    descriptionElement.textContent += descriptionText.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 20);
+                }
+            }
+            
+            // Start typing after page load
+            setTimeout(typeWriter, 500);
+        }
+    </script>
+</body>
+</html>
