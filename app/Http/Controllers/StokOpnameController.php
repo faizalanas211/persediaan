@@ -11,12 +11,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-/* PDF */
+/* PDF & Excel */
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StokOpnameExport;
 
 class StokOpnameController extends Controller
 {
+    /* ======================= INDEX ======================= */
     public function index(Request $request)
     {
         $query = StokOpname::with(['pencatat', 'detail']);
@@ -35,6 +37,7 @@ class StokOpnameController extends Controller
         return view('dashboard.stok_opname.index', compact('stokOpnames'));
     }
 
+    /* ======================= CREATE ======================= */
     public function create()
     {
         return view('dashboard.stok_opname.create', [
@@ -44,6 +47,7 @@ class StokOpnameController extends Controller
         ]);
     }
 
+    /* ======================= STORE ======================= */
     public function store(Request $request)
     {
         $request->validate([
@@ -53,31 +57,41 @@ class StokOpnameController extends Controller
             'stok_fisik'     => 'required|array',
         ]);
 
-        DB::transaction(function () use ($request) {
+        // 🔴 INI YANG KEMARIN HILANG
+        $periode = Carbon::parse($request->periode_bulan);
+
+        DB::transaction(function () use ($request, $periode) {
+
+            // ⛔ Cegah dobel stok opname bulan sama
+            if (StokOpname::whereYear('periode_bulan', $periode->year)
+                ->whereMonth('periode_bulan', $periode->month)
+                ->exists()) {
+                abort(422, 'Stok opname untuk periode ini sudah ada.');
+            }
 
             $stokOpname = StokOpname::create([
-                'periode_bulan'  => $request->periode_bulan,
+                'periode_bulan'  => $periode->startOfMonth(),
                 'tanggal_opname' => $request->tanggal_opname,
                 'keterangan'     => $request->keterangan,
                 'user_id'        => Auth::id(),
                 'status'         => 'draft',
             ]);
 
-            // DETAIL
             foreach ($request->barang_id as $i => $barangId) {
 
-                $stokSistem = BarangAtk::findOrFail($barangId)->stok;
+                $barang     = BarangAtk::findOrFail($barangId);
+                $stokSistem = $barang->stok;
                 $stokFisik  = $request->stok_fisik[$i];
                 $selisih    = $stokFisik - $stokSistem;
 
-                // HITUNG TOTAL MASUK
+                // TOTAL MASUK BULAN TERSEBUT
                 $totalMasuk = MutasiStok::where('barang_id', $barangId)
                     ->where('jenis_mutasi', 'masuk')
                     ->whereMonth('tanggal', $periode->month)
                     ->whereYear('tanggal', $periode->year)
                     ->sum('jumlah');
 
-                // HITUNG TOTAL KELUAR
+                // TOTAL KELUAR BULAN TERSEBUT
                 $totalKeluar = MutasiStok::where('barang_id', $barangId)
                     ->where('jenis_mutasi', 'keluar')
                     ->whereMonth('tanggal', $periode->month)
@@ -96,10 +110,12 @@ class StokOpnameController extends Controller
             }
         });
 
-        return redirect()->route('stok-opname.index')
+        return redirect()
+            ->route('stok-opname.index')
             ->with('success', 'Stok opname berhasil dibuat!');
     }
 
+    /* ======================= EDIT ======================= */
     public function edit($id)
     {
         $stokOpname = StokOpname::findOrFail($id);
@@ -108,11 +124,13 @@ class StokOpnameController extends Controller
         return view('dashboard.stok_opname.edit', compact('stokOpname', 'details'));
     }
 
+    /* ======================= UPDATE ======================= */
     public function update(Request $request, $id)
     {
         DB::transaction(function () use ($request, $id) {
 
             $stokOpname = StokOpname::findOrFail($id);
+
             $stokOpname->update([
                 'periode_bulan'  => $request->periode_bulan,
                 'tanggal_opname' => $request->tanggal_opname,
@@ -121,7 +139,7 @@ class StokOpnameController extends Controller
 
             foreach ($request->detail_id as $i => $detailId) {
 
-                $detail = DetailStokOpname::findOrFail($detailId);
+                $detail    = DetailStokOpname::findOrFail($detailId);
                 $stokFisik = $request->stok_fisik[$i];
                 $selisih   = $stokFisik - $detail->stok_sistem;
 
@@ -133,16 +151,19 @@ class StokOpnameController extends Controller
             }
         });
 
-        return redirect()->route('stok-opname.index')
+        return redirect()
+            ->route('stok-opname.index')
             ->with('success', 'Stok opname berhasil diperbarui');
     }
 
+    /* ======================= SHOW ======================= */
     public function show($id)
     {
         $stokOpname = StokOpname::with(['pencatat', 'detail.barang'])->findOrFail($id);
         return view('dashboard.stok_opname.show', compact('stokOpname'));
     }
 
+    /* ======================= FINAL ======================= */
     public function final($id)
     {
         $stokOpname = StokOpname::with('detail.barang')->findOrFail($id);
@@ -179,14 +200,16 @@ class StokOpnameController extends Controller
             $stokOpname->update(['status' => 'final']);
         });
 
-        return redirect()->route('stok-opname.show', $stokOpname->id)
+        return redirect()
+            ->route('stok-opname.show', $stokOpname->id)
             ->with('success', 'Stok opname berhasil difinalkan!');
     }
+
+    /* ======================= EXPORT PDF ======================= */
     public function exportPdf($id)
     {
         $stokOpname = StokOpname::with(['detail.barang', 'pencatat'])->findOrFail($id);
 
-        // proteksi
         if ($stokOpname->status !== 'final') {
             abort(403, 'Stok opname belum difinalisasi');
         }
