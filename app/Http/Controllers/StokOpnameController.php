@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 /* PDF */
 use Barryvdh\DomPDF\Facade\Pdf;
-
-/* EXCEL */
-use App\Exports\StokOpnameExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StokOpnameController extends Controller
@@ -66,18 +63,35 @@ class StokOpnameController extends Controller
                 'status'         => 'draft',
             ]);
 
+            // DETAIL
             foreach ($request->barang_id as $i => $barangId) {
 
                 $stokSistem = BarangAtk::findOrFail($barangId)->stok;
                 $stokFisik  = $request->stok_fisik[$i];
                 $selisih    = $stokFisik - $stokSistem;
 
+                // HITUNG TOTAL MASUK
+                $totalMasuk = MutasiStok::where('barang_id', $barangId)
+                    ->where('jenis_mutasi', 'masuk')
+                    ->whereMonth('tanggal', $periode->month)
+                    ->whereYear('tanggal', $periode->year)
+                    ->sum('jumlah');
+
+                // HITUNG TOTAL KELUAR
+                $totalKeluar = MutasiStok::where('barang_id', $barangId)
+                    ->where('jenis_mutasi', 'keluar')
+                    ->whereMonth('tanggal', $periode->month)
+                    ->whereYear('tanggal', $periode->year)
+                    ->sum('jumlah');
+
                 $stokOpname->detail()->create([
-                    'barang_id'   => $barangId,
-                    'stok_sistem' => $stokSistem,
-                    'stok_fisik'  => $stokFisik,
-                    'selisih'     => $selisih,
-                    'keterangan'  => $request->keterangan_detail[$i] ?? null,
+                    'barang_id'    => $barangId,
+                    'stok_sistem'  => $stokSistem,
+                    'stok_fisik'   => $stokFisik,
+                    'selisih'      => $selisih,
+                    'total_masuk'  => $totalMasuk,
+                    'total_keluar' => $totalKeluar,
+                    'keterangan'   => $request->keterangan_detail[$i] ?? null,
                 ]);
             }
         });
@@ -168,12 +182,11 @@ class StokOpnameController extends Controller
         return redirect()->route('stok-opname.show', $stokOpname->id)
             ->with('success', 'Stok opname berhasil difinalkan!');
     }
-
-    /* ======================= EXPORT PDF ======================= */
     public function exportPdf($id)
     {
         $stokOpname = StokOpname::with(['detail.barang', 'pencatat'])->findOrFail($id);
 
+        // proteksi
         if ($stokOpname->status !== 'final') {
             abort(403, 'Stok opname belum difinalisasi');
         }

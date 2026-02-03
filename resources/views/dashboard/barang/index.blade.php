@@ -113,19 +113,19 @@
                                     </a>
 
                                     {{-- DELETE --}}
-                                    @if ($barang->detail_permintaan_exists)
-                                        <button type="button"
-                                                class="btn btn-sm btn-light-secondary rounded-pill px-2"
-                                                title="Barang sudah memiliki riwayat, tidak dapat dihapus"
-                                                disabled>
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    @else
+                                    @if ($barang->can_be_deleted)
                                         <button type="button"
                                                 class="btn btn-sm btn-light-danger rounded-pill px-2"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#modalHapus{{ $barang->id }}"
                                                 title="Hapus Barang">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    @else
+                                        <button type="button"
+                                                class="btn btn-sm btn-light-secondary rounded-pill px-2"
+                                                disabled
+                                                title="Barang sudah digunakan atau memiliki riwayat">
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     @endif

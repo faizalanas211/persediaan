@@ -27,4 +27,12 @@ class BarangAtk extends Model
         return $this->hasMany(DetailPermintaanAtk::class, 'barang_id');
     }
 
+    public function getCanBeDeletedAttribute()
+    {
+        return
+            $this->mutasiStok()->count() === 1 &&
+            $this->mutasiStok()->where('jenis_mutasi', 'masuk')->exists() &&
+            !$this->detailPermintaan()->exists();
+    }
+
 }

@@ -14,6 +14,8 @@ class DetailStokOpname extends Model
     protected $fillable = [
         'stok_opname_id',
         'barang_id',
+        'total_masuk',
+        'total_keluar',
         'stok_sistem',
         'stok_fisik',
         'selisih',
