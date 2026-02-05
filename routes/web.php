@@ -57,6 +57,9 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('pegawai/import', [PegawaiController::class, 'import'])
         ->name('pegawai.import');
 
+    Route::post('profile/edit', [PegawaiController::class, 'import'])
+        ->name('profile.edit');
+
     /*
     |--------------------------------------------------------------------------
     | Peminjaman

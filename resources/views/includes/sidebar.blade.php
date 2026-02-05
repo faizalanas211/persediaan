@@ -1,5 +1,5 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-    <div class="app-brand demo">
+    <!-- <div class="app-brand demo">
         <a href="index.html" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <div class="logo-shape">
@@ -12,9 +12,7 @@
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>
-    </div>
-
-    <div class="menu-divider my-3"></div>
+    </div> -->
 
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
@@ -112,18 +110,27 @@
 </aside>
 
 <style>
-    /* ===== GLASS MORPHISM THEME ===== */
+/* ===== DESKTOP ===== */
+@media (min-width: 1200px) {
     .layout-menu {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(10px);
-        border-right: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 
-            inset 1px 0 0 rgba(255, 255, 255, 0.8),
-            0 8px 32px rgba(31, 38, 135, 0.15);
-        position: relative;
-        overflow: hidden;
+        margin-top: 64px;                 /* turun di bawah navbar */
+        height: calc(100vh - 64px);
     }
-    
+}
+
+/* ===== MOBILE / TABLET ===== */
+@media (max-width: 1199.98px) {
+    .layout-menu {
+        position: fixed;
+        top: 0;                           /* FULL HEIGHT */
+        height: 100vh;
+        margin-top: 0;
+
+        z-index: 1200;
+        transition: transform .3s ease;
+    }
+}
+
     .layout-menu::before {
         content: '';
         position: absolute;

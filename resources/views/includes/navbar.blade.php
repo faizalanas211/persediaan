@@ -1,21 +1,22 @@
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-    id="layout-navbar">
-    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-            <i class="bx bx-menu bx-sm"></i>
-        </a>
-    </div>
+<nav class="navbar navbar-expand-xl fixed-top navbar-standard shadow-sm" id="layout-navbar">
+    <div class="container-xxl d-flex align-items-center justify-content-between">
 
-    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-        <!-- Search -->
-        <!-- <div class="navbar-nav align-items-center">
-            <div class="nav-item d-flex align-items-center">
-                <i class="bx bx-search fs-4 lh-0"></i>
-                <input type="text" class="form-control border-0 shadow-none" placeholder="Search..."
-                    aria-label="Search..." />
-            </div>
-        </div> -->
-        <!-- /Search -->
+        <!-- KIRI: Toggle + Brand -->
+        <div class="d-flex align-items-center gap-3">
+            <a href="javascript:void(0);" class="layout-menu-toggle nav-link d-xl-none p-2 rounded-circle bg-light">
+                <i class="bx bx-menu bx-sm text-primary"></i>
+            </a>
+
+            <a href="index.html" class="app-brand-link d-flex align-items-center text-decoration-none">
+                <div class="logo-container me-2">
+                    <i class="bx bx-package logo-icon"></i>
+                </div>
+                <div>
+                    <span class="brand-title fw-bold">Sistem Manajemen</span>
+                    <span class="brand-subtitle d-block">Persediaan ATK</span>
+                </div>
+            </a>
+        </div>
 
         @if(session('success'))
         <div id="flash-success"
@@ -55,61 +56,152 @@
         </script>
         @endif
 
-        <ul class="navbar-nav flex-row align-items-center ms-auto">
-            <!-- Place this tag where you want the button to render. -->
+        <!-- KANAN: User -->
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+               data-bs-toggle="dropdown">
+                <i class="bx bx-user-circle fs-3 text-secondary me-2"></i>
+                <span class="fw-medium text-dark d-none d-md-inline">
+                    {{ Auth::user()->name }}
+                </span>
+            </a>
 
-            <!-- User -->
-            <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                        <img
-                            src="{{ auth()->user()->pegawai && auth()->user()->pegawai->foto 
-                                    ? asset('storage/' . auth()->user()->pegawai->foto) 
-                                    : asset('admin/img/avatars/1.png') }}"
-                            alt="Foto Profil"
-                            class="w-px-40 h-px-40 rounded-circle object-cover"
-                        />
-                    </div>
+            <div class="dropdown-menu dropdown-menu-end mt-2">
+                <div class="px-3 py-2 border-bottom">
+                    <div class="fw-semibold">{{ Auth::user()->name }}</div>
+                    <small class="text-muted">{{ Auth::user()->role }}</small>
+                </div>
+
+                <a class="dropdown-item" href="#">
+                    <i class="bx bx-user me-2"></i> Profil
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 me-3">
-                                    <div class="avatar avatar-online">
-                                        <img
-                                            src="{{ auth()->user()->pegawai && auth()->user()->pegawai->foto 
-                                                    ? asset('storage/' . auth()->user()->pegawai->foto) 
-                                                    : asset('admin/img/avatars/1.png') }}"
-                                            alt="Foto Profil"
-                                            class="w-px-40 h-px-40 rounded-circle object-cover"
-                                        />
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
-                                    <small class="text-muted">{{ Auth::user()->role }}</small>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <div class="dropdown-divider"></div>
-                    </li>
-                    <li>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
-                        <a class="dropdown-item" href="#"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="bx bx-power-off me-2"></i>
-                            <span class="align-middle">Log Out</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <!--/ User -->
-        </ul>
+
+                <div class="dropdown-divider"></div>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="dropdown-item text-danger" type="submit">
+                        <i class="bx bx-log-out me-2"></i> Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </div>
-    
 </nav>
+
+
+<style>
+/* Navbar standar */
+.navbar-standard {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    height: 64px;
+    z-index: 1100;
+}
+
+/* Brand */
+/* ===== GRADIENT GLASS NAVBAR ===== */
+.navbar-gradient-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    height: 70px;
+    transition: all 0.3s ease;
+}
+
+/* Logo Styling */
+.logo-container {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.logo-icon {
+    font-size: 1.5rem;
+    color: white;
+    z-index: 1;
+}
+
+.brand-title {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.brand-subtitle {
+    color: #6b7280;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.app-brand-link span {
+    letter-spacing: .3px;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    min-width: 220px;
+}
+
+.dropdown-item {
+    font-size: 14px;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+/* Icon hover */
+.navbar a:hover i {
+    color: #0d6efd;
+}
+
+</style>
+
+<script>
+// Auto hide flash messages
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert-flash');
+    
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-20px)';
+            setTimeout(() => alert.remove(), 300);
+        }, 4000);
+    });
+});
+
+// Toggle sidebar
+document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('collapsed');
+    }
+});
+</script>

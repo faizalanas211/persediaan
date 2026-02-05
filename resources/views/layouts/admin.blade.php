@@ -86,6 +86,11 @@
             background: rgba(0, 0, 0, 0.35) !important;
             backdrop-filter: blur(2px);
         }
+
+        .content-wrapper {
+    padding-top: 64px;
+}
+
     </style>
 
 </body>
