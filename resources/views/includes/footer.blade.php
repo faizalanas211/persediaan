@@ -1,23 +1,25 @@
-<!-- <footer class="content-footer footer bg-footer-theme">
-    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-        <div class="mb-2 mb-md-0">
+<footer class="content-footer footer bg-footer-theme">
+    <div class="container-xxl d-flex flex-wrap justify-content-center py-2">
+        <div class="footer-watermark text-center">
             ©
             <script>
                 document.write(new Date().getFullYear());
             </script>
-            , made with ❤️ by
-            <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
-        </div>
-        <div>
-            <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-            <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More
-                Themes</a>
-
-            <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/" target="_blank"
-                class="footer-link me-4">Documentation</a>
-
-            <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank"
-                class="footer-link me-4">Support</a>
+            &nbsp;<strong>Magang Kemnaker</strong>
+            <span class="mx-2">•</span>
+            <span>@fzlns21</span>
+            <span class="mx-1">|</span>
+            <span>@dhiyaind</span>
         </div>
     </div>
-</footer> -->
+</footer>
+<style>
+    .footer-watermark {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    opacity: 0.9;          /* sebelumnya 0.7 */
+    letter-spacing: 0.3px;
+    user-select: none;
+}
+
+</style>

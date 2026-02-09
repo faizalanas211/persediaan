@@ -18,6 +18,7 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\BarangAtkController;
 use App\Http\Controllers\MutasiStokController;
 use App\Http\Controllers\PermintaanAtkController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\StokOpnameController;
 
 /*
@@ -57,8 +58,17 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('pegawai/import', [PegawaiController::class, 'import'])
         ->name('pegawai.import');
 
-    Route::post('profile/edit', [PegawaiController::class, 'import'])
-        ->name('profile.edit');
+    /*
+    |--------------------------------------------------------------------------
+    | Profil
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('profil', ProfilController::class);
+    Route::post('/profile/password', [ProfilController::class, 'updatePassword'])
+        ->name('profil.password');
+    Route::get('password/edit', [AuthController::class, 'editPassword'])->name('password.edit');
+    Route::put('/password/ubah-password', [AuthController::class, 'updatePassword'])->name('password.update');
+
 
     /*
     |--------------------------------------------------------------------------

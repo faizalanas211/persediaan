@@ -1,493 +1,461 @@
-<aside id="layout-menu" class="layout-menu">
-    <!-- Brand Header -->
-    <div class="brand-header">
-        <div class="brand-logo">
-            <div class="logo-icon">
-                <i class='bx bx-package'></i>
-            </div>
-            <span class="brand-name">Persediaan</span>
-        </div>
-        <button class="menu-toggle">
-            <i class='bx bx-chevron-left'></i>
-        </button>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="menu-nav">
-        <!-- Dashboard -->
-        <div class="nav-section">
-            <a href="{{ route('dashboard') }}" class="nav-item {{ Request::is('dashboard') ? 'active' : '' }}">
-                <div class="nav-icon">
-                    <i class='bx bx-home-alt'></i>
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <!-- <div class="app-brand demo">
+        <a href="index.html" class="app-brand-link">
+            <span class="app-brand-logo demo">
+                <div class="logo-shape">
+                    <i class="bx bx-package fs-4"></i>
                 </div>
-                <span class="nav-label">Dashboard</span>
-                <div class="nav-indicator">
-                    <i class='bx bx-chevron-right'></i>
+            </span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2 fs-5">Persediaan</span>
+        </a>
+
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <i class="bx bx-chevron-left bx-sm align-middle"></i>
+        </a>
+    </div> -->
+
+    <ul class="menu-inner py-1 mt-2">
+        <!-- Dashboard -->
+        <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}" class="menu-link">
+                <div class="menu-icon-container">
+                    <div class="icon-backdrop"></div>
+                    <i class="menu-icon tf-icons bx bx-home-alt"></i>
+                </div>
+                <div class="menu-text">Dashboard</div>
+                <div class="menu-arrow">
+                    <i class="bx bx-chevron-right"></i>
                 </div>
             </a>
-        </div>
+        </li>
 
-        <!-- Management -->
-        <div class="nav-group">
-            <div class="group-header">Manajemen Stok</div>
-            
-            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'Admin')
-            <div class="nav-section">
-                <a href="{{ route('barang.index') }}" class="nav-item {{ Request::is('dashboard/barang*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class='bx bx-box'></i>
+        <li class="menu-header small text-uppercase mt-4 mb-2">
+            <span class="menu-header-text">Manajemen Stok</span>
+        </li>
+        
+        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'Admin')
+            <li class="menu-item {{ Request::is('dashboard/barang*') ? 'active' : '' }}">
+                <a href="{{ route('barang.index') }}" class="menu-link">
+                    <div class="menu-icon-container">
+                        <div class="icon-backdrop"></div>
+                        <i class="menu-icon tf-icons bx bx-box"></i>
                     </div>
-                    <span class="nav-label">Data Barang</span>
-                    <div class="nav-indicator">
-                        <i class='bx bx-chevron-right'></i>
-                    </div>
-                </a>
-                
-                <a href="{{ route('mutasi.index') }}" class="nav-item {{ Request::is('dashboard/mutasi*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class='bx bx-transfer'></i>
-                    </div>
-                    <span class="nav-label">Mutasi Stok</span>
-                    <div class="nav-indicator">
-                        <i class='bx bx-chevron-right'></i>
+                    <div class="menu-text">Data Barang</div>
+                    <div class="menu-arrow">
+                        <i class="bx bx-chevron-right"></i>
                     </div>
                 </a>
-                
-                <a href="{{ route('permintaan.index') }}" class="nav-item {{ Request::is('dashboard/permintaan*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class='bx bx-clipboard'></i>
+            </li>
+            <li class="menu-item {{ Request::is('dashboard/mutasi*') ? 'active' : '' }}">
+                <a href="{{ route('mutasi.index') }}" class="menu-link">
+                    <div class="menu-icon-container">
+                        <div class="icon-backdrop"></div>
+                        <i class="menu-icon tf-icons bx bx-transfer"></i>
                     </div>
-                    <span class="nav-label">Permintaan ATK</span>
-                    <div class="nav-indicator">
-                        <i class='bx bx-chevron-right'></i>
-                    </div>
-                </a>
-                
-                <a href="{{ route('stok-opname.index') }}" class="nav-item {{ Request::is('dashboard/stok-opname*') ? 'active' : '' }}">
-                    <div class="nav-icon">
-                        <i class='bx bx-check-circle'></i>
-                    </div>
-                    <span class="nav-label">Stok Opname</span>
-                    <div class="nav-indicator">
-                        <i class='bx bx-chevron-right'></i>
+                    <div class="menu-text">Mutasi Stok</div>
+                    <div class="menu-arrow">
+                        <i class="bx bx-chevron-right"></i>
                     </div>
                 </a>
-            </div>
-            @endif
-        </div>
-    </nav>
+            </li>
+            <li class="menu-item {{ Request::is('dashboard/permintaan*') ? 'active' : '' }}">
+                <a href="{{ route('permintaan.index') }}" class="menu-link">
+                    <div class="menu-icon-container">
+                        <div class="icon-backdrop"></div>
+                        <i class="menu-icon tf-icons bx bx-clipboard"></i>
+                    </div>
+                    <div class="menu-text">Permintaan ATK</div>
+                    <div class="menu-arrow">
+                        <i class="bx bx-chevron-right"></i>
+                    </div>
+                </a>
+            </li>
+            <li class="menu-item {{ Request::is('dashboard/stok-opname*') ? 'active' : '' }}">
+                <a href="{{ route('stok-opname.index') }}" class="menu-link">
+                    <div class="menu-icon-container">
+                        <div class="icon-backdrop"></div>
+                        <i class="menu-icon tf-icons bx bx-check-circle"></i>
+                    </div>
+                    <div class="menu-text">Stok Opname</div>
+                    <div class="menu-arrow">
+                        <i class="bx bx-chevron-right"></i>
+                    </div>
+                </a>
+            </li>
+        @endif
+    </ul>
 
-    <!-- User Profile -->
-    <div class="user-profile">
-        <div class="profile-avatar">
-            <div class="avatar-ring">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+    <!-- User Profile Bottom -->
+    <div class="menu-bottom mt-auto p-3">
+        <div class="user-profile-card">
+            <div class="avatar-container">
+                <div class="avatar-ring"></div>
+                <span class="avatar-initial">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </span>
             </div>
+            <div class="user-info">
+                <div class="user-name">{{ Auth::user()->name }}</div>
+                <div class="user-role">{{ Auth::user()->role ?? 'User' }}</div>
+            </div>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            <a href="{{ route('logout') }}" class="logout-btn" title="Logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="bx bx-power-off"></i>
+            </a>
         </div>
-        <div class="profile-info">
-            <div class="profile-name">{{ Auth::user()->name }}</div>
-            <div class="profile-role">{{ Auth::user()->role ?? 'User' }}</div>
-        </div>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="logout-btn">
-                <i class='bx bx-log-out'></i>
-            </button>
-        </form>
     </div>
 </aside>
 
 <style>
-/* ===== MODERN LAIKA STYLE ===== */
-:root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --surface: #ffffff;
-    --surface-light: #f8fafc;
-    --surface-dark: #f1f5f9;
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --border: #e2e8f0;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* ===== DESKTOP ===== */
+@media (min-width: 1200px) {
+    .layout-menu {
+        margin-top: 64px;                 /* turun di bawah navbar */
+        height: calc(100vh - 64px);
+    }
 }
 
-.layout-menu {
-    width: 280px;
-    height: 100vh;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow-sm);
-}
-
-/* Brand Header */
-.brand-header {
-    padding: 1.5rem 1.5rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-}
-
-.brand-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.logo-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.25rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.logo-icon::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.brand-name {
-    font-size: 1.25rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
-}
-
-.menu-toggle {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border);
-    background: var(--surface-light);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: var(--transition);
-    display: none;
-}
-
-.menu-toggle:hover {
-    background: var(--surface-dark);
-    color: var(--text-primary);
-}
-
-/* Navigation */
-.menu-nav {
-    flex: 1;
-    padding: 1.5rem 1rem;
-    overflow-y: auto;
-}
-
-.nav-group {
-    margin-bottom: 2rem;
-}
-
-.group-header {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-    font-weight: 600;
-    padding: 0 1rem;
-    margin-bottom: 0.75rem;
-}
-
-.nav-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-md);
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--primary);
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.nav-item:hover {
-    background: var(--surface-light);
-    color: var(--text-primary);
-    transform: translateX(2px);
-}
-
-.nav-item:hover::before {
-    opacity: 0.5;
-}
-
-.nav-item.active {
-    background: var(--surface-light);
-    color: var(--primary);
-    font-weight: 500;
-}
-
-.nav-item.active::before {
-    opacity: 1;
-}
-
-.nav-icon {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface-light);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    transition: var(--transition);
-    font-size: 1.125rem;
-}
-
-.nav-item:hover .nav-icon {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-}
-
-.nav-item.active .nav-icon {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-}
-
-.nav-label {
-    flex: 1;
-    font-size: 0.875rem;
-}
-
-.nav-indicator {
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: var(--transition);
-    color: var(--text-secondary);
-}
-
-.nav-item:hover .nav-indicator,
-.nav-item.active .nav-indicator {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* User Profile */
-.user-profile {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: var(--surface-light);
-}
-
-.profile-avatar {
-    position: relative;
-}
-
-.avatar-ring {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    position: relative;
-}
-
-.avatar-ring::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.3;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.05); opacity: 0.2; }
-}
-
-.profile-info {
-    flex: 1;
-}
-
-.profile-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.2;
-}
-
-.profile-role {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    line-height: 1.2;
-}
-
-#logout-form {
-    display: flex;
-}
-
-.logout-btn {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logout-btn:hover {
-    background: #fee2e2;
-    color: #dc2626;
-    border-color: #fecaca;
-    transform: rotate(12deg);
-}
-
-/* Responsive */
+/* ===== MOBILE / TABLET ===== */
 @media (max-width: 1199.98px) {
     .layout-menu {
-        width: 260px;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        box-shadow: var(--shadow-lg);
+        position: fixed;
+        top: 0;                           /* FULL HEIGHT */
+        height: 100vh;
+        margin-top: 0;
+
+        z-index: 1200;
+        transition: transform .3s ease;
+    }
+}
+
+    .layout-menu::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+        z-index: -1;
     }
     
-    .layout-menu.open {
-        transform: translateX(0);
+    .app-brand {
+        padding: 1.5rem 1.5rem 1.25rem;
+        position: relative;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(5px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     }
     
-    .menu-toggle {
+    .logo-shape {
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(168, 85, 247, 0.9));
+        border-radius: 10px;
+        color: white;
+        box-shadow: 
+            0 4px 6px rgba(99, 102, 241, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
     }
     
-    .brand-header {
-        padding: 1.25rem;
-    }
-}
-
-/* Custom Scrollbar */
-.menu-nav::-webkit-scrollbar {
-    width: 4px;
-}
-
-.menu-nav::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.menu-nav::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 2px;
-}
-
-.menu-nav::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary);
-}
-
-/* Animation */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.nav-item {
-    animation: slideIn 0.3s ease-out;
-}
-
-.nav-item:nth-child(1) { animation-delay: 0.1s; }
-.nav-item:nth-child(2) { animation-delay: 0.15s; }
-.nav-item:nth-child(3) { animation-delay: 0.2s; }
-.nav-item:nth-child(4) { animation-delay: 0.25s; }
-</style>
-
-<script>
-// Add toggle functionality for mobile
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const layoutMenu = document.querySelector('.layout-menu');
-    
-    if (menuToggle && layoutMenu) {
-        menuToggle.addEventListener('click', function() {
-            layoutMenu.classList.toggle('open');
-            
-            // Update icon
-            const icon = menuToggle.querySelector('i');
-            if (layoutMenu.classList.contains('open')) {
-                icon.className = 'bx bx-chevron-right';
-            } else {
-                icon.className = 'bx bx-chevron-left';
-            }
-        });
+    .logo-shape::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
     }
     
-    // Close menu when clicking outside on mobile
-    document.addEventListener('click', function(e) {
-        if (window.innerWidth < 1200) {
-            if (!layoutMenu.contains(e.target) && !e.target.closest('.menu-toggle')) {
-                layoutMenu.classList.remove('open');
-            }
+    .app-brand-text {
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        font-size: 1.2rem;
+        letter-spacing: -0.5px;
+    }
+    
+    .menu-divider {
+        height: 1px;
+        margin: 0.75rem 1.5rem;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(99, 102, 241, 0.2) 50%, 
+            transparent 100%);
+    }
+    
+    .menu-header {
+        color: #6b7280;
+        font-size: 0.7rem;
+        letter-spacing: 1.5px;
+        padding: 0 1.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        backdrop-filter: blur(5px);
+    }
+    
+    .menu-item .menu-link {
+        color: #4b5563;
+        padding: 0.875rem 1.5rem;
+        margin: 0.25rem 0.75rem;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        position: relative;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    
+    .menu-item .menu-link:hover {
+        color: #6366f1;
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(99, 102, 241, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 
+            0 8px 16px rgba(99, 102, 241, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    
+    .menu-item.active .menu-link {
+        color: #6366f1;
+        background: rgba(99, 102, 241, 0.1);
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: 
+            inset 0 2px 4px rgba(99, 102, 241, 0.1),
+            0 4px 8px rgba(99, 102, 241, 0.1);
+    }
+    
+    .menu-icon-container {
+        width: 36px;
+        height: 36px;
+        margin-right: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .icon-backdrop {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(99, 102, 241, 0.08);
+        border-radius: 8px;
+        backdrop-filter: blur(2px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .menu-item.active .icon-backdrop {
+        background: rgba(99, 102, 241, 0.15);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    .menu-icon {
+        font-size: 1.2rem;
+        color: #6b7280;
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+    }
+    
+    .menu-item:hover .menu-icon {
+        color: #6366f1;
+    }
+    
+    .menu-item.active .menu-icon {
+        color: #6366f1;
+    }
+    
+    .menu-text {
+        flex: 1;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    
+    .menu-arrow {
+        color: #9ca3af;
+        transition: all 0.3s ease;
+    }
+    
+    .menu-item:hover .menu-arrow {
+        color: #6366f1;
+    }
+    
+    .menu-item.active .menu-arrow {
+        color: #6366f1;
+    }
+    
+    /* User Profile Card */
+    .user-profile-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 
+            0 4px 6px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    
+    .avatar-container {
+        position: relative;
+        width: 44px;
+        height: 44px;
+        margin-right: 0.75rem;
+    }
+    
+    .avatar-ring {
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        -webkit-mask: radial-gradient(circle at center, transparent 18px, black 19px);
+        mask: radial-gradient(circle at center, transparent 18px, black 19px);
+    }
+    
+    .avatar-initial {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        border-radius: 50%;
+        position: relative;
+        box-shadow: 
+            0 4px 6px rgba(99, 102, 241, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    
+    .user-info {
+        flex: 1;
+    }
+    
+    .user-name {
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 0.9rem;
+    }
+    
+    .user-role {
+        color: #6366f1;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: rgba(99, 102, 241, 0.1);
+        padding: 2px 8px;
+        border-radius: 10px;
+        display: inline-block;
+    }
+    
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        box-shadow: 
+            0 2px 4px rgba(239, 68, 68, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        transform: scale(1.05);
+    }
+    
+    /* Floating Elements */
+    .layout-menu {
+        position: relative;
+    }
+    
+    .layout-menu::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.03), transparent 50%);
+        pointer-events: none;
+    }
+    
+    /* Scrollbar */
+    .layout-menu::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .layout-menu::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 3px;
+    }
+    
+    .layout-menu::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5));
+        border-radius: 3px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1199.98px) {
+        .layout-menu {
+            backdrop-filter: blur(8px);
         }
-    });
-});
-</script>
+        
+        .app-brand {
+            padding: 1.25rem 1.25rem 1rem;
+        }
+        
+        .menu-item .menu-link {
+            padding: 0.75rem 1.25rem;
+            margin: 0.25rem 0.5rem;
+        }
+        
+        .menu-icon-container {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .avatar-container {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .avatar-initial {
+            width: 36px;
+            height: 36px;
+        }
+        
+        .user-profile-card {
+            padding: 0.875rem;
+        }
+    }
+</style>

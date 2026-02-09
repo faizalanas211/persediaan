@@ -13,15 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class BarangAtkController extends Controller
 {
-    // public function index()
-    // {
-    //     $barangs = BarangAtk::orderBy('nama_barang', 'asc')
-    //         ->withExists('detailPermintaan')
-    //         ->paginate(10);
-
-    //     return view('dashboard.barang.index', compact('barangs'));
-    // }
-
     public function index(Request $request)
     {
         $search = $request->search;
@@ -38,7 +29,7 @@ class BarangAtkController extends Controller
                 $q->select('id', 'barang_id', 'jenis_mutasi');
             }])
             ->orderBy('nama_barang')
-            ->paginate(10)
+            ->paginate(25)
             ->withQueryString();
 
         return view('dashboard.barang.index', compact('barangs'));

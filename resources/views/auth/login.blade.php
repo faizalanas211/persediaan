@@ -808,6 +808,11 @@
             </div>
 
             <!-- Footer Stats -->
+                 <!-- Watermark Footer -->
+            <div class="login-watermark">
+                Created by Magang Kemnaker<br>
+                <span>@fzlns21 | @dhiyaind</span>
+            </div>
             
         </div>
 
@@ -1068,4 +1073,21 @@
         }
     </script>
 </body>
+<style>
+    /* Login Page Watermark */
+    .login-watermark {
+        margin-top: 32px;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #122236;
+        opacity: 1.0;           
+        letter-spacing: 0.3px;
+        user-select: none;
+    }
+
+    .login-watermark span {
+        font-size: 0.65rem;
+        opacity: 0.7;
+    }
+</style>
 </html>

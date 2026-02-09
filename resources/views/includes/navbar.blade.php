@@ -7,7 +7,7 @@
                 <i class="bx bx-menu bx-sm text-primary"></i>
             </a>
 
-            <a href="index.html" class="app-brand-link d-flex align-items-center text-decoration-none">
+            <a href="#" class="app-brand-link d-flex align-items-center text-decoration-none">
                 <div class="logo-container me-2">
                     <i class="bx bx-package logo-icon"></i>
                 </div>
@@ -58,27 +58,50 @@
 
         <!-- KANAN: User -->
         <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
-               data-bs-toggle="dropdown">
-                <i class="bx bx-user-circle fs-3 text-secondary me-2"></i>
+            <a href="#"
+            class="d-flex align-items-center text-decoration-none dropdown-toggle"
+            data-bs-toggle="dropdown">
+
+                @if(auth()->user()->pegawai && auth()->user()->pegawai->foto)
+                    <img src="{{ asset('storage/' . auth()->user()->pegawai->foto) }}"
+                        alt="Foto Profil"
+                        class="rounded-circle me-2"
+                        width="32" height="32"
+                        style="object-fit: cover;">
+                @else
+                    <i class="bx bx-user-circle fs-3 text-secondary me-2"></i>
+                @endif
+
                 <span class="fw-medium text-dark d-none d-md-inline">
                     {{ Auth::user()->name }}
                 </span>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-end mt-2">
-                <div class="px-3 py-2 border-bottom">
-                    <div class="fw-semibold">{{ Auth::user()->name }}</div>
-                    <small class="text-muted">{{ Auth::user()->role }}</small>
+                <div class="dropdown-menu dropdown-menu-end mt-2">
+                <div class="px-3 py-2 border-bottom d-flex align-items-center gap-2">
+
+                    @if(auth()->user()->pegawai && auth()->user()->pegawai->foto)
+                        <img src="{{ asset('storage/' . auth()->user()->pegawai->foto) }}"
+                            class="rounded-circle"
+                            width="36" height="36"
+                            style="object-fit: cover;">
+                    @else
+                        <i class="bx bx-user-circle fs-2 text-secondary"></i>
+                    @endif
+
+                    <div>
+                        <div class="fw-semibold">{{ Auth::user()->name }}</div>
+                        <small class="text-muted">{{ Auth::user()->role ?? 'User' }}</small>
+                    </div>
                 </div>
 
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{{ route('profil.show', auth()->user()->id) }}">
                     <i class="bx bx-user me-2"></i> Profil
                 </a>
 
                 <div class="dropdown-divider"></div>
 
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-danger" type="submit">
                         <i class="bx bx-log-out me-2"></i> Keluar
@@ -95,10 +118,11 @@
 /* Navbar standar */
 .navbar-standard {
     background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e0e7ff; /* biru sangat soft */
     height: 64px;
     z-index: 1100;
 }
+
 
 /* Brand */
 /* ===== GRADIENT GLASS NAVBAR ===== */
@@ -116,7 +140,7 @@
 .logo-container {
     width: 42px;
     height: 42px;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #0d6efd, #3b82f6);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -142,7 +166,7 @@
 }
 
 .brand-title {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #0d6efd, #2563eb);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
