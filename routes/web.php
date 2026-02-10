@@ -60,7 +60,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Profil
+    | Profil dan Password
     |--------------------------------------------------------------------------
     */
     Route::resource('profil', ProfilController::class);

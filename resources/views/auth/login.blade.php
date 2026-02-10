@@ -21,23 +21,25 @@
         }
 
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --dark-bg: #0f172a;
-            --dark-surface: #1e293b;
-            --dark-surface-light: #334155;
-            --dark-text: #f1f5f9;
-            --dark-text-light: #cbd5e1;
-            --dark-border: #475569;
-            --success: #10b981;
+            --primary: #7c3aed;        /* ungu utama */
+            --primary-dark: #5b21b6;   /* ungu gelap */
+            --secondary: #a855f7;      /* ungu muda */
+            --accent: #c084fc;         /* aksen hover */
+
+            --dark-bg: #0f0a1f;
+            --dark-surface: #1a1333;
+            --dark-surface-light: #2a1f4d;
+            --dark-text: #f5f3ff;
+            --dark-text-light: #d8b4fe;
+            --dark-border: #4c1d95;
+
+            --success: #22c55e;
             --warning: #f59e0b;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #1e1b4b 0%, #2e1065 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -62,7 +64,7 @@
 
         .bg-particle {
             position: absolute;
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(168, 85, 247, 0.15);
             border-radius: 50%;
         }
 
@@ -408,7 +410,7 @@
             outline: none;
             border-color: var(--primary);
             background: var(--dark-surface);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.25);
         }
 
         .form-input::placeholder {
@@ -433,7 +435,7 @@
 
         .password-toggle:hover {
             color: var(--primary);
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(124, 58, 237, 0.15);
         }
 
         .form-options {
@@ -472,7 +474,7 @@
 
         .forgot-link:hover {
             color: var(--primary-dark);
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(124, 58, 237, 0.15);
         }
 
         .submit-btn {
@@ -508,7 +510,7 @@
 
         .submit-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 15px 30px rgba(124, 58, 237, 0.4);
         }
 
         .submit-btn:hover::before {
@@ -561,7 +563,7 @@
         }
 
         .register-link a:hover {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(124, 58, 237, 0.15);
         }
 
         /* Notification */
@@ -808,7 +810,6 @@
             </div>
 
             <!-- Footer Stats -->
-                 <!-- Watermark Footer -->
             <div class="login-watermark">
                 Created by Magang Kemnaker<br>
                 <span>@fzlns21 | @dhiyaind</span>
@@ -1079,7 +1080,7 @@
         margin-top: 32px;
         text-align: center;
         font-size: 0.8rem;
-        color: #122236;
+        color: var(--accent);
         opacity: 1.0;           
         letter-spacing: 0.3px;
         user-select: none;

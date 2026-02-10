@@ -16,7 +16,8 @@ class DashboardController extends Controller
 
         foreach ($barang as $item) {
             $dataBarang[$item->nama_barang] = [
-                'ready' => $item->stok
+                'ready' => $item->stok,
+                'satuan' => $item->satuan,
             ];
         }
 

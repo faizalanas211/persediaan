@@ -118,11 +118,10 @@
 /* Navbar standar */
 .navbar-standard {
     background: #ffffff;
-    border-bottom: 1px solid #e0e7ff; /* biru sangat soft */
+    border-bottom: 1px solid #e5e7eb;
     height: 64px;
     z-index: 1100;
 }
-
 
 /* Brand */
 /* ===== GRADIENT GLASS NAVBAR ===== */
@@ -140,7 +139,7 @@
 .logo-container {
     width: 42px;
     height: 42px;
-    background: linear-gradient(135deg, #0d6efd, #3b82f6);
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -166,7 +165,7 @@
 }
 
 .brand-title {
-    background: linear-gradient(135deg, #0d6efd, #2563eb);
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

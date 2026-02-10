@@ -38,7 +38,7 @@
 
                     <div class="neo-stock">
                         {{ $item['ready'] }}
-                        <small>unit</small>
+                        <small>{{ $item['satuan'] }}</small>
                     </div>
                 </div>
                 @endforeach
@@ -142,12 +142,17 @@
 .neo-grid{
     padding:32px;
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap:24px;
+}
+
+:fullscreen .neo-grid{
+    grid-template-columns: repeat(2, 1fr);
 }
 
 /* CARD */
 .neo-card{
+    height: 130px;
     background:var(--neo-bg);
     box-shadow:var(--neo-shadow);
     border-radius:20px;
@@ -172,8 +177,11 @@
 .neo-icon{
     width:54px;
     height:54px;
+    min-width:54px;
+    min-height:54px;
+    font-size:26px;
     border-radius:16px;
-    background:linear-gradient(145deg, #1a73e8, #0d47a1);
+    background:linear-gradient(145deg, #ae1ae8, #520da1);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -196,7 +204,7 @@
     font-weight:900;
     color:var(--text-dark);
     display:flex;
-    align-items:flex-end;
+    align-items:baseline; 
     gap:8px;
 }
 
