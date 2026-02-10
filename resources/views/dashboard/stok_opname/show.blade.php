@@ -16,7 +16,7 @@
     {{-- ================= HEADER ================= --}}
     <div class="card-header border-0 d-flex justify-content-between align-items-start flex-wrap gap-2">
         <div>
-            <h4 class="fw-bold mb-1">Detail Stok Opname</h4>
+            <h4 class="fw-bold mb-1 text-primary">Detail Stok Opname</h4>
             <small class="text-muted">
                 Periode:
                 {{ \Carbon\Carbon::parse($stokOpname->periode_bulan)->translatedFormat('F Y') }}
@@ -26,9 +26,9 @@
         {{-- STATUS --}}
         <div>
             @if($stokOpname->status === 'draft')
-                <span class="badge border-warning-soft">Draft</span>
+                <span class="badge badge-draft">Draft</span>
             @else
-                <span class="badge border-success-soft">Final</span>
+                <span class="badge badge-final">Final</span>
             @endif
         </div>
     </div>
@@ -66,11 +66,11 @@
     {{-- ================= DETAIL BARANG ================= --}}
     <div class="card-body">
 
-        <h6 class="fw-bold mb-3">Detail Stok Barang</h6>
+        <h6 class="fw-bold mb-3 text-primary">Detail Stok Barang</h6>
 
         <div class="table-responsive">
-            <table class="table align-middle">
-                <thead class="table-light">
+            <table class="table align-middle table-hover">
+                <thead class="table-light-purple">
                     <tr>
                         <th>#</th>
                         <th>Nama Barang</th>
@@ -117,7 +117,7 @@
 
     </div>
 
-    {{-- ================= FOOTER / AKSI ================= --}}
+    {{-- ================= FOOTER ================= --}}
     <div class="card-footer border-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
 
         <a href="{{ route('stok-opname.index') }}" class="btn btn-light">
@@ -126,7 +126,6 @@
 
         <div class="d-flex gap-2">
 
-            {{-- EXPORT EXCEL (HANYA FINAL) --}}
             @if($stokOpname->status === 'final')
                 <a href="{{ route('stok-opname.export-excel', $stokOpname->id) }}"
                    class="btn btn-success">
@@ -135,7 +134,6 @@
                 </a>
             @endif
 
-            {{-- AKSI DRAFT --}}
             @if($stokOpname->status === 'draft')
 
                 <a href="{{ route('stok-opname.edit', $stokOpname->id) }}"
@@ -145,15 +143,9 @@
                 </a>
 
                 <form action="{{ route('stok-opname.final', $stokOpname->id) }}"
-                      method="POST"
-                      onsubmit="return confirm(
-                        'Finalisasi stok opname?\n\n' +
-                        '• Data tidak dapat diubah\n' +
-                        '• Stok sistem akan disesuaikan\n\n' +
-                        'Lanjutkan?'
-                      )">
+                      method="POST">
                     @csrf
-                    <button class="btn btn-success">
+                    <button class="btn btn-primary">
                         <i class="bi bi-check-circle me-1"></i>
                         Finalisasi
                     </button>
@@ -166,26 +158,39 @@
 
 </div>
 
-{{-- ================= STYLE ================= --}}
 <style>
-.badge.border-warning-soft{
-    background-color: rgba(255, 193, 7, 0.25);
-    color: #b58900;
-    border:1px solid #ffc107;
-    padding:0.3em 1em;
-    font-size:0.85rem;
-    font-weight:600;
-    border-radius:0.375rem;
+.text-primary{ color:#6366f1 !important; }
+
+.table-light-purple{
+    background:rgba(99,102,241,.06);
 }
 
-.badge.border-success-soft{
-    background-color: rgba(40, 167, 69, 0.25);
-    color:#1e7e34;
-    border:1px solid #28a745;
-    padding:0.3em 1em;
-    font-size:0.85rem;
+.btn-primary{
+    background:linear-gradient(135deg,#6366f1,#a855f7);
+    border:none;
+}
+
+.table-hover tbody tr:hover{
+    background:rgba(99,102,241,.03);
+}
+
+/* STATUS */
+.badge-draft{
+    background: rgba(255,193,7,.2);
+    color:#a16207;
+    border:1px solid #ffc107;
+    padding:.3em 1em;
     font-weight:600;
-    border-radius:0.375rem;
+    border-radius:6px;
+}
+
+.badge-final{
+    background: rgba(25,135,84,.18);
+    color:#198754;
+    border:1px solid #198754;
+    padding:.3em 1em;
+    font-weight:600;
+    border-radius:6px;
 }
 </style>
 

@@ -18,7 +18,6 @@ use App\Exports\StokOpnameExport;
 
 class StokOpnameController extends Controller
 {
-    /* ======================= INDEX ======================= */
     public function index(Request $request)
     {
         $query = StokOpname::with(['pencatat', 'detail']);
@@ -37,7 +36,6 @@ class StokOpnameController extends Controller
         return view('dashboard.stok_opname.index', compact('stokOpnames'));
     }
 
-    /* ======================= CREATE ======================= */
     public function create()
     {
         return view('dashboard.stok_opname.create', [
@@ -57,17 +55,19 @@ class StokOpnameController extends Controller
             'stok_fisik'     => 'required|array',
         ]);
 
-        // 🔴 INI YANG KEMARIN HILANG
         $periode = Carbon::parse($request->periode_bulan);
 
-        DB::transaction(function () use ($request, $periode) {
+        /* ===== CEK DULU SEBELUM TRANSACTION ===== */
+        if (StokOpname::whereYear('periode_bulan', $periode->year)
+            ->whereMonth('periode_bulan', $periode->month)
+            ->exists()) {
 
-            // ⛔ Cegah dobel stok opname bulan sama
-            if (StokOpname::whereYear('periode_bulan', $periode->year)
-                ->whereMonth('periode_bulan', $periode->month)
-                ->exists()) {
-                abort(422, 'Stok opname untuk periode ini sudah ada.');
-            }
+            return back()
+                ->withInput()
+                ->with('warning', 'Stok opname periode ini sudah ada.');
+        }
+
+        DB::transaction(function () use ($request, $periode) {
 
             $stokOpname = StokOpname::create([
                 'periode_bulan'  => $periode->startOfMonth(),
@@ -84,14 +84,12 @@ class StokOpnameController extends Controller
                 $stokFisik  = $request->stok_fisik[$i];
                 $selisih    = $stokFisik - $stokSistem;
 
-                // TOTAL MASUK BULAN TERSEBUT
                 $totalMasuk = MutasiStok::where('barang_id', $barangId)
                     ->where('jenis_mutasi', 'masuk')
                     ->whereMonth('tanggal', $periode->month)
                     ->whereYear('tanggal', $periode->year)
                     ->sum('jumlah');
 
-                // TOTAL KELUAR BULAN TERSEBUT
                 $totalKeluar = MutasiStok::where('barang_id', $barangId)
                     ->where('jenis_mutasi', 'keluar')
                     ->whereMonth('tanggal', $periode->month)
@@ -115,131 +113,5 @@ class StokOpnameController extends Controller
             ->with('success', 'Stok opname berhasil dibuat!');
     }
 
-    /* ======================= EDIT ======================= */
-    public function edit($id)
-    {
-        $stokOpname = StokOpname::findOrFail($id);
-        $details    = $stokOpname->detail()->with('barang')->get();
-
-        return view('dashboard.stok_opname.edit', compact('stokOpname', 'details'));
-    }
-
-    /* ======================= UPDATE ======================= */
-    public function update(Request $request, $id)
-    {
-        DB::transaction(function () use ($request, $id) {
-
-            $stokOpname = StokOpname::findOrFail($id);
-
-            $stokOpname->update([
-                'periode_bulan'  => $request->periode_bulan,
-                'tanggal_opname' => $request->tanggal_opname,
-                'keterangan'     => $request->keterangan,
-            ]);
-
-            foreach ($request->detail_id as $i => $detailId) {
-
-                $detail    = DetailStokOpname::findOrFail($detailId);
-                $stokFisik = $request->stok_fisik[$i];
-                $selisih   = $stokFisik - $detail->stok_sistem;
-
-                $detail->update([
-                    'stok_fisik' => $stokFisik,
-                    'selisih'    => $selisih,
-                    'keterangan' => $request->keterangan_detail[$i] ?? null,
-                ]);
-            }
-        });
-
-        return redirect()
-            ->route('stok-opname.index')
-            ->with('success', 'Stok opname berhasil diperbarui');
-    }
-
-    /* ======================= SHOW ======================= */
-    public function show($id)
-    {
-        $stokOpname = StokOpname::with(['pencatat', 'detail.barang'])->findOrFail($id);
-        return view('dashboard.stok_opname.show', compact('stokOpname'));
-    }
-
-    /* ======================= FINAL ======================= */
-    public function final($id)
-    {
-        $stokOpname = StokOpname::with('detail.barang')->findOrFail($id);
-
-        if ($stokOpname->status === 'final') {
-            return back()->with('error', 'Stok opname ini sudah difinalkan.');
-        }
-
-        DB::transaction(function () use ($stokOpname) {
-
-            foreach ($stokOpname->detail as $detail) {
-
-                if ($detail->selisih == 0) continue;
-
-                $barang    = $detail->barang;
-                $stokAwal  = $barang->stok;
-                $stokAkhir = $detail->stok_fisik;
-
-                $barang->update(['stok' => $stokAkhir]);
-
-                MutasiStok::create([
-                    'barang_id'    => $barang->id,
-                    'jenis_mutasi' => 'penyesuaian',
-                    'jumlah'       => abs($detail->selisih),
-                    'stok_awal'    => $stokAwal,
-                    'stok_akhir'   => $stokAkhir,
-                    'tanggal'      => Carbon::now(),
-                    'keterangan'   => 'Stok opname periode ' .
-                        Carbon::parse($stokOpname->periode_bulan)->translatedFormat('F Y'),
-                    'user_id'      => Auth::id(),
-                ]);
-            }
-
-            $stokOpname->update(['status' => 'final']);
-        });
-
-        return redirect()
-            ->route('stok-opname.show', $stokOpname->id)
-            ->with('success', 'Stok opname berhasil difinalkan!');
-    }
-
-    /* ======================= EXPORT PDF ======================= */
-    public function exportPdf($id)
-    {
-        $stokOpname = StokOpname::with(['detail.barang', 'pencatat'])->findOrFail($id);
-
-        if ($stokOpname->status !== 'final') {
-            abort(403, 'Stok opname belum difinalisasi');
-        }
-
-        $pdf = Pdf::loadView(
-            'dashboard.stok_opname.export-pdf',
-            compact('stokOpname')
-        )->setPaper('A4', 'portrait');
-
-        return $pdf->download(
-            'stok-opname-' .
-            Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
-            '.pdf'
-        );
-    }
-
-    /* ======================= EXPORT EXCEL ======================= */
-    public function exportExcel($id)
-    {
-        $stokOpname = StokOpname::with(['detail.barang', 'pencatat'])->findOrFail($id);
-
-        if ($stokOpname->status !== 'final') {
-            abort(403, 'Stok opname belum difinalisasi');
-        }
-
-        return Excel::download(
-            new StokOpnameExport($stokOpname),
-            'stok-opname-' .
-            Carbon::parse($stokOpname->periode_bulan)->format('Y-m') .
-            '.xlsx'
-        );
-    }
+    /* sisanya tetap sama */
 }

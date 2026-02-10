@@ -18,11 +18,11 @@
     {{-- HEADER --}}
     <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
         <div>
-            <h4 class="fw-bold mb-1">Input Mutasi Stok</h4>
+            <h4 class="fw-bold mb-1 text-primary">Input Mutasi Stok</h4>
             <p class="text-muted mb-0 fs-7">Catat barang masuk, keluar, atau penyesuaian stok</p>
         </div>
 
-        {{-- TOMBOL IMPORT KECIL --}}
+        {{-- IMPORT --}}
         <button class="btn btn-outline-success btn-sm"
                 data-bs-toggle="modal"
                 data-bs-target="#modalImportMutasi">
@@ -35,7 +35,6 @@
         <form action="{{ route('mutasi.store') }}" method="POST">
             @csrf
 
-            {{-- BARANG --}}
             <div class="mb-4">
                 <label class="form-label fw-semibold">Barang</label>
                 <select name="barang_id"
@@ -48,72 +47,46 @@
                         </option>
                     @endforeach
                 </select>
-                @error('barang_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
             </div>
 
-            {{-- JENIS MUTASI --}}
             <div class="mb-4">
                 <label class="form-label fw-semibold">Jenis Mutasi</label>
                 <select name="jenis_mutasi"
                         class="form-select @error('jenis_mutasi') is-invalid @enderror">
                     <option value="">-- Pilih Jenis --</option>
-                    <option value="masuk" {{ old('jenis_mutasi') == 'masuk' ? 'selected' : '' }}>
-                        Barang Masuk
-                    </option>
-                    <option value="keluar" {{ old('jenis_mutasi') == 'keluar' ? 'selected' : '' }}>
-                        Barang Keluar
-                    </option>
-                    <option value="penyesuaian" {{ old('jenis_mutasi') == 'penyesuaian' ? 'selected' : '' }}>
-                        Penyesuaian Stok
-                    </option>
+                    <option value="masuk">Barang Masuk</option>
+                    <option value="keluar">Barang Keluar</option>
+                    <option value="penyesuaian">Penyesuaian Stok</option>
                 </select>
-                @error('jenis_mutasi')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
             </div>
 
-            {{-- JUMLAH --}}
             <div class="mb-4">
                 <label class="form-label fw-semibold">Jumlah</label>
                 <input type="number"
                        name="jumlah"
                        min="1"
                        value="{{ old('jumlah') }}"
-                       class="form-control @error('jumlah') is-invalid @enderror">
-                @error('jumlah')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                       class="form-control">
             </div>
 
-            {{-- TANGGAL --}}
             <div class="mb-4">
                 <label class="form-label fw-semibold">Tanggal</label>
                 <input type="date"
                        name="tanggal"
                        value="{{ old('tanggal', date('Y-m-d')) }}"
-                       class="form-control @error('tanggal') is-invalid @enderror">
-                @error('tanggal')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                       class="form-control">
             </div>
 
-            {{-- KETERANGAN --}}
             <div class="mb-4">
                 <label class="form-label fw-semibold">Keterangan</label>
                 <textarea name="keterangan"
                           rows="3"
-                          class="form-control @error('keterangan') is-invalid @enderror"
+                          class="form-control"
                           placeholder="Opsional">{{ old('keterangan') }}</textarea>
-                @error('keterangan')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
             </div>
 
-            {{-- BUTTON --}}
             <div class="d-flex justify-content-end gap-2">
-                <a href="{{ route('barang.index') }}" class="btn btn-light px-4">
+                <a href="{{ route('mutasi.index') }}" class="btn btn-light px-4">
                     Batal
                 </a>
                 <button type="submit" class="btn btn-primary px-4">
@@ -125,7 +98,8 @@
 
     </div>
 </div>
-{{-- ================= MODAL IMPORT EXCEL ================= --}}
+
+{{-- MODAL IMPORT --}}
 <div class="modal fade" id="modalImportMutasi" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow">
@@ -143,13 +117,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">File Excel</label>
-                        <input type="file"
-                               name="file"
-                               class="form-control"
-                               accept=".xls,.xlsx">
-                        <small class="text-muted">
-                            Format .xls / .xlsx • Maks 2 MB
-                        </small>
+                        <input type="file" name="file" class="form-control">
                     </div>
 
                     <a href="{{ asset('template/mutasi.xlsx') }}"
@@ -173,4 +141,20 @@
         </div>
     </div>
 </div>
+
+<style>
+.text-primary{ color:#6366f1 !important; }
+
+.btn-primary{
+    background: linear-gradient(135deg,#6366f1,#a855f7);
+    border:none;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color:#6366f1;
+    box-shadow:0 0 0 .2rem rgba(99,102,241,.15);
+}
+</style>
+
 @endsection

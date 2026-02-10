@@ -14,8 +14,9 @@
 @section('content')
 
 <div class="card shadow-sm rounded-4">
+
     <div class="card-header border-0">
-        <h4 class="fw-bold mb-0">Formulir Permintaan ATK</h4>
+        <h4 class="fw-bold mb-0 text-primary">Formulir Permintaan ATK</h4>
         <small class="text-muted">Dicatat langsung oleh admin</small>
     </div>
 
@@ -29,50 +30,33 @@
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Nama Pemohon</label>
-                    <input type="text"
-                        name="nama_pemohon"
-                        class="form-control"
-                        placeholder="Nama lengkap"
-                        required>
+                    <input type="text" name="nama_pemohon" class="form-control" required>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">NIP</label>
-                    <input type="text"
-                        name="nip_pemohon"
-                        class="form-control"
-                        placeholder="Opsional">
+                    <input type="text" name="nip_pemohon" class="form-control">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Bagian / Unit</label>
-                    <input type="text"
-                        name="bagian_pemohon"
-                        class="form-control"
-                        placeholder="Contoh: Umum, Keuangan">
+                    <input type="text" name="bagian_pemohon" class="form-control">
                 </div>
 
             </div>
 
             <div class="row g-3 mb-3">
-                {{-- TANGGAL --}}
+
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Tanggal Permintaan</label>
-                    <input type="date"
-                        name="tanggal_permintaan"
-                        class="form-control"
-                        value="{{ date('Y-m-d') }}"
-                        required>
+                    <input type="date" name="tanggal_permintaan"
+                           value="{{ date('Y-m-d') }}"
+                           class="form-control" required>
                 </div>
 
-                {{-- KEPERLUAN --}}
                 <div class="col-md-8">
                     <label class="form-label fw-semibold">Keperluan</label>
-                    <input type="text"
-                        name="keperluan"
-                        class="form-control"
-                        placeholder="Contoh: Kegiatan rapat"
-                        required>
+                    <input type="text" name="keperluan" class="form-control" required>
                 </div>
 
             </div>
@@ -102,9 +86,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="number" name="jumlah[]"
-                                       class="form-control"
-                                       min="1" required>
+                                <input type="number" name="jumlah[]" class="form-control" min="1" required>
                             </td>
                             <td class="text-center">
                                 <button type="button"
@@ -117,9 +99,7 @@
                     </tbody>
                 </table>
 
-                <button type="button"
-                        class="btn btn-sm btn-light-primary"
-                        onclick="tambahBarang()">
+                <button type="button" class="btn btn-sm btn-light-primary" onclick="tambahBarang()">
                     + Tambah Barang
                 </button>
             </div>
@@ -127,9 +107,7 @@
             {{-- KETERANGAN --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Keterangan</label>
-                <textarea name="keterangan" rows="2"
-                          class="form-control"
-                          placeholder="Opsional"></textarea>
+                <textarea name="keterangan" rows="2" class="form-control"></textarea>
             </div>
 
             {{-- BUTTON --}}
@@ -143,6 +121,7 @@
             </div>
 
         </form>
+
     </div>
 </div>
 
@@ -174,5 +153,20 @@ function tambahBarang() {
     `);
 }
 </script>
+
+<style>
+.text-primary{ color:#6366f1 !important; }
+
+.btn-primary{
+    background: linear-gradient(135deg,#6366f1,#a855f7);
+    border:none;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color:#6366f1;
+    box-shadow:0 0 0 .2rem rgba(99,102,241,.15);
+}
+</style>
 
 @endsection

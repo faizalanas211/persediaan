@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <a href="{{ route('profil.edit', auth()->user()->id) }}"
+                    <a href="{{ route('profil.edit', auth()->id()) }}"
                        class="btn btn-primary btn-sm">
                         <i class="bx bx-edit me-1"></i> Edit Profil
                     </a>
@@ -42,11 +42,15 @@
 
                 {{-- FOTO PROFIL --}}
                 <div class="text-center mb-4">
-                    @if(optional(auth()->user()->pegawai)->foto)
-                        <img src="{{ asset('storage/'.auth()->user()->pegawai->foto) }}"
+                    @php
+                        $pegawai = auth()->user()->pegawai;
+                    @endphp
+
+                    @if($pegawai && $pegawai->foto)
+                        <img src="{{ asset('storage/'.$pegawai->foto) }}"
                              class="rounded-circle shadow"
                              width="120" height="120"
-                             style="object-fit: cover">
+                             style="object-fit:cover">
                     @else
                         <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center shadow"
                              style="width:120px;height:120px;">
@@ -70,17 +74,16 @@
                     <div class="col-md-6">
                         <label class="text-muted fs-7">Jenis Kelamin</label>
                         <div class="fw-semibold">
-                            {{ auth()->user()->pegawai?->jenis_kelamin === 'Laki-laki' ? 'Laki-laki' :
-                               (auth()->user()->pegawai?->jenis_kelamin === 'Perempuan' ? 'Perempuan' : '-') }}
+                            {{ $pegawai->jenis_kelamin ?? '-' }}
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <label class="text-muted fs-7">Tempat, Tanggal Lahir</label>
                         <div class="fw-semibold">
-                            {{ auth()->user()->pegawai?->tempat_lahir ?? '-' }},
-                            {{ auth()->user()->pegawai?->tanggal_lahir
-                                ? \Carbon\Carbon::parse(auth()->user()->pegawai->tanggal_lahir)->format('d M Y')
+                            {{ $pegawai->tempat_lahir ?? '-' }},
+                            {{ $pegawai && $pegawai->tanggal_lahir
+                                ? \Carbon\Carbon::parse($pegawai->tanggal_lahir)->format('d M Y')
                                 : '-' }}
                         </div>
                     </div>
@@ -88,14 +91,14 @@
                     <div class="col-md-6">
                         <label class="text-muted fs-7">Jabatan</label>
                         <div class="fw-semibold">
-                            {{ auth()->user()->pegawai?->jabatan ?? '-' }}
+                            {{ $pegawai->jabatan ?? '-' }}
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <label class="text-muted fs-7">Pangkat / Golongan</label>
                         <div class="fw-semibold">
-                            {{ auth()->user()->pegawai?->pangkat_golongan ?? '-' }}
+                            {{ $pegawai->pangkat_golongan ?? '-' }}
                         </div>
                     </div>
 

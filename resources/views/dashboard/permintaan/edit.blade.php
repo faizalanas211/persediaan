@@ -4,14 +4,17 @@
 <li class="breadcrumb-item">
     <a href="{{ route('permintaan.index') }}">Permintaan ATK</a>
 </li>
-<li class="breadcrumb-item active fw-semibold">Edit Permintaan</li>
+<li class="breadcrumb-item active fw-semibold text-primary">
+    Edit Permintaan
+</li>
 @endsection
 
 @section('content')
 
 <div class="card shadow-sm rounded-4">
+
     <div class="card-header border-0">
-        <h4 class="fw-bold mb-0">Edit Permintaan ATK</h4>
+        <h4 class="fw-bold mb-0 text-primary">Edit Permintaan ATK</h4>
         <small class="text-muted">Status: Draft</small>
     </div>
 
@@ -36,8 +39,7 @@
                     <input type="text"
                         name="nip_pemohon"
                         class="form-control"
-                        value="{{ $permintaan->nip_pemohon }}"
-                        required>
+                        value="{{ $permintaan->nip_pemohon }}">
                 </div>
 
                 <div class="col-md-4">
@@ -45,12 +47,10 @@
                     <input type="text"
                         name="bagian_pemohon"
                         class="form-control"
-                        value="{{ $permintaan->bagian_pemohon }}"
-                        required>
+                        value="{{ $permintaan->bagian_pemohon }}">
                 </div>
             </div>
 
-            {{-- TANGGAL --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Tanggal Permintaan</label>
                 <input type="date"
@@ -60,7 +60,6 @@
                        required>
             </div>
 
-            {{-- KEPERLUAN --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Keperluan</label>
                 <input type="text"
@@ -125,7 +124,6 @@
                 </button>
             </div>
 
-            {{-- KETERANGAN --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Keterangan</label>
                 <textarea name="keterangan"
@@ -133,13 +131,12 @@
                           class="form-control">{{ $permintaan->keterangan }}</textarea>
             </div>
 
-            {{-- BUTTON --}}
             <div class="text-end">
                 <a href="{{ route('permintaan.show', $permintaan->id) }}"
                    class="btn btn-light">
                     Batal
                 </a>
-                <button type="submit" class="btn btn-warning px-4">
+                <button type="submit" class="btn btn-primary px-4">
                     Update Permintaan
                 </button>
             </div>
@@ -177,5 +174,20 @@ function tambahBarang() {
     `);
 }
 </script>
+
+<style>
+.text-primary{ color:#6366f1 !important; }
+
+.btn-primary{
+    background: linear-gradient(135deg,#6366f1,#a855f7);
+    border:none;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color:#6366f1;
+    box-shadow:0 0 0 .2rem rgba(99,102,241,.15);
+}
+</style>
 
 @endsection
