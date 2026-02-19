@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-<li class="breadcrumb-item active text-primary fw-semibold">
+<li class="breadcrumb-item active fw-semibold text-primary">
     Mutasi Stok
 </li>
 @endsection
@@ -10,16 +10,24 @@
 
 <div class="card card-flush shadow-sm rounded-4">
 
-    {{-- HEADER --}}
-    <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
-        <div>
-            <h4 class="fw-bold mb-1 text-primary">Riwayat Mutasi Stok</h4>
-            <p class="text-muted mb-0 fs-7">Catatan seluruh pergerakan stok barang ATK</p>
-        </div>
+    {{-- ================= HEADER ================= --}}
+    <div class="card-header border-0 pt-6 pb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
-        <a href="{{ route('mutasi.create') }}" class="btn btn-primary">
-            <i class="bx bx-plus me-1"></i> Tambah Data Mutasi
-        </a>
+            {{-- JUDUL --}}
+            <div>
+                <h4 class="fw-bold mb-1 text-primary">Riwayat Mutasi Stok</h4>
+                <p class="text-muted mb-0">Catatan seluruh pergerakan stok barang ATK</p>
+            </div>
+
+            {{-- TOMBOL TAMBAH --}}
+            <div>
+                <a href="{{ route('mutasi.create') }}" class="btn btn-primary rounded-pill px-4">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Data
+                </a>
+            </div>
+
+        </div>
     </div>
 
     <div class="card-body pt-0">

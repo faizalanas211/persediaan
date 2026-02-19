@@ -16,22 +16,10 @@
 
 @section('content')
 
-{{-- WARNING AUTO HIDE --}}
 @if(session('warning'))
 <div id="toastWarning" class="alert alert-warning shadow-sm">
     {{ session('warning') }}
 </div>
-
-<script>
-setTimeout(function(){
-    let el = document.getElementById('toastWarning');
-    if(el){
-        el.style.transition="opacity .5s";
-        el.style.opacity=0;
-        setTimeout(()=>el.remove(),500);
-    }
-},3000);
-</script>
 @endif
 
 <div class="card shadow-sm rounded-4">
@@ -42,13 +30,15 @@ setTimeout(function(){
             <p class="text-muted mb-0 fs-7">Isi stok fisik sesuai kondisi gudang</p>
         </div>
 
-        <button class="btn btn-outline-success btn-sm shadow-sm"
+        {{-- BUTTON IMPORT --}}
+        <button class="btn btn-outline-success btn-sm rounded-pill"
                 data-bs-toggle="modal"
                 data-bs-target="#modalImportStokOpname">
             <i class="bx bx-upload me-1"></i> Import Excel
         </button>
     </div>
 
+    {{-- ================= FORM MANUAL ================= --}}
     <form action="{{ route('stok-opname.store') }}" method="POST">
         @csrf
 
@@ -87,7 +77,6 @@ setTimeout(function(){
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach ($barangs as $i => $barang)
                         <tr>
                             <td>
@@ -118,7 +107,6 @@ setTimeout(function(){
                             </td>
                         </tr>
                         @endforeach
-
                     </tbody>
                 </table>
             </div>
@@ -134,16 +122,90 @@ setTimeout(function(){
         </div>
 
         <div class="card-footer border-0 text-end">
-            <a href="{{ route('stok-opname.index') }}" class="btn btn-light">
+            <a href="{{ route('stok-opname.index') }}" class="btn btn-light rounded-pill px-4">
                 Batal
             </a>
-            <button class="btn btn-primary px-4 shadow-sm">
+            <button class="btn btn-primary rounded-pill px-4">
                 Simpan Stok Opname
             </button>
         </div>
 
     </form>
 </div>
+
+{{-- ================= MODAL IMPORT ================= --}}
+<div class="modal fade" id="modalImportStokOpname" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-primary">
+                    Import Stok Opname Excel
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            {{-- FORM IMPORT --}}
+            <form action="{{ route('stok-opname.import') }}"
+                  method="POST"
+                  enctype="multipart/form-data"
+                  id="importForm">
+                @csrf
+
+                {{-- IMPORTANT: HARUS DI DALAM FORM --}}
+                <input type="hidden"
+                       name="periode_bulan"
+                       id="import_periode_bulan">
+
+                <div class="modal-body">
+                    <input type="file"
+                           name="file"
+                           class="form-control"
+                           accept=".xls,.xlsx"
+                           required>
+
+                    <small class="text-muted">
+                        Format .xls / .xlsx • Maks 2 MB
+                    </small>
+
+                    <a href="{{ route('stok-opname.template') }}"
+                       class="text-primary fw-semibold text-decoration-none d-block mt-3">
+                        <i class="bx bx-download me-1"></i> Download Template Excel
+                    </a>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button"
+                            class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button class="btn btn-success rounded-pill px-4">
+                        Import
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ================= JS SYNC PERIODE ================= --}}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const periodeInput = document.querySelector("input[name='periode_bulan']");
+    const importPeriode = document.getElementById("import_periode_bulan");
+
+    function syncPeriode(){
+        importPeriode.value = periodeInput.value;
+    }
+
+    syncPeriode();
+    periodeInput.addEventListener("change", syncPeriode);
+});
+</script>
 
 <style>
 .text-primary{ color:#6366f1 !important; }
@@ -160,10 +222,6 @@ setTimeout(function(){
 
 .table-light-purple{
     background:rgba(99,102,241,.06);
-}
-
-.table-hover tbody tr:hover{
-    background:rgba(99,102,241,.04);
 }
 </style>
 

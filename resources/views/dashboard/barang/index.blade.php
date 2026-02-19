@@ -14,13 +14,11 @@
     <div class="card-header border-0 pt-6 pb-4">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
 
-            {{-- JUDUL --}}
             <div>
                 <h4 class="fw-bold mb-1 text-primary">Data Barang ATK</h4>
                 <p class="text-muted mb-0">Daftar seluruh barang inventaris</p>
             </div>
 
-            {{-- SEARCH + TOMBOL TAMBAH --}}
             <div class="d-flex align-items-center gap-2 flex-wrap" style="min-width: 300px;">
                 <div class="position-relative flex-grow-1">
                     <i class="bx bx-search position-absolute top-50 start-0 translate-middle-y ms-3 text-primary fs-5"></i>
@@ -53,15 +51,15 @@
                 <thead class="border-bottom">
                     <tr class="text-uppercase text-muted fs-7">
                         <th width="5%">#</th>
-                        <th class="sortable" data-sort="nama_barang">Nama Barang <i class="bx bx-sort-alt-2 ms-1"></i></th>
+                        <th>Nama Barang</th>
                         <th>Satuan</th>
-                        <th class="sortable text-center" data-sort="stok">Stok <i class="bx bx-sort-alt-2 ms-1"></i></th>
+                        <th class="text-center">Stok</th>
                         <th class="text-center">Status</th>
                         <th width="15%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
-                <tbody class="border-top" id="barangTable">
+                <tbody class="border-top">
                     @foreach ($barangs as $barang)
                     <tr>
                         <td>{{ $barangs->firstItem() + $loop->index }}</td>
@@ -71,11 +69,11 @@
 
                         <td class="text-center">
                             @if ($barang->stok == 0)
-                                <span class="badge border-danger-soft">Habis</span>
+                                <span class="badge-status status-danger">Habis</span>
                             @elseif ($barang->stok <= 5)
-                                <span class="badge border-warning-soft">Menipis</span>
+                                <span class="badge-status status-warning">Menipis</span>
                             @else
-                                <span class="badge border-success-soft">Aman</span>
+                                <span class="badge-status status-success">Aman</span>
                             @endif
                         </td>
 
@@ -104,7 +102,7 @@
 
 <style>
 
-/* ======== PRIMARY UNGU ======== */
+/* ===== PRIMARY ===== */
 .btn-primary{
     background: linear-gradient(135deg,#6366f1,#a855f7) !important;
     border:none !important;
@@ -119,21 +117,32 @@
     color:#6366f1 !important;
 }
 
-/* header soft ungu */
 .card-header{
     background: linear-gradient(180deg, rgba(99,102,241,.05), rgba(168,85,247,.03));
 }
 
-/* focus input */
-#searchBarang:focus{
-    border-color:#6366f1;
-    box-shadow:0 0 0 .2rem rgba(99,102,241,.15);
+/* ===== STATUS BADGE ===== */
+.badge-status{
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:.75rem;
+    font-weight:600;
+    letter-spacing:.3px;
 }
 
-/* sortable hover */
-.sortable:hover{
-    color:#6366f1;
-    cursor:pointer;
+.status-success{
+    background:rgba(25,135,84,.15);
+    color:#198754;
+}
+
+.status-warning{
+    background:rgba(255,159,64,.20);
+    color:#d97706;
+}
+
+.status-danger{
+    background:rgba(220,53,69,.15);
+    color:#dc3545;
 }
 
 </style>

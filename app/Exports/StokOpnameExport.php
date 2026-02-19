@@ -2,24 +2,41 @@
 
 namespace App\Exports;
 
-use App\Models\StokOpname;
-use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithTitle;
 
-class StokOpnameExport implements FromArray, WithHeadings, WithTitle
+class StokOpnameExport implements FromCollection, WithHeadings
 {
     protected $stokOpname;
 
-    public function __construct(StokOpname $stokOpname)
+    public function __construct($stokOpname)
     {
         $this->stokOpname = $stokOpname;
+    }
+
+    public function collection()
+    {
+        return $this->stokOpname->detail()
+            ->with('barang')
+            ->get()
+            ->map(function ($item, $index) {
+
+                return [
+                    'no'            => $index + 1,
+                    'nama_barang'   => $item->barang->nama_barang ?? '-',
+                    'satuan'        => $item->barang->satuan ?? '-',
+                    'stok_sistem'   => $item->stok_sistem,
+                    'stok_fisik'    => $item->stok_fisik,
+                    'selisih'       => $item->selisih ?? 0,
+                    'keterangan'    => $item->keterangan ?? '-',
+                ];
+            });
     }
 
     public function headings(): array
     {
         return [
-            'No',
+            '#',
             'Nama Barang',
             'Satuan',
             'Stok Sistem',
@@ -27,30 +44,5 @@ class StokOpnameExport implements FromArray, WithHeadings, WithTitle
             'Selisih',
             'Keterangan',
         ];
-    }
-
-    public function array(): array
-    {
-        $data = [];
-        $no = 1;
-
-        foreach ($this->stokOpname->detail as $d) {
-            $data[] = [
-                $no++,
-                $d->barang->nama_barang,
-                $d->barang->satuan,
-                $d->stok_sistem,
-                $d->stok_fisik,
-                $d->selisih,
-                $d->keterangan ?? '-',
-            ];
-        }
-
-        return $data;
-    }
-
-    public function title(): string
-    {
-        return 'Stok Opname ' . $this->stokOpname->periode_bulan;
     }
 }
