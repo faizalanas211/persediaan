@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Sistem Manajemen Persediaan ATK</title>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -58,7 +58,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.06) 0%, transparent 50%);
             z-index: 0;
@@ -72,7 +72,7 @@
             background: var(--dark-surface);
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 
+            box-shadow:
                 0 20px 40px rgba(0, 0, 0, 0.3),
                 0 0 0 1px rgba(255, 255, 255, 0.05);
             position: relative;
@@ -125,7 +125,7 @@
             justify-content: center;
             color: white;
             font-size: 32px;
-            box-shadow: 
+            box-shadow:
                 0 10px 20px rgba(124, 58, 237, 0.35),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
@@ -430,7 +430,7 @@
             font-weight: 500;
             z-index: 1000;
             animation: slideIn 0.4s ease;
-            box-shadow: 
+            box-shadow:
                 0 15px 35px rgba(0, 0, 0, 0.3),
                 0 0 0 1px rgba(255, 255, 255, 0.05);
             display: flex;
@@ -467,19 +467,19 @@
                 max-width: 500px;
                 min-height: auto;
             }
-            
+
             .brand-section {
                 padding: 40px 30px;
             }
-            
+
             .register-section {
                 padding: 40px 30px;
             }
-            
+
             .form-header h2 {
                 font-size: 28px;
             }
-            
+
             .system-title {
                 font-size: 18px;
             }
@@ -489,30 +489,30 @@
             body {
                 padding: 10px;
             }
-            
+
             .register-container {
                 border-radius: 16px;
             }
-            
+
             .brand-section,
             .register-section {
                 padding: 30px 20px;
             }
-            
+
             .logo-circle {
                 width: 60px;
                 height: 60px;
                 font-size: 24px;
             }
-            
+
             .system-name {
                 font-size: 20px;
             }
-            
+
             .form-header h2 {
                 font-size: 24px;
             }
-            
+
             .system-info {
                 padding: 20px;
             }
@@ -588,7 +588,7 @@
                 <!-- System Info -->
                 <div class="system-info">
                     <h3 class="system-title">Sistem Manajemen Persediaan ATK</h3>
-                    
+
                     <ul class="features-list">
                         <li>
                             <i class="fas fa-check"></i>
@@ -643,18 +643,18 @@
                 <!-- Register Form -->
                 <form id="registerForm" action="{{ route('registerAction') }}" method="POST">
                     @csrf
-                    
+
                     <!-- Full Name -->
                     <div class="form-group">
                         <label class="form-label" for="name">Nama Lengkap</label>
                         <div class="input-wrapper">
                             <i class="fas fa-user input-icon"></i>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                name="name" 
-                                class="form-input @error('name') is-invalid @enderror" 
-                                value="{{ old('name') }}" 
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                class="form-input @error('name') is-invalid @enderror"
+                                value="{{ old('name') }}"
                                 placeholder="Masukkan nama lengkap"
                                 autocomplete="off"
                                 required
@@ -673,12 +673,12 @@
                         <label class="form-label" for="nip">NIP</label>
                         <div class="input-wrapper">
                             <i class="fas fa-id-card input-icon"></i>
-                            <input 
-                                type="number" 
-                                id="nip" 
-                                name="nip" 
-                                class="form-input @error('nip') is-invalid @enderror" 
-                                value="{{ old('nip') }}" 
+                            <input
+                                type="number"
+                                id="nip"
+                                name="nip"
+                                class="form-input @error('nip') is-invalid @enderror"
+                                value="{{ old('nip') }}"
                                 placeholder="Masukkan NIP"
                                 autocomplete="off"
                                 required
@@ -692,41 +692,19 @@
                         @enderror
                     </div>
 
-                    <!-- Email -->
-                    <div class="form-group">
-                        <label class="form-label" for="email">Email</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-input @error('email') is-invalid @enderror" 
-                                value="{{ old('email') }}" 
-                                placeholder="Masukkan email"
-                                autocomplete="off"
-                                required
-                            />
-                        </div>
-                        @error('email')
-                            <div class="invalid-feedback">
-                                <i class="fas fa-exclamation-circle"></i>
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
+                   
 
                     <!-- Position -->
                     <div class="form-group">
                         <label class="form-label" for="jabatan">Jabatan</label>
                         <div class="input-wrapper">
                             <i class="fas fa-briefcase input-icon"></i>
-                            <input 
-                                type="text" 
-                                id="jabatan" 
-                                name="jabatan" 
-                                class="form-input @error('jabatan') is-invalid @enderror" 
-                                value="{{ old('jabatan') }}" 
+                            <input
+                                type="text"
+                                id="jabatan"
+                                name="jabatan"
+                                class="form-input @error('jabatan') is-invalid @enderror"
+                                value="{{ old('jabatan') }}"
                                 placeholder="Masukkan jabatan"
                                 autocomplete="off"
                                 required
@@ -745,11 +723,11 @@
                         <label class="form-label" for="password">Password</label>
                         <div class="input-wrapper">
                             <i class="fas fa-lock input-icon"></i>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                class="form-input @error('password') is-invalid @enderror" 
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-input @error('password') is-invalid @enderror"
                                 placeholder="Buat password"
                                 autocomplete="off"
                                 required
@@ -777,11 +755,11 @@
                         <label class="form-label" for="password_confirmation">Konfirmasi Password</label>
                         <div class="input-wrapper">
                             <i class="fas fa-lock input-icon"></i>
-                            <input 
-                                type="password" 
-                                id="password_confirmation" 
-                                name="password_confirmation" 
-                                class="form-input" 
+                            <input
+                                type="password"
+                                id="password_confirmation"
+                                name="password_confirmation"
+                                class="form-input"
                                 placeholder="Ulangi password"
                                 autocomplete="off"
                                 required
@@ -822,7 +800,7 @@
         function togglePassword(fieldId) {
             const passwordField = document.getElementById(fieldId);
             const icon = document.getElementById(fieldId === 'password' ? 'passwordIcon' : 'confirmPasswordIcon');
-            
+
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -842,22 +820,22 @@
         passwordInput.addEventListener('input', function() {
             const password = this.value;
             let strength = 0;
-            
+
             // Check password strength
             if (password.length >= 8) strength++;
             if (/[a-z]/.test(password)) strength++;
             if (/[A-Z]/.test(password)) strength++;
             if (/[0-9]/.test(password)) strength++;
             if (/[^A-Za-z0-9]/.test(password)) strength++;
-            
+
             // Update strength bar
             const width = strength * 20;
             strengthFill.style.width = width + '%';
-            
+
             // Update color and text
             let color = '#ef4444'; // red
             let text = 'Sangat lemah';
-            
+
             if (strength >= 2) {
                 color = '#f59e0b'; // yellow
                 text = 'Lemah';
@@ -874,7 +852,7 @@
                 color = '#059669'; // dark green
                 text = 'Sangat kuat';
             }
-            
+
             strengthFill.style.backgroundColor = color;
             strengthText.textContent = text;
         });
@@ -882,12 +860,12 @@
         // Add input focus effects
         document.querySelectorAll('.form-input').forEach(input => {
             const wrapper = input.closest('.input-wrapper');
-            
+
             input.addEventListener('focus', function() {
                 wrapper.style.transform = 'scale(1.02)';
                 wrapper.style.zIndex = '1';
             });
-            
+
             input.addEventListener('blur', function() {
                 wrapper.style.transform = 'scale(1)';
                 wrapper.style.zIndex = '0';
@@ -897,38 +875,38 @@
         // Form validation
         const registerForm = document.getElementById('registerForm');
         const submitBtn = registerForm.querySelector('.submit-btn');
-        
+
         registerForm.addEventListener('submit', function(e) {
             // Validate password match
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('password_confirmation').value;
-            
+
             if (password !== confirmPassword) {
                 e.preventDefault();
-                
+
                 // Add error class to confirmation field
                 const confirmInput = document.getElementById('password_confirmation');
                 confirmInput.classList.add('is-invalid');
-                
+
                 // Show error message
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'invalid-feedback';
                 errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password tidak sama';
-                
+
                 const existingError = confirmInput.parentElement.nextElementSibling;
                 if (existingError && existingError.classList.contains('invalid-feedback')) {
                     existingError.remove();
                 }
-                
+
                 confirmInput.parentElement.parentElement.appendChild(errorDiv);
                 return;
             }
-            
+
             // Show loading state
             const originalHTML = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
             submitBtn.disabled = true;
-            
+
             // Re-enable button after 5 seconds (fallback)
             setTimeout(() => {
                 submitBtn.innerHTML = originalHTML;
@@ -940,7 +918,7 @@
         function showError(message) {
             // Remove existing error notifications
             document.querySelectorAll('.notification').forEach(n => n.remove());
-            
+
             // Create new error notification
             const notification = document.createElement('div');
             notification.className = 'notification notification-error';
@@ -948,9 +926,9 @@
                 <i class="fas fa-exclamation-circle"></i>
                 <span>${message}</span>
             `;
-            
+
             document.body.appendChild(notification);
-            
+
             // Auto remove
             setTimeout(() => {
                 notification.style.opacity = '0';
@@ -991,11 +969,11 @@
         // Simple typing effect for system description
         const descriptionText = "Daftarkan akun Anda untuk mengakses sistem manajemen persediaan alat tulis kantor yang terintegrasi.";
         const descriptionElement = document.querySelector('.system-description');
-        
+
         if (descriptionElement) {
             let charIndex = 0;
             descriptionElement.textContent = '';
-            
+
             function typeWriter() {
                 if (charIndex < descriptionText.length) {
                     descriptionElement.textContent += descriptionText.charAt(charIndex);
@@ -1003,7 +981,7 @@
                     setTimeout(typeWriter, 20);
                 }
             }
-            
+
             // Start typing after page load
             setTimeout(typeWriter, 500);
         }

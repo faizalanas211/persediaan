@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sistem Manajemen Persediaan ATK</title>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -105,7 +105,7 @@
             background: var(--dark-surface);
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 
+            box-shadow:
                 0 30px 60px rgba(0, 0, 0, 0.4),
                 0 0 0 1px rgba(255, 255, 255, 0.05);
             position: relative;
@@ -133,7 +133,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 40%),
                 radial-gradient(circle at 80% 70%, rgba(255,255,255,0.05) 0%, transparent 40%);
         }
@@ -166,7 +166,7 @@
             font-size: 32px;
             font-weight: bold;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
+            box-shadow:
                 0 15px 35px rgba(0, 0, 0, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
@@ -577,7 +577,7 @@
             font-weight: 500;
             z-index: 1000;
             animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 
+            box-shadow:
                 0 15px 35px rgba(0, 0, 0, 0.3),
                 0 0 0 1px rgba(255, 255, 255, 0.05);
             display: flex;
@@ -614,23 +614,23 @@
                 max-width: 500px;
                 min-height: auto;
             }
-            
+
             .brand-section {
                 padding: 40px 30px;
             }
-            
+
             .login-section {
                 padding: 40px 30px;
             }
-            
+
             .system-title h2 {
                 font-size: 28px;
             }
-            
+
             .form-header h2 {
                 font-size: 28px;
             }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
@@ -640,44 +640,44 @@
             body {
                 padding: 10px;
             }
-            
+
             .login-container {
                 border-radius: 16px;
             }
-            
+
             .brand-section,
             .login-section {
                 padding: 30px 20px;
             }
-            
+
             .logo-icon {
                 width: 60px;
                 height: 60px;
                 font-size: 24px;
             }
-            
+
             .logo-text h1 {
                 font-size: 22px;
             }
-            
+
             .system-title h2 {
                 font-size: 24px;
             }
-            
+
             .form-header h2 {
                 font-size: 24px;
             }
-            
+
             .feature-card {
                 padding: 20px;
             }
-            
+
             .brand-footer {
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
             }
-            
+
             .stats {
                 justify-content: center;
             }
@@ -814,7 +814,7 @@
                 Created by Magang Kemnaker<br>
                 <span>@fzlns21 | @dhiyaind</span>
             </div>
-            
+
         </div>
 
         <!-- Right Side - Login Form -->
@@ -844,17 +844,17 @@
                 <!-- Login Form -->
                 <form action="{{ route('loginAction') }}" method="POST" id="loginForm">
                     @csrf
-                    
+
                     <!-- Username/Email -->
                     <div class="form-group">
                         <label class="form-label">Username</label>
                         <div class="input-wrapper">
                             <i class="fas fa-user input-icon"></i>
-                            <input 
-                                type="text" 
-                                name="login" 
-                                class="form-input" 
-                                placeholder="Masukkan username / email / NIP"
+                            <input
+                                type="text"
+                                name="login"
+                                class="form-input"
+                                placeholder="Masukkan NIP"
                                 autocomplete="off"
                                 required
                             >
@@ -866,10 +866,10 @@
                         <label class="form-label">Password</label>
                         <div class="input-wrapper">
                             <i class="fas fa-lock input-icon"></i>
-                            <input 
-                                type="password" 
-                                name="password" 
-                                class="form-input" 
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-input"
                                 placeholder="Masukkan password"
                                 id="passwordField"
                                 required
@@ -913,7 +913,7 @@
         function togglePassword() {
             const passwordField = document.getElementById('passwordField');
             const icon = document.getElementById('passwordIcon');
-            
+
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -928,12 +928,12 @@
         // Add input focus effects
         document.querySelectorAll('.form-input').forEach(input => {
             const wrapper = input.closest('.input-wrapper');
-            
+
             input.addEventListener('focus', function() {
                 wrapper.style.transform = 'scale(1.02)';
                 wrapper.style.zIndex = '1';
             });
-            
+
             input.addEventListener('blur', function() {
                 wrapper.style.transform = 'scale(1)';
                 wrapper.style.zIndex = '0';
@@ -943,23 +943,23 @@
         // Form submission loading state
         const loginForm = document.getElementById('loginForm');
         const submitBtn = loginForm.querySelector('.submit-btn');
-        
+
         loginForm.addEventListener('submit', function(e) {
             // Basic validation
             const username = this.querySelector('[name="login"]').value.trim();
             const password = this.querySelector('[name="password"]').value;
-            
+
             if (!username || !password) {
                 e.preventDefault();
                 showError('Harap isi semua bidang yang diperlukan');
                 return;
             }
-            
+
             // Show loading state
             const originalHTML = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
             submitBtn.disabled = true;
-            
+
             // Re-enable button after 5 seconds (fallback)
             setTimeout(() => {
                 submitBtn.innerHTML = originalHTML;
@@ -972,11 +972,11 @@
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateX(10px)';
             });
-            
+
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateX(0)';
             });
-            
+
             // Click effect
             card.addEventListener('click', function() {
                 this.style.transform = 'translateX(5px) scale(0.98)';
@@ -990,7 +990,7 @@
         function showError(message) {
             // Remove existing error notifications
             document.querySelectorAll('.notification').forEach(n => n.remove());
-            
+
             // Create new error notification
             const notification = document.createElement('div');
             notification.className = 'notification notification-error';
@@ -998,9 +998,9 @@
                 <i class="fas fa-exclamation-circle"></i>
                 <span>${message}</span>
             `;
-            
+
             document.body.appendChild(notification);
-            
+
             // Auto remove
             setTimeout(() => {
                 notification.style.opacity = '0';
@@ -1016,7 +1016,7 @@
                 document.querySelectorAll('.form-group, .form-options, .submit-btn').forEach(el => {
                     el.style.animationPlayState = 'running';
                 });
-                
+
                 // Animate feature cards
                 document.querySelectorAll('.feature-card').forEach(card => {
                     card.style.animationPlayState = 'running';
@@ -1035,14 +1035,14 @@
                 { icon: 'fa-boxes', text: '500+ Items' },
                 { icon: 'fa-check-circle', text: '100% Accurate' }
             ];
-            
+
             let currentStat = 0;
             setInterval(() => {
                 const statsContainer = document.querySelector('.stats');
                 if (statsContainer) {
                     currentStat = (currentStat + 1) % stats.length;
                     const nextStat = stats[(currentStat + 1) % stats.length];
-                    
+
                     statsContainer.innerHTML = `
                         <div class="stat-item">
                             <i class="fas ${nextStat.icon}"></i>
@@ -1056,11 +1056,11 @@
         // Add typing effect to system description
         const descriptionText = "Sistem terintegrasi untuk mengelola persediaan alat tulis kantor secara efisien dan real-time.";
         const descriptionElement = document.querySelector('.system-title p');
-        
+
         if (descriptionElement) {
             let charIndex = 0;
             descriptionElement.textContent = '';
-            
+
             function typeWriter() {
                 if (charIndex < descriptionText.length) {
                     descriptionElement.textContent += descriptionText.charAt(charIndex);
@@ -1068,7 +1068,7 @@
                     setTimeout(typeWriter, 30);
                 }
             }
-            
+
             // Start typing after page load
             setTimeout(typeWriter, 1000);
         }
@@ -1081,7 +1081,7 @@
         text-align: center;
         font-size: 0.8rem;
         color: var(--accent);
-        opacity: 1.0;           
+        opacity: 1.0;
         letter-spacing: 0.3px;
         user-select: none;
     }

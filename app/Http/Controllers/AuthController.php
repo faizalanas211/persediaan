@@ -37,7 +37,7 @@ class AuthController extends Controller
         try {
             //code...
             if (!Auth::attempt($credentials)) {
-                return back()->with('error', 'Invalid email, NIP, or password');
+                return back()->with('error', 'NIP atau password salah');
             }
 
             return redirect()->route('dashboard');
@@ -62,7 +62,7 @@ class AuthController extends Controller
             'name' => 'required',
             'nip' => 'required|unique:pegawai',
             'jabatan' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'nullable|email|unique:users',
             'password' => 'required|min:8',
         ]);
 
