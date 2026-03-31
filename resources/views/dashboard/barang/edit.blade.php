@@ -27,6 +27,19 @@
             @csrf
             @method('PUT')
 
+            {{-- ================= KODE BARANG ================= --}}
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Kode Barang</label>
+                <input type="text"
+                       name="kode_barang"
+                       value="{{ old('kode_barang', $barang->kode_barang) }}"
+                       class="form-control @error('kode_barang') is-invalid @enderror"
+                       placeholder="Contoh: ATK-001">
+                @error('kode_barang')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
             {{-- NAMA BARANG --}}
             <div class="mb-4">
                 <label class="form-label fw-semibold">Nama Barang</label>

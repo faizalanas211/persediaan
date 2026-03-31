@@ -34,6 +34,20 @@
                 <form action="{{ route('barang.store') }}" method="POST">
                     @csrf
 
+                    {{-- ================= KODE BARANG ================= --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Kode Barang</label>
+                        <input type="text"
+                               name="kode_barang"
+                               class="form-control @error('kode_barang') is-invalid @enderror"
+                               value="{{ old('kode_barang') }}"
+                               placeholder="Contoh: 1010299999000005">
+                        @error('kode_barang')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- ================= NAMA BARANG ================= --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Barang</label>
                         <input type="text"
@@ -46,6 +60,7 @@
                         @enderror
                     </div>
 
+                    {{-- ================= SATUAN ================= --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Satuan</label>
                         <select name="satuan"
@@ -59,6 +74,7 @@
                         </select>
                     </div>
 
+                    {{-- ================= SATUAN LAINNYA ================= --}}
                     <div class="mb-3 d-none" id="satuan_lainnya">
                         <label class="form-label fw-semibold">Satuan Lainnya</label>
                         <input type="text"
@@ -67,6 +83,7 @@
                                placeholder="Contoh: roll, ml, gram">
                     </div>
 
+                    {{-- ================= STOK ================= --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Stok Awal</label>
                         <input type="number"
@@ -76,6 +93,7 @@
                                min="0">
                     </div>
 
+                    {{-- ================= BUTTON ================= --}}
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('barang.index') }}" class="btn btn-light rounded-pill px-4">
                             Batal

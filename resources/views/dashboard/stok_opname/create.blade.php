@@ -94,7 +94,7 @@
                                        name="stok_fisik[]"
                                        class="form-control"
                                        min="0"
-                                       value="{{ old('stok_fisik.'.$i) }}"
+                                       value="{{ old('stok_fisik.'.$i, $barang->stok) }}"
                                        required>
                             </td>
 

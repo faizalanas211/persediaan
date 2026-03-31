@@ -51,6 +51,7 @@
                 <thead class="border-bottom">
                     <tr class="text-uppercase text-muted fs-7">
                         <th width="5%">#</th>
+                        <th>Kode Barang</th> {{-- TAMBAHAN --}}
                         <th>Nama Barang</th>
                         <th>Satuan</th>
                         <th class="text-center">Stok</th>
@@ -63,6 +64,12 @@
                     @foreach ($barangs as $barang)
                     <tr>
                         <td>{{ $barangs->firstItem() + $loop->index }}</td>
+
+                        {{-- KODE BARANG --}}
+                        <td class="fw-semibold text-primary">
+                            {{ $barang->kode_barang ?? '-' }}
+                        </td>
+
                         <td class="fw-semibold">{{ $barang->nama_barang }}</td>
                         <td>{{ $barang->satuan }}</td>
                         <td class="text-center fw-bold">{{ $barang->stok }}</td>

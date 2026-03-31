@@ -6,7 +6,6 @@ use App\Models\BarangAtk;
 use App\Models\MutasiStok;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\{
     ToModel,
     WithHeadingRow,
@@ -27,7 +26,25 @@ class BarangAtkImport implements
     {
         $stokAwal = (int) ($row['stok'] ?? 0);
 
+        // ================= AUTO GENERATE KODE =================
+        $kodeBarang = $row['kode_barang'] ?? null;
+
+        if (!$kodeBarang) {
+            $last = BarangAtk::whereNotNull('kode_barang')
+                ->orderByDesc('id')
+                ->first();
+
+            $number = 1;
+
+            if ($last && preg_match('/\d+$/', $last->kode_barang, $match)) {
+                $number = (int)$match[0] + 1;
+            }
+
+            $kodeBarang = 'ATK-' . str_pad($number, 3, '0', STR_PAD_LEFT);
+        }
+
         $barang = new BarangAtk([
+            'kode_barang' => $kodeBarang,
             'nama_barang' => $row['nama_barang'],
             'satuan'      => $row['satuan'],
             'stok'        => $stokAwal,
@@ -57,6 +74,7 @@ class BarangAtkImport implements
     public function rules(): array
     {
         return [
+            'kode_barang' => 'nullable|unique:barang_atk,kode_barang',
             'nama_barang' => 'required|string|max:255',
             'satuan'      => 'required|string|max:50',
             'stok'        => 'nullable|integer|min:0',

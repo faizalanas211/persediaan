@@ -135,7 +135,7 @@
 
 /* SCROLL */
 .neo-scroll{
-    animation: scrollUp 28s linear infinite;
+    animation: scrollUp 80s linear infinite;
 }
 
 /* GRID */

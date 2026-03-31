@@ -45,7 +45,6 @@ class StokOpnameController extends Controller
         ]);
     }
 
-    /* ================= DOWNLOAD TEMPLATE ================= */
     public function downloadTemplate()
     {
         return Excel::download(
@@ -54,7 +53,6 @@ class StokOpnameController extends Controller
         );
     }
 
-    /* ================= STORE ================= */
     public function store(Request $request)
     {
         $request->validate([
@@ -84,7 +82,9 @@ class StokOpnameController extends Controller
             foreach($request->barang_id as $i=>$barangId){
 
                 $barang = BarangAtk::findOrFail($barangId);
-                $stokFisik = $request->stok_fisik[$i];
+
+                // 🔥 AUTO DEFAULT (INI SAJA YANG DITAMBAH)
+                $stokFisik = $request->stok_fisik[$i] ?? $barang->stok;
 
                 $stokOpname->detail()->create([
                     'barang_id'=>$barangId,
@@ -100,14 +100,12 @@ class StokOpnameController extends Controller
             ->with('success','Stok opname berhasil dibuat');
     }
 
-    /* ================= SHOW ================= */
     public function show($id)
     {
         $stokOpname = StokOpname::with(['pencatat','detail.barang'])->findOrFail($id);
         return view('dashboard.stok_opname.show',compact('stokOpname'));
     }
 
-    /* ================= FINAL ================= */
     public function final($id)
     {
         $stokOpname = StokOpname::with('detail.barang')->findOrFail($id);
@@ -143,7 +141,6 @@ class StokOpnameController extends Controller
             ->with('success','Stok opname difinalkan');
     }
 
-    /* ================= EXPORT PDF ================= */
     public function exportPdf($id)
     {
         $stokOpname = StokOpname::with(['detail.barang','pencatat'])->findOrFail($id);
@@ -154,7 +151,6 @@ class StokOpnameController extends Controller
         return $pdf->download('stok-opname-'.$stokOpname->id.'.pdf');
     }
 
-    /* ================= EXPORT EXCEL ================= */
     public function exportExcel($id)
     {
         $stokOpname = StokOpname::findOrFail($id);
@@ -165,7 +161,6 @@ class StokOpnameController extends Controller
         );
     }
 
-    /* ================= IMPORT EXCEL ================= */
     public function importExcel(Request $request)
     {
 
@@ -175,17 +170,16 @@ class StokOpnameController extends Controller
 
         $rows = Excel::toArray([], $request->file('file'))[0];
 
-
         $periode = Carbon::parse($request->periode_bulan)->startOfMonth();
+
         if (StokOpname::whereYear('periode_bulan', $periode->year)
             ->whereMonth('periode_bulan', $periode->month)
             ->exists()) {
 
-        return back()
-            ->withInput()
-            ->with('warning', 'Periode sudah ada');
+            return back()
+                ->withInput()
+                ->with('warning', 'Periode sudah ada');
         }
-
 
         DB::transaction(function() use ($rows,$periode){
 

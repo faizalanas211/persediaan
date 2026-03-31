@@ -12,6 +12,7 @@ class BarangAtk extends Model
     protected $table = 'barang_atk';
 
     protected $fillable = [
+        'kode_barang',
         'nama_barang',
         'satuan',
         'stok',
