@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\BarangAtk;
 use App\Models\Divisi;
 use App\Models\Pegawai;
 use App\Models\User;
@@ -12,6 +13,23 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+
+    public function welcome()
+{
+    $barang = BarangAtk::orderBy('nama_barang')->get();
+
+    $dataBarang = [];
+
+    foreach ($barang as $item) {
+        $dataBarang[$item->nama_barang] = [
+            'ready' => $item->stok,
+            'satuan' => $item->satuan,
+        ];
+    }
+
+    return view('welcome', compact('dataBarang'));
+}
+
     public function login()
     {
         $title = 'login';
