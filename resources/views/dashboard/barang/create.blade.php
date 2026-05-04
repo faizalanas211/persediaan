@@ -123,7 +123,7 @@
                     <input type="file" name="file" class="form-control" accept=".xls,.xlsx">
                     <small class="text-muted">Format .xls / .xlsx • Maks 2 MB</small>
 
-                    <a href="{{ asset('template/persediaan.xlsx') }}"
+                    <a href="{{ asset('template/template_data_persediaan.xlsx') }}"
                        class="text-primary fw-semibold text-decoration-none d-block mt-3">
                         <i class="bx bx-download me-1"></i> Download Template Excel
                     </a>

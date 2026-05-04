@@ -48,6 +48,9 @@
                        value="{{ old('nama_barang', $barang->nama_barang) }}"
                        class="form-control @error('nama_barang') is-invalid @enderror"
                        placeholder="Contoh: Kertas HVS A4 80 gsm">
+                @error('nama_barang')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- SATUAN --}}
@@ -55,22 +58,43 @@
                 <label class="form-label fw-semibold">Satuan Terkecil</label>
                 <select name="satuan"
                         id="satuan"
-                        class="form-select">
+                        class="form-select @error('satuan') is-invalid @enderror">
                     <option value="">-- Pilih Satuan --</option>
-                    <option value="pcs" {{ old('satuan', $barang->satuan)=='pcs'?'selected':'' }}>Pcs</option>
-                    <option value="lembar" {{ old('satuan', $barang->satuan)=='lembar'?'selected':'' }}>Lembar</option>
-                    <option value="lainnya" {{ old('satuan', $barang->satuan)=='lainnya'?'selected':'' }}>Lainnya</option>
+                    <option value="pcs" {{ old('satuan', $barang->satuan) == 'pcs' ? 'selected' : '' }}>Pcs</option>
+                    <option value="lembar" {{ old('satuan', $barang->satuan) == 'lembar' ? 'selected' : '' }}>Lembar</option>
+                    <option value="lainnya" {{ old('satuan', $barang->satuan) == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                 </select>
+                @error('satuan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- SATUAN LAINNYA --}}
-            <div class="mb-4 {{ old('satuan', $barang->satuan)=='lainnya' ? '' : 'd-none' }}"
+            <div class="mb-4 {{ old('satuan', $barang->satuan) == 'lainnya' ? '' : 'd-none' }}"
                  id="satuanLainnyaWrapper">
                 <label class="form-label fw-semibold">Satuan Lainnya</label>
                 <input type="text"
                        name="satuan_lainnya"
                        value="{{ old('satuan_lainnya', $barang->satuan_lainnya ?? '') }}"
-                       class="form-control">
+                       class="form-control @error('satuan_lainnya') is-invalid @enderror"
+                       placeholder="Contoh: roll, ml, gram">
+                @error('satuan_lainnya')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- STOK (tambah field stok karena di create ada) --}}
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Stok Saat Ini</label>
+                <input type="number"
+                       name="stok"
+                       value="{{ old('stok', $barang->stok) }}"
+                       class="form-control @error('stok') is-invalid @enderror"
+                       min="0">
+                <small class="text-muted">Stok akan bertambah/berkurang melalui transaksi masuk dan keluar</small>
+                @error('stok')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- BUTTON --}}
@@ -115,7 +139,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const lainnyaWrap  = document.getElementById('satuanLainnyaWrapper');
 
     function toggleSatuanLainnya(){
-        lainnyaWrap.classList.toggle('d-none', satuanSelect.value !== 'lainnya');
+        if (satuanSelect.value === 'lainnya') {
+            lainnyaWrap.classList.remove('d-none');
+        } else {
+            lainnyaWrap.classList.add('d-none');
+        }
     }
 
     toggleSatuanLainnya();

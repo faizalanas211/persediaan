@@ -77,9 +77,7 @@ class BarangAtkController extends Controller
 
         DB::transaction(function () use ($request, $satuan) {
 
-            $stokAwal = 0;
-            $jumlah   = $request->stok ?? 0;
-            $stokAkhir = $stokAwal + $jumlah;
+            $jumlah = $request->stok ?? 0;
 
             // ================= AUTO GENERATE KODE =================
             $kodeBarang = $request->kode_barang;
@@ -98,33 +96,36 @@ class BarangAtkController extends Controller
                 $kodeBarang = 'ATK-' . str_pad($number, 3, '0', STR_PAD_LEFT);
             }
 
-            // Simpan barang
+            // Simpan barang dengan stok awal (0 atau sesuai input)
             $barang = BarangAtk::create([
                 'kode_barang' => $kodeBarang,
                 'nama_barang' => $request->nama_barang,
                 'satuan'      => $satuan,
-                'stok'        => $stokAkhir,
+                'stok'        => $jumlah,
             ]);
 
-            // Mutasi awal
+            // Hanya buat mutasi jika stok awal > 0
             if ($jumlah > 0) {
                 MutasiStok::create([
                     'barang_id'    => $barang->id,
                     'jenis_mutasi' => 'masuk',
                     'jumlah'       => $jumlah,
-                    'stok_awal'    => $stokAwal,
-                    'stok_akhir'   => $stokAkhir,
+                    'stok_awal'    => 0,
+                    'stok_akhir'   => $jumlah,
                     'tanggal'      => now(),
                     'keterangan'   => 'Stok awal barang',
                     'user_id'      => Auth::id(),
                 ]);
             }
-
         });
+
+        $message = $request->stok > 0 
+            ? 'Barang berhasil ditambahkan dan stok awal tercatat di mutasi.'
+            : 'Barang berhasil ditambahkan dengan stok 0 (tidak tercatat di mutasi).';
 
         return redirect()
             ->route('barang.index')
-            ->with('success', 'Barang berhasil ditambahkan dan stok awal tercatat di mutasi.');
+            ->with('success', $message);
     }
 
     public function edit(BarangAtk $barang)
@@ -139,17 +140,57 @@ class BarangAtkController extends Controller
             'nama_barang'     => 'required|string|max:255',
             'satuan'          => 'required|string|max:50',
             'satuan_lainnya'  => 'required_if:satuan,lainnya|max:50',
+            'stok'            => 'nullable|integer|min:0',
         ]);
 
         $satuan = $request->satuan === 'lainnya'
             ? $request->satuan_lainnya
             : $request->satuan;
 
-        $barang->update([
-            'kode_barang' => $request->kode_barang,
-            'nama_barang' => $request->nama_barang,
-            'satuan'      => $satuan,
-        ]);
+        $stokBaru = $request->stok;
+        $stokLama = $barang->stok;
+
+        DB::transaction(function () use ($request, $satuan, $barang, $stokBaru, $stokLama) {
+            // Update data barang
+            $barang->update([
+                'kode_barang' => $request->kode_barang,
+                'nama_barang' => $request->nama_barang,
+                'satuan'      => $satuan,
+            ]);
+
+            // Jika stok diubah dan stok baru > stok lama, buat mutasi MASUK
+            if ($stokBaru !== null && $stokBaru > $stokLama) {
+                $selisih = $stokBaru - $stokLama;
+                MutasiStok::create([
+                    'barang_id'    => $barang->id,
+                    'jenis_mutasi' => 'masuk',
+                    'jumlah'       => $selisih,
+                    'stok_awal'    => $stokLama,
+                    'stok_akhir'   => $stokBaru,
+                    'tanggal'      => now(),
+                    'keterangan'   => 'Penyesuaian stok via edit barang',
+                    'user_id'      => Auth::id(),
+                ]);
+
+                $barang->update(['stok' => $stokBaru]);
+            }
+            // Jika stok baru < stok lama, buat mutasi KELUAR
+            elseif ($stokBaru !== null && $stokBaru < $stokLama) {
+                $selisih = $stokLama - $stokBaru;
+                MutasiStok::create([
+                    'barang_id'    => $barang->id,
+                    'jenis_mutasi' => 'keluar',
+                    'jumlah'       => $selisih,
+                    'stok_awal'    => $stokLama,
+                    'stok_akhir'   => $stokBaru,
+                    'tanggal'      => now(),
+                    'keterangan'   => 'Penyesuaian stok via edit barang',
+                    'user_id'      => Auth::id(),
+                ]);
+
+                $barang->update(['stok' => $stokBaru]);
+            }
+        });
 
         return redirect()
             ->route('barang.index')
@@ -209,6 +250,10 @@ class BarangAtkController extends Controller
         DB::beginTransaction();
 
         try {
+            // Import dengan logika:
+            // - Stok > 0 → buat mutasi MASUK
+            // - Stok = 0 → simpan barang tanpa mutasi
+            // Logika ini DIATUR di file App\Imports\BarangAtkImport
             Excel::import(new BarangAtkImport, $request->file('file'));
 
             DB::commit();

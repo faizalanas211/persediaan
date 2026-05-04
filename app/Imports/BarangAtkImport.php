@@ -6,6 +6,7 @@ use App\Models\BarangAtk;
 use App\Models\MutasiStok;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\{
     ToModel,
     WithHeadingRow,
@@ -26,9 +27,15 @@ class BarangAtkImport implements
     {
         $stokAwal = (int) ($row['stok'] ?? 0);
 
-        // ================= AUTO GENERATE KODE =================
+        // ================= CEK DUPLIKAT SEBELUM CREATE =================
         $kodeBarang = $row['kode_barang'] ?? null;
 
+        // Jika kode_barang sudah ada di database, SKIP (jangan import)
+        if ($kodeBarang && BarangAtk::where('kode_barang', $kodeBarang)->exists()) {
+            return null; // Lewati baris ini
+        }
+
+        // ================= AUTO GENERATE KODE =================
         if (!$kodeBarang) {
             $last = BarangAtk::whereNotNull('kode_barang')
                 ->orderByDesc('id')
@@ -43,30 +50,27 @@ class BarangAtkImport implements
             $kodeBarang = 'ATK-' . str_pad($number, 3, '0', STR_PAD_LEFT);
         }
 
-        $barang = new BarangAtk([
+        // Simpan barang
+        $barang = BarangAtk::create([
             'kode_barang' => $kodeBarang,
             'nama_barang' => $row['nama_barang'],
             'satuan'      => $row['satuan'],
             'stok'        => $stokAwal,
         ]);
 
-        // setelah barang tersimpan, buat mutasi masuk
-        $barang->saved(function ($barang) use ($stokAwal) {
-
-            if ($stokAwal > 0) {
-                MutasiStok::create([
-                    'barang_id'    => $barang->id,
-                    'jenis_mutasi' => 'masuk',
-                    'jumlah'       => $stokAwal,
-                    'stok_awal'    => 0,
-                    'stok_akhir'   => $stokAwal,
-                    'tanggal'      => Carbon::now(),
-                    'keterangan'   => 'Stok awal dari import Excel',
-                    'user_id'      => Auth::id(),
-                ]);
-            }
-
-        });
+        // Mutasi hanya jika stok > 0
+        if ($stokAwal > 0) {
+            MutasiStok::create([
+                'barang_id'    => $barang->id,
+                'jenis_mutasi' => 'masuk',
+                'jumlah'       => $stokAwal,
+                'stok_awal'    => 0,
+                'stok_akhir'   => $stokAwal,
+                'tanggal'      => Carbon::now(),
+                'keterangan'   => 'Stok awal dari import Excel',
+                'user_id'      => Auth::id(),
+            ]);
+        }
 
         return $barang;
     }
@@ -74,7 +78,7 @@ class BarangAtkImport implements
     public function rules(): array
     {
         return [
-            'kode_barang' => 'nullable|unique:barang_atk,kode_barang',
+            'kode_barang' => 'nullable|string|max:50',
             'nama_barang' => 'required|string|max:255',
             'satuan'      => 'required|string|max:50',
             'stok'        => 'nullable|integer|min:0',

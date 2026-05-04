@@ -6,6 +6,7 @@ use App\Imports\MutasiStokImport;
 use App\Models\BarangAtk;
 use App\Models\MutasiStok;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -21,13 +22,19 @@ class MutasiStokController extends Controller
             $query->where('jenis_mutasi', $request->jenis);
         }
 
+        // ✅ REVISI: Filter bulan lebih aman pakai Carbon
         if ($request->filled('bulan')) {
-            $query->whereMonth('tanggal', substr($request->bulan, 5, 2))
-                ->whereYear('tanggal', substr($request->bulan, 0, 4));
+            try {
+                $date = Carbon::parse($request->bulan);
+                $query->whereMonth('tanggal', $date->month)
+                    ->whereYear('tanggal', $date->year);
+            } catch (\Exception $e) {
+                // Jika format bulan tidak valid, abaikan filter
+            }
         }
 
         $mutasi = $query
-            ->orderByDesc('updated_at')
+            ->orderByDesc('tanggal')
             ->orderByDesc('created_at')
             ->paginate(10)
             ->withQueryString();
@@ -49,19 +56,25 @@ class MutasiStokController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // ✅ REVISI: Validasi dinamis berdasarkan jenis_mutasi
+        $rules = [
             'barang_id'     => 'required|exists:barang_atk,id',
             'jenis_mutasi'  => 'required|in:masuk,keluar,penyesuaian',
-            'jumlah'        => 'required|integer|min:1',
             'tanggal'       => 'required|date',
             'keterangan'    => 'nullable|string',
-        ]);
+        ];
 
-        try {
-            DB::transaction(function () use ($request) {
+        if ($request->jenis_mutasi === 'penyesuaian') {
+            $rules['jumlah'] = 'required|integer|min:0'; // penyesuaian bisa 0
+        } else {
+            $rules['jumlah'] = 'required|integer|min:1'; // masuk/keluar minimal 1
+        }
+
+        $request->validate($rules);
+
+        DB::transaction(function () use ($request) {
 
             $barang = BarangAtk::lockForUpdate()->findOrFail($request->barang_id);
-
             $stokAwal = $barang->stok;
 
             if ($request->jenis_mutasi === 'masuk') {
@@ -70,35 +83,31 @@ class MutasiStokController extends Controller
             } elseif ($request->jenis_mutasi === 'keluar') {
                 if ($stokAwal < $request->jumlah) {
                     throw ValidationException::withMessages([
-                        'jumlah' => 'Stok tidak mencukupi'
+                        'jumlah' => "Stok tidak mencukupi (Stok saat ini: {$stokAwal} {$barang->satuan})"
                     ]);
                 }
                 $stokAkhir = $stokAwal - $request->jumlah;
 
             } else { // penyesuaian
+                // ✅ REVISI: Penyesuaian bisa menaikkan atau menurunkan stok ke nilai tertentu
                 $stokAkhir = $request->jumlah;
             }
 
             // update stok barang
-            $barang->update([
-                'stok' => $stokAkhir
-            ]);
+            $barang->update(['stok' => $stokAkhir]);
 
-            // simpan mutasi + stok awal & akhir
+            // simpan mutasi
             MutasiStok::create([
-                'barang_id'   => $barang->id,
-                'jenis_mutasi'=> $request->jenis_mutasi,
-                'jumlah'      => $request->jumlah,
-                'stok_awal'   => $stokAwal,
-                'stok_akhir'  => $stokAkhir,
-                'tanggal'     => $request->tanggal,
-                'keterangan'  => $request->keterangan,
-                'user_id'     => Auth::id(),
+                'barang_id'    => $barang->id,
+                'jenis_mutasi' => $request->jenis_mutasi,
+                'jumlah'       => $request->jumlah,
+                'stok_awal'    => $stokAwal,
+                'stok_akhir'   => $stokAkhir,
+                'tanggal'      => $request->tanggal,
+                'keterangan'   => $request->keterangan,
+                'user_id'      => Auth::id(),
             ]);
         });
-        } catch (ValidationException $e) {
-            throw $e; // biar balik ke form
-        }
 
         return redirect()
             ->route('mutasi.index')
