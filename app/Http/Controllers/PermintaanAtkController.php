@@ -39,7 +39,7 @@ class PermintaanAtkController extends Controller
         $permintaan = $query
             ->orderBy('tanggal_permintaan', 'desc')
             ->paginate(15)
-            ->withQueryString(); // 
+            ->withQueryString();
 
         return view('dashboard.permintaan.index', compact('permintaan'));
     }
@@ -146,9 +146,52 @@ class PermintaanAtkController extends Controller
             ]);
         });
 
+        // ✅ REVISI: Redirect ke index (tanpa parameter yang salah)
         return redirect()
-            ->route('permintaan.index', $permintaan->id)
+            ->route('permintaan.index')
             ->with('success', 'Permintaan berhasil diproses');
+    }
+
+    /**
+     * ✅ TAMBAHAN: Membatalkan permintaan yang sudah diproses (mengembalikan stok)
+     */
+    public function batal(PermintaanAtk $permintaan)
+    {
+        // Hanya bisa membatalkan permintaan yang sudah diproses
+        if ($permintaan->status !== 'diproses') {
+            return back()->with('error', 'Hanya permintaan yang sudah diproses yang bisa dibatalkan');
+        }
+
+        DB::transaction(function () use ($permintaan) {
+
+            foreach ($permintaan->detail as $detail) {
+                $barang = BarangAtk::lockForUpdate()->findOrFail($detail->barang_id);
+                $stokAwal = $barang->stok;
+                $stokAkhir = $stokAwal + $detail->jumlah;
+
+                // Kembalikan stok
+                $barang->update(['stok' => $stokAkhir]);
+
+                // Catat mutasi masuk (pembatalan)
+                MutasiStok::create([
+                    'barang_id'    => $barang->id,
+                    'jenis_mutasi' => 'masuk',
+                    'jumlah'       => $detail->jumlah,
+                    'stok_awal'    => $stokAwal,
+                    'stok_akhir'   => $stokAkhir,
+                    'tanggal'      => now(),
+                    'keterangan'   => 'Pembatalan permintaan ATK #' . $permintaan->id,
+                    'user_id'      => Auth::id(),
+                ]);
+            }
+
+            // Update status permintaan
+            $permintaan->update(['status' => 'dibatalkan']);
+        });
+
+        return redirect()
+            ->route('permintaan.index')
+            ->with('success', 'Permintaan berhasil dibatalkan dan stok dikembalikan');
     }
 
     public function show($id)
@@ -230,19 +273,25 @@ class PermintaanAtkController extends Controller
             ->with('success', 'Permintaan berhasil diperbarui');
     }
 
+    /**
+     * ✅ REVISI: Hapus permintaan (HANYA untuk status draft)
+     */
     public function destroy(PermintaanAtk $permintaan)
     {
+        // Hanya bisa hapus jika status draft
         if ($permintaan->status !== 'draft') {
-            return back()->with('error', 'Permintaan tidak dapat dibatalkan');
+            return back()->with('error', 'Hanya permintaan dengan status Draft yang bisa dihapus');
         }
 
-        $permintaan->update([
-            'status' => 'dibatalkan'
-        ]);
+        DB::transaction(function () use ($permintaan) {
+            // Hapus detail permintaan
+            $permintaan->detail()->delete();
+            // Hapus permintaan
+            $permintaan->delete();
+        });
 
         return redirect()
             ->route('permintaan.index')
-            ->with('success', 'Permintaan ATK berhasil dibatalkan');
+            ->with('success', 'Permintaan ATK berhasil dihapus');
     }
-
 }

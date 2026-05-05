@@ -77,6 +77,9 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     */
     Route::resource('mutasi', MutasiStokController::class);
     Route::post('mutasi/import', [MutasiStokController::class, 'import'])->name('mutasi.import');
+    
+    // ✅ ROUTE DELETE UNTUK MUTASI (DIUNCOMMENT)
+    Route::delete('/mutasi/{id}', [MutasiStokController::class, 'destroy'])->name('mutasi.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -87,6 +90,11 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('permintaan/{permintaan}/proses',
         [PermintaanAtkController::class, 'proses']
     )->name('permintaan.proses');
+    
+    // ✅ TAMBAHAN: Route untuk membatalkan permintaan (opsional)
+    Route::post('permintaan/{permintaan}/batal',
+        [PermintaanAtkController::class, 'batal']
+    )->name('permintaan.batal');
 
     /*
     |--------------------------------------------------------------------------

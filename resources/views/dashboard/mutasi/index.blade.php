@@ -32,6 +32,23 @@
 
     <div class="card-body pt-0">
 
+        {{-- ALERT SESSION --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         {{-- FILTER --}}
         <form method="GET" class="mb-4">
             <div class="row g-3 align-items-end mb-4 pb-3 border-bottom">
@@ -89,6 +106,7 @@
                         <th class="text-center">Jumlah</th>
                         <th>Keterangan</th>
                         <th>Petugas</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
@@ -116,10 +134,25 @@
 
                         <td>{{ $item->keterangan ?? '-' }}</td>
                         <td>{{ $item->user->name }}</td>
+
+                        {{-- TOMBOL HAPUS SIMPEL (ICON SAJA) --}}
+                        <td class="text-center">
+                            <button type="button"
+                                    class="btn btn-sm btn-light text-danger border-0"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalHapusMutasi"
+                                    data-id="{{ $item->id }}"
+                                    data-barang="{{ $item->barang->nama_barang }}"
+                                    data-jenis="{{ $item->jenis_mutasi }}"
+                                    data-jumlah="{{ $item->jumlah }}"
+                                    title="Hapus mutasi">
+                                <i class="bi bi-trash fs-5"></i>
+                            </button>
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="8" class="text-center text-muted py-4">
                             Belum ada data mutasi stok
                         </td>
                     </tr>
@@ -132,6 +165,62 @@
             {{ $mutasi->links('pagination::bootstrap-5') }}
         </div>
 
+    </div>
+</div>
+
+{{-- MODAL KONFIRMASI HAPUS MUTASI --}}
+<div class="modal fade" id="modalHapusMutasi" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Hapus Mutasi
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="formHapusMutasi" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus mutasi ini?</p>
+                    <div class="alert alert-warning">
+                        <strong>Konsekuensi:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Stok barang akan <strong>dikembalikan</strong> ke jumlah sebelum mutasi</li>
+                            <li>Data mutasi akan <strong>dihapus permanen</strong></li>
+                            <li>Aksi ini <strong>tidak dapat dibatalkan</strong></li>
+                        </ul>
+                    </div>
+                    <div class="mt-3">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td class="fw-semibold">Barang</td>
+                                <td>: <span id="modalBarang"></span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Jenis Mutasi</td>
+                                <td>: <span id="modalJenis"></span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Jumlah</td>
+                                <td>: <span id="modalJumlah"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="bi bi-trash me-1"></i> Ya, Hapus
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -168,6 +257,57 @@
     padding:5px 10px;
     border-radius:8px;
 }
+
+.alert {
+    border-radius: 0.75rem;
+    border-left: 4px solid;
+}
+.alert-success {
+    border-left-color: #198754;
+}
+.alert-danger {
+    border-left-color: #dc2626;
+}
+.alert-warning {
+    border-left-color: #f59e0b;
+}
+
+/* Hover efek untuk tombol hapus */
+.btn-light.text-danger:hover {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modalHapusMutasi');
+    const form = document.getElementById('formHapusMutasi');
+    
+    if (modal && form) {
+        modal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const barang = button.getAttribute('data-barang');
+            const jenis = button.getAttribute('data-jenis');
+            const jumlah = button.getAttribute('data-jumlah');
+            
+            // ✅ REVISI: URL lengkap dengan prefix dashboard
+            form.action = '/dashboard/mutasi/' + id;
+            
+            // Set tampilan modal
+            document.getElementById('modalBarang').textContent = barang;
+            
+            let jenisText = '';
+            if (jenis === 'masuk') jenisText = 'Masuk (Stok akan berkurang)';
+            else if (jenis === 'keluar') jenisText = 'Keluar (Stok akan bertambah)';
+            else jenisText = 'Penyesuaian';
+            document.getElementById('modalJenis').textContent = jenisText;
+            
+            document.getElementById('modalJumlah').textContent = jumlah;
+        });
+    }
+});
+</script>
 
 @endsection

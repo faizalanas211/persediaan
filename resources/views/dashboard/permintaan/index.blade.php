@@ -29,6 +29,23 @@
     {{-- ================= BODY ================= --}}
     <div class="card-body pt-0">
 
+        {{-- ALERT SESSION --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         {{-- FILTER --}}
         <form method="GET" class="mb-4">
             <div class="row g-3 align-items-end border-bottom pb-3 mb-3">
@@ -79,7 +96,7 @@
                         <th class="text-center">Jumlah Item</th>
                         <th class="text-center">Status</th>
                         <th>Dicatat Oleh</th>
-                        <th width="15%" class="text-center">Aksi</th>
+                        <th width="20%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
@@ -105,10 +122,26 @@
                         <td>{{ $item->pencatat->name ?? '-' }}</td>
 
                         <td class="text-center">
-                            <a href="{{ route('permintaan.show', $item->id) }}"
-                               class="btn btn-sm btn-light-primary rounded-pill px-3">
-                                Detail
-                            </a>
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{{ route('permintaan.show', $item->id) }}"
+                                   class="btn btn-sm btn-light-primary rounded-pill px-3">
+                                    Detail
+                                </a>
+
+                                {{-- TOMBOL HAPUS (hanya untuk draft) --}}
+                                @if($item->status === 'draft')
+                                    <button type="button"
+                                            class="btn btn-sm btn-light text-danger border-0"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalHapusPermintaan"
+                                            data-id="{{ $item->id }}"
+                                            data-pemohon="{{ $item->nama_pemohon }}"
+                                            data-keperluan="{{ $item->keperluan }}"
+                                            title="Hapus permintaan">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </button>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -126,6 +159,58 @@
             {{ $permintaan->links('pagination::bootstrap-5') }}
         </div>
 
+    </div>
+</div>
+
+{{-- MODAL KONFIRMASI HAPUS PERMINTAAN (ONLY DRAFT) --}}
+<div class="modal fade" id="modalHapusPermintaan" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Hapus Permintaan
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="formHapusPermintaan" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus permintaan ini?</p>
+                    <div class="alert alert-warning">
+                        <strong>Konsekuensi:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Data permintaan akan <strong>dihapus permanen</strong></li>
+                            <li>Stok barang <strong>tidak berubah</strong> (karena status masih Draft)</li>
+                            <li>Aksi ini <strong>tidak dapat dibatalkan</strong></li>
+                        </ul>
+                    </div>
+                    <div class="mt-3">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td class="fw-semibold">Pemohon</td>
+                                <td>: <span id="modalPemohon"></span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">Keperluan</td>
+                                <td>: <span id="modalKeperluan"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="bi bi-trash me-1"></i> Ya, Hapus
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -169,6 +254,49 @@
     border-color:#6366f1;
     box-shadow:0 0 0 .2rem rgba(99,102,241,.15);
 }
+
+.alert {
+    border-radius: 0.75rem;
+    border-left: 4px solid;
+}
+.alert-success {
+    border-left-color: #198754;
+}
+.alert-danger {
+    border-left-color: #dc2626;
+}
+.alert-warning {
+    border-left-color: #f59e0b;
+}
+
+/* Hover efek untuk tombol hapus */
+.btn-light.text-danger:hover {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modalHapusPermintaan');
+    const form = document.getElementById('formHapusPermintaan');
+    
+    if (modal && form) {
+        modal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const pemohon = button.getAttribute('data-pemohon');
+            const keperluan = button.getAttribute('data-keperluan');
+            
+            // Set action form
+            form.action = '/dashboard/permintaan/' + id;
+            
+            // Set tampilan modal
+            document.getElementById('modalPemohon').textContent = pemohon;
+            document.getElementById('modalKeperluan').textContent = keperluan;
+        });
+    }
+});
+</script>
 
 @endsection

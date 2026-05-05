@@ -114,6 +114,47 @@ class MutasiStokController extends Controller
             ->with('success', 'Mutasi stok berhasil dicatat!');
     }
 
+    /**
+     * Hapus mutasi stok (dengan mengembalikan stok)
+     */
+    public function destroy($id)
+    {
+        $mutasi = MutasiStok::findOrFail($id);
+        $barang = $mutasi->barang;
+
+        DB::transaction(function () use ($mutasi, $barang) {
+            $stokAwal = $barang->stok;
+            $stokAkhir = $stokAwal;
+
+            // Balikkan stok sesuai jenis mutasi
+            if ($mutasi->jenis_mutasi === 'masuk') {
+                // Hapus mutasi masuk → stok berkurang
+                $stokAkhir = $stokAwal - $mutasi->jumlah;
+            } elseif ($mutasi->jenis_mutasi === 'keluar') {
+                // Hapus mutasi keluar → stok bertambah
+                $stokAkhir = $stokAwal + $mutasi->jumlah;
+            } else {
+                // Penyesuaian → stok kembali ke stok_awal sebelum penyesuaian
+                $stokAkhir = $mutasi->stok_awal;
+            }
+
+            // Pastikan stok tidak negatif
+            if ($stokAkhir < 0) {
+                throw new \Exception('Stok akan menjadi negatif jika mutasi dihapus');
+            }
+
+            // Update stok barang
+            $barang->update(['stok' => $stokAkhir]);
+
+            // Hapus mutasi
+            $mutasi->delete();
+        });
+
+        return redirect()
+            ->route('mutasi.index')
+            ->with('success', 'Mutasi berhasil dihapus dan stok dikembalikan');
+    }
+
     public function import(Request $request)
     {
         $request->validate([
